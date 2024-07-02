@@ -10,8 +10,9 @@ import gregtech.api.util.GT_Log;
 
 public enum HT_ItemList {
 
-    // Items
+    // Items 模组内的机器（物品对象）或物品在此定义
     HyperdimensionalResonanceEvolver,
+    SingularityUnravelingDevice,
     TestItem0;
     // region Member Variables
 
@@ -23,10 +24,17 @@ public enum HT_ItemList {
 
     // endregion
 
+    /**
+     * 构造方法，构造后默认为Not been set状态
+     */
     HT_ItemList() {
         mHasNotBeenSet = true;
     }
 
+    /**
+     * 构造方法
+     * @param aDeprecated true代表弃用，false代表启用
+     */
     HT_ItemList(boolean aDeprecated) {
         if (aDeprecated) {
             mDeprecated = true;
@@ -34,6 +42,10 @@ public enum HT_ItemList {
         }
     }
 
+    /**
+     * 获取Item对象
+     * @return 对应的Item
+     */
     public Item getItem() {
         sanityCheck();
         if (Utils.isStackInvalid(mStack)) {
@@ -42,11 +54,21 @@ public enum HT_ItemList {
         return mStack.getItem();
     }
 
+    /**
+     * 获取Block对象
+     * @return 对应的Block
+     */
     public Block getBlock() {
         sanityCheck();
         return Block.getBlockFromItem(getItem());
     }
 
+    /**
+     * 返回物品堆ItemStack对象
+     * @param aAmount 数量
+     * @param aReplacements  这啥啊 我也不知道，以后补充
+     * @return ItemStack
+     */
     public ItemStack get(int aAmount, Object... aReplacements) {
         sanityCheck();
         // if invalid, return a replacements
@@ -58,6 +80,11 @@ public enum HT_ItemList {
         return Utils.copyAmount(aAmount, mStack);
     }
 
+    /**
+     * 枚举对象的Item“set”
+     * @param aItem 传入Item对象
+     * @return
+     */
     public HT_ItemList set(Item aItem) {
         mHasNotBeenSet = false;
         if (aItem == null) {
@@ -68,6 +95,11 @@ public enum HT_ItemList {
         return this;
     }
 
+    /**
+     * 枚举对象的ItemStack“set”
+     * @param aStack ItemStack对象
+     * @return
+     */
     public HT_ItemList set(ItemStack aStack) {
         if (aStack != null) {
             mHasNotBeenSet = false;
@@ -76,6 +108,10 @@ public enum HT_ItemList {
         return this;
     }
 
+    /**
+     * 判断枚举对象Set状态
+     * @return true为has been set，false为not set
+     */
     public boolean hasBeenSet() {
         return !mHasNotBeenSet;
     }

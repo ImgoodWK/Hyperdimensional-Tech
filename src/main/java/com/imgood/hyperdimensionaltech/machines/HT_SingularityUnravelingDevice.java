@@ -1,15 +1,20 @@
 package com.imgood.hyperdimensionaltech.machines;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.imgood.hyperdimensionaltech.recipemap.HT_RecipeMap;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class HT_SingularityUnravelingDevice extends HT_MultiMachineBase<HT_SingularityUnravelingDevice>{
-    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional) {
+/**
+ * @author Imgood
+ */
+public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_SingularityUnravelingDevice>{
+    public HT_SingularityUnravelingDevice(@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming") int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
 
@@ -17,6 +22,9 @@ public class HT_SingularityUnravelingDevice extends HT_MultiMachineBase<HT_Singu
         super(aName);
     }
 
+    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap) {
+        super(aID, aName, aNameRegional, aConstructor, aRecipeMap);
+    }
     @Override
     protected boolean isEnablePerfectOverclock() {
         return false;
@@ -84,7 +92,7 @@ public class HT_SingularityUnravelingDevice extends HT_MultiMachineBase<HT_Singu
      * @param side               is the Side of the Block
      * @param facing             is the direction the Block is facing
      * @param colorIndex         The Minecraft Color the Block is having
-     * @param active             if the Machine is currently active (use this instead of calling
+     * @param active             if the Machine is currently active (use this instead of calling)
      *                           {@code mBaseMetaTileEntity.mActive)}. Note: In case of Pipes this means if this Side is
      *                           connected to something or not.
      * @param redstoneLevel      if the Machine is currently outputting a RedstoneSignal (use this instead of calling

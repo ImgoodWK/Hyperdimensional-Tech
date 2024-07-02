@@ -16,21 +16,23 @@ import java.io.File;
 
 
 public class HTConfigurations {
-
+    //类本身需要的属性（开发时不需要动它
     public static Configuration config;
+    public static Map<String, Boolean> features = new HashMap<>();
     public static boolean activateCombatStats;
+    //用于定义机器或模组其他功能的字段（开发机器或新功能时需要申明
     public static final String HyperdimensionalResonanceEvolver = "HyperdimensionalResonanceEvolver";
     public static double secondsOfHyperdimensionalResonanceProgressCycleTime = 64.0;
     public static boolean EnableRenderDefaultHyperdimensionalResonanceEvolver = true;
-
-    //common blocks
-    public static Map<String, Boolean> features = new HashMap<>();
     public static byte Mode_Default_HyperdimensionalResonanceEvolver;
     public static int Parallel_HighSpeedMode_HyperdimensionalResonanceEvolver;
     public static int Parallel_HighParallelMode_HyperdimensionalResonanceEvolver;
     public static int TickPerProgressing_WirelessMode_HyperdimensionalResonanceEvolver;
 
-    //common blocks
+    /**
+     * 刷新Config（开发时不需要动它
+     * @return 布尔类型刷新结果
+     */
     public static boolean refreshConfig() {
 
             /* features */
@@ -49,15 +51,23 @@ public class HTConfigurations {
         }
         return true;
     }
-    //common blocks
+
+    /**
+     * 检查模组功能/内容是否启用（开发时不需要动它
+     * @param feature HyperdimensionalTechTeatures类型的本模组内容
+     * @return 布尔类型启用结果
+     */
     public static boolean featureEnabled(HyperdimensionalTechFeatures feature) {
         boolean enabled = features.getOrDefault(featureName(feature), false);
         HyperdimensionalTech.logger.info(feature + " is " + (enabled ? "enabled" : "disabled."));
         return enabled;
     }
-//common blocks
+
     /**
      * Makes the old camelCase names from the new CONSTANT_CASE names
+     * 将新的CONSTANT_CASE名称转换为旧的camelCase名称的对象（开发时不需要动它
+     * @param feature HyperdimensionalTechFeatures对象
+     * @return 转换结果
      */
     public static String featureName(HyperdimensionalTechFeatures feature) {
         String[] words = feature.name()
@@ -73,12 +83,16 @@ public class HTConfigurations {
         }
         return ret;
     }
-//common blocks
+
     @Deprecated
     public static boolean featureEnabled(String feature) {
         return false;
     }
 
+    /**
+     * 静态方法，模组加载时候调用，用于同步（开发时将需要同步的内容申明在这
+     * @param configFile 同步的文件对象
+     */
     public static void synchronizeConfiguration(File configFile) {
         HyperdimensionalTech.logger.info("Synchronizing configuration...");
         Configuration configuration = new Configuration(configFile);

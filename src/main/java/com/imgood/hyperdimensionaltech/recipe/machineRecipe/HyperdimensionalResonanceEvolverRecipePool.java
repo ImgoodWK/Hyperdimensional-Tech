@@ -6,7 +6,7 @@ import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import net.minecraft.item.ItemStack;
 
 import com.imgood.hyperdimensionaltech.recipe.IRecipePool;
-import com.imgood.hyperdimensionaltech.recipemap.HT_Recipe;
+import com.imgood.hyperdimensionaltech.recipemap.HT_RecipeMap;
 import com.imgood.hyperdimensionaltech.utils.recipes.HT_RecipeBuilder;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -15,7 +15,7 @@ import gregtech.api.util.GT_Utility;
 
 public class HyperdimensionalResonanceEvolverRecipePool implements IRecipePool {
 
-    final RecipeMap<?> HRE = HT_Recipe.HyperdimensionalResonanceEvolverRecipes;
+    final RecipeMap<?> HRE = HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes;
 
     // spotless:off
     @Override

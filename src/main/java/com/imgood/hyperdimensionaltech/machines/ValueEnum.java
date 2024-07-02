@@ -4,6 +4,7 @@ import com.imgood.hyperdimensionaltech.config.HTConfigurations;
 
 /**
  * ValueEnum are stored here.
+ * 存储枚举值
  */
 public final class ValueEnum {
 

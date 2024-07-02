@@ -9,7 +9,6 @@ import net.minecraft.util.EnumChatFormatting;
 /**
  * Use {@link com.imgood.hyperdimensionaltech.utils.Enums}
  */
-@Deprecated
 public class HTTextLocalization {
     public static final String ModName = "Hyperdimensional Tech";
 
@@ -33,6 +32,9 @@ public class HTTextLocalization {
     public static final String Tooltip_HyperdimensionalResonanceEvolver_14 = texter("Progress time is fixed at 6.4s .", "Tooltip_HyperdimensionalResonanceEvolver_14");
     public static final String Tooltip_HyperdimensionalResonanceEvolver_2_01 = texter("Check whether turn into Wireless mode when checking structure.", "Tooltip_HyperdimensionalResonanceEvolver_2_01");
     // endregion
+    // region SingularityUnravelingDevice
+    public static final String NameSingularityUnravelingDevice = texter("SingularityUnravelingDevice", "NameSingularityUnravelingDevice");
+    //endregion
     public static final String Tooltip_DoNotNeedMaintenance = texter("Do Not Need Maintenance!", "Tooltip_DoNotNeedMaintenance");;
     public static final String BLUE_PRINT_INFO = texter("Follow the" + EnumChatFormatting.BLUE + " Structure" + EnumChatFormatting.DARK_BLUE + "Lib" + EnumChatFormatting.GRAY + " hologram projector to build the main structure.", "BLUE_PRINT_INFO");
     public static final String StructureTooComplex = texter("The structure is too complex!", "StructureTooComplex");
