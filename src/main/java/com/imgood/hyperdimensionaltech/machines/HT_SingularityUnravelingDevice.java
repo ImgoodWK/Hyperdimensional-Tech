@@ -22,26 +22,29 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         super(aName);
     }
 
-    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap) {
-        super(aID, aName, aNameRegional, aConstructor, aRecipeMap);
-    }
-    @Override
-    protected boolean isEnablePerfectOverclock() {
-        return false;
-    }
-
-    @Override
-    protected float getSpeedBonus() {
-        return 0;
-    }
-
-    @Override
-    protected int getMaxParallelRecipes() {
-        return 0;
+    /**
+     * 快速开发简单的机器的构造方法，所以参数直接给进去就ok了，在loadMachines直接加进去
+     *
+     * @param aID           机器的meta值，从10000开始，依次累增，不能重复，开发的时候乱动前面写好的id会导致存档机器出事
+     * @param aName         “Name”+机器的名称
+     * @param aNameRegional HTTextLocalization.Name机器的名称.getStackForm(1)
+     * @param aConstructor  机器结构构成的二维String数组，用结构扫描器扫描获得，写在HT_MachineConstrucs里
+     * @param aRecipeMap    机器的NEI界面相关，如：nei界面的进度条图标类型，输入输出物品/流体的格子数量，需要给定这个机器对应的Recipemap对象
+     * @param enableRender  是否开启特效渲染，需要从HTConfigurations获取
+     * @param defaultMode
+     */
+    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap, boolean enableRender, byte defaultMode) {
+        super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode);
     }
 
+    /**
+     * Checks the Machine. You have to assign the MetaTileEntities for the Hatches here.
+     *
+     * @param aBaseMetaTileEntity
+     * @param aStack
+     */
     @Override
-    public boolean renderInWorld() {
+    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
         return false;
     }
 
@@ -65,25 +68,27 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         return null;
     }
 
-    /**
-     * Checks the Machine. You have to assign the MetaTileEntities for the Hatches here.
-     *
-     * @param aBaseMetaTileEntity
-     * @param aStack
-     */
     @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+    protected boolean isEnablePerfectOverclock() {
         return false;
     }
 
-    /**
-     * @param aTileEntity is just because the internal Variable "mBaseMetaTileEntity" is set after this Call.
-     * @return a newly created and ready MetaTileEntity
-     */
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return null;
+    protected float getSpeedBonus() {
+        return 0;
     }
+
+    @Override
+    protected int getMaxParallelRecipes() {
+        return 0;
+    }
+
+    @Override
+    public boolean renderInWorld() {
+        return false;
+    }
+
+
 
     /**
      * Icon of the Texture. If this returns null then it falls back to getTextureIndex.
@@ -92,7 +97,7 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
      * @param side               is the Side of the Block
      * @param facing             is the direction the Block is facing
      * @param colorIndex         The Minecraft Color the Block is having
-     * @param active             if the Machine is currently active (use this instead of calling)
+     * @param active             if the Machine is currently active (use this instead of calling
      *                           {@code mBaseMetaTileEntity.mActive)}. Note: In case of Pipes this means if this Side is
      *                           connected to something or not.
      * @param redstoneLevel      if the Machine is currently outputting a RedstoneSignal (use this instead of calling

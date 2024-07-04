@@ -26,7 +26,7 @@ public class MachineLoader {
             10001,
             "SingularityUnravelingDevice",
             HTTextLocalization.NameSingularityUnravelingDevice,
-            HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice, HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes).getStackForm(1);
+            HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice, HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes, true, (byte)0).getStackForm(1);
             HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
     }
 

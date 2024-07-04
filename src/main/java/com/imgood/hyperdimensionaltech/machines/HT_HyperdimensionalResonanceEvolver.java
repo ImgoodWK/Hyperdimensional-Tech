@@ -110,7 +110,7 @@ public class HT_HyperdimensionalResonanceEvolver
         } else {
             currentTip.add(
                 EnumChatFormatting.GOLD + StatCollector
-                    .translateToLocalFormatted("ThermalEnergyDevourer.modeMsg." + tag.getByte("mode"), new Object[0]));
+                    .translateToLocalFormatted("HyperdimensionalResonanceEvolver.modeMsg." + tag.getByte("mode"), new Object[0]));
         }
     }
 
