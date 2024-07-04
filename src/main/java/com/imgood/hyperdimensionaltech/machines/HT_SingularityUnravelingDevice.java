@@ -1,6 +1,7 @@
 package com.imgood.hyperdimensionaltech.machines;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.recipemap.HT_RecipeMap;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -66,6 +67,17 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
     @Override
     protected GT_Multiblock_Tooltip_Builder createTooltip() {
         return null;
+    }
+
+    /**
+     * 必须要重写这个方法，返回的内容:该机器类(this.mName)/构造函数
+     *
+     * @param aTileEntity
+     */
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        HyperdimensionalTech.logger.info("HTtestmsg" + new HT_SingularityUnravelingDevice(this.mName));
+        return new HT_SingularityUnravelingDevice(this.mName);
     }
 
     @Override

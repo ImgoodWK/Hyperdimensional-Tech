@@ -110,7 +110,13 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
      * @param aRecipeMap 机器的NEI界面相关，如：nei界面的进度条图标类型，输入输出物品/流体的格子数量，需要给定这个机器对应的Recipemap对象
      * @param enableRender 是否开启特效渲染，需要从HTConfigurations获取
      */
-    public HT_LiteMultiMachineBase(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap, boolean enableRender, byte defaultMode) {
+    public HT_LiteMultiMachineBase(int aID,
+                                   String aName,
+                                   String aNameRegional,
+                                   String[][] aConstructor,
+                                   RecipeMap aRecipeMap,
+                                   boolean enableRender,
+                                   byte defaultMode) {
         super(aID, aName, aNameRegional);
         this.constructor = aConstructor;
         this.recipeMap = aRecipeMap;
