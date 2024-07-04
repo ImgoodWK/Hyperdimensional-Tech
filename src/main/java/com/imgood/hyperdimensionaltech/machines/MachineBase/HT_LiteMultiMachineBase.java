@@ -1,17 +1,30 @@
-package com.imgood.hyperdimensionaltech.machines;
+package com.imgood.hyperdimensionaltech.machines.MachineBase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.utils.HTTextLocalization;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.recipe.RecipeMap;
+import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.ApiStatus.OverrideOnly;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,16 +51,144 @@ import gregtech.common.tileentities.machines.GT_MetaTileEntity_Hatch_InputBus_ME
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 
-public abstract class HT_MultiMachineBase<T extends HT_MultiMachineBase<T>>
+/**
+ * 为了更快速便捷开发机器诞生的快速Base类，只需要传入一堆属性或者别的对象就能正常运作，如有特殊机器请用另一个机器的Base类
+ */
+public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
     extends GT_MetaTileEntity_ExtendedPowerMultiBlockBase<T> implements IConstructable, ISurvivalConstructable {
 
-    public HT_MultiMachineBase(int aID, String aName, String aNameRegional) {
+    /**
+     * 机器内部属性，用于模式相关功能
+     */
+    private byte mode;
+    /**
+     * 默认模式，如若机器需要有模式切换功能，这里需要给定com.imgood.hyperdimensionaltech.machines.ValueEnum内的Mode_Default_机器名
+     */
+    private byte defaultMode = 0;
+    /**
+     * 机器内部属性，通过主机的标签来获取机器是否为无线模式
+     */
+    private boolean isWirelessMode;
+    /**
+     * 机器内部属性，存储主机放置的玩家UUID
+     */
+    private UUID ownerUUID;
+    /**
+     * 机器内部属性，临时存储无限模式耗电
+     */
+    private long costingWirelessEUTemp = 0;
+    /**
+     * 大概是超频增幅倍率（我也不知道干嘛的，有时候写机器就是这样，和猜谜似的，以后知道再补充吧
+     */
+    private int coefficientMultiplier = 1;
+    /**
+     * 是否开启特效渲染
+     */
+    private boolean enableRender;
+    /**
+     * 机器的结构二维数组
+     */
+    private String[][] constructor;
+    /**
+     * 机器的recipe map（配方NEI界面
+     */
+    private RecipeMap recipeMap;
+
+    public GT_Multiblock_Tooltip_Builder tooltipBuilder = new GT_Multiblock_Tooltip_Builder();
+
+    public HT_LiteMultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
 
-    public HT_MultiMachineBase(String aName) {
+    public HT_LiteMultiMachineBase(String aName) {
         super(aName);
     }
+
+    /**
+     * 快速开发简单的机器的构造方法，所以参数直接给进去就ok了，在loadMachines直接加进去
+     * @param aID 机器的meta值，从10000开始，依次累增，不能重复，开发的时候乱动前面写好的id会导致存档机器出事
+     * @param aName “Name”+机器的名称
+     * @param aNameRegional HTTextLocalization.Name机器的名称.getStackForm(1)
+     * @param aConstructor 机器结构构成的二维String数组，用结构扫描器扫描获得，写在HT_MachineConstrucs里
+     * @param aRecipeMap 机器的NEI界面相关，如：nei界面的进度条图标类型，输入输出物品/流体的格子数量，需要给定这个机器对应的Recipemap对象
+     * @param enableRender 是否开启特效渲染，需要从HTConfigurations获取
+     */
+    public HT_LiteMultiMachineBase(int aID,
+                                   String aName,
+                                   String aNameRegional,
+                                   String[][] aConstructor,
+                                   RecipeMap aRecipeMap,
+                                   boolean enableRender,
+                                   byte defaultMode,
+                                   GT_Multiblock_Tooltip_Builder tooltipBuilder) {
+        super(aID, aName, aNameRegional);
+        this.constructor = aConstructor;
+        this.recipeMap = aRecipeMap;
+        this.enableRender = enableRender;
+        this.defaultMode = defaultMode;
+        this.tooltipBuilder = tooltipBuilder;
+    }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        super.getWailaBody(itemStack, currentTip, accessor, config);
+        final NBTTagCompound tag = accessor.getNBTData();
+        if (tag.getBoolean("isWirelessMode")) {
+            currentTip.add(EnumChatFormatting.LIGHT_PURPLE + HTTextLocalization.Waila_WirelessMode);
+            currentTip.add(
+                EnumChatFormatting.AQUA + HTTextLocalization.Waila_CurrentEuCost
+                    + EnumChatFormatting.RESET
+                    + ": "
+                    + EnumChatFormatting.GOLD
+                    + GT_Utility.formatNumbers(tag.getLong("costingWirelessEUTemp"))
+                    + EnumChatFormatting.RESET
+                    + " EU");
+        } else {
+            currentTip.add(
+                EnumChatFormatting.GOLD + StatCollector
+                    .translateToLocalFormatted(this.mName + ".modeMsg." + tag.getByte("mode"), new Object[0]));
+        }
+    }
+
+    @Override
+    public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y, int z) {
+        super.getWailaNBTData(player, tile, tag, world, x, y, z);
+        final IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
+        if (tileEntity != null) {
+            tag.setByte("mode", mode);
+            tag.setBoolean("isWirelessMode", isWirelessMode);
+            tag.setLong("costingWirelessEUTemp", costingWirelessEUTemp);
+        }
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        mode = aNBT.getByte("mode");
+        coefficientMultiplier = aNBT.getInteger("coefficientMultiplier");
+        isWirelessMode = aNBT.getBoolean("isWirelessMode");
+        costingWirelessEUTemp = aNBT.getLong("costingWirelessEUTemp");
+    }
+
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        mode = aNBT.getByte("mode");
+        coefficientMultiplier = aNBT.getInteger("coefficientMultiplier");
+        isWirelessMode = aNBT.getBoolean("isWirelessMode");
+        costingWirelessEUTemp = aNBT.getLong("costingWirelessEUTemp");
+    }
+    /**
+     * final GT_Multiblock_Tooltip_Builder tt = new GT_Multiblock_Tooltip
+     * tt.addMachineType(HTTextLocalization.机器类)
+     * @return GT_Multiblock_Tooltip_Builder
+     */
+   /* @Override
+    protected GT_Multiblock_Tooltip_Builder createTooltip() {
+        HyperdimensionalTech.logger.info("testmsg"+this.tooltipBuilder.getInformation());
+        return this.tooltipBuilder;
+    }
+*/
 
     public void repairMachine() {
         this.mHardHammer = true;
@@ -63,12 +204,20 @@ public abstract class HT_MultiMachineBase<T extends HT_MultiMachineBase<T>>
         return (ProcessingLogic) (new HT_ProcessingLogic() {
 
             public @NotNull CheckRecipeResult process() {
-                this.setEuModifier(HT_MultiMachineBase.this.getEuModifier());
-                this.setSpeedBonus(HT_MultiMachineBase.this.getSpeedBonus());
-                this.setOverclock(HT_MultiMachineBase.this.isEnablePerfectOverclock() ? 2 : 1, 2);
+                this.setEuModifier(HT_LiteMultiMachineBase.this.getEuModifier());
+                this.setSpeedBonus(HT_LiteMultiMachineBase.this.getSpeedBonus());
+                this.setOverclock(HT_LiteMultiMachineBase.this.isEnablePerfectOverclock() ? 2 : 1, 2);
                 return super.process();
             }
         }).setMaxParallelSupplier(this::getLimitedMaxParallel);
+    }
+
+    /**
+     * 必须要重写这个方法，返回的内容:该机器类(this.mName)/构造函数
+     */
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return null;
     }
 
     protected abstract boolean isEnablePerfectOverclock();
@@ -201,21 +350,16 @@ public abstract class HT_MultiMachineBase<T extends HT_MultiMachineBase<T>>
 
         return rList;
     }
-
+    @Override
     public String[] getInfoData() {
-        String dSpeed = String.format("%.3f", this.getSpeedBonus() * 100.0F) + "%";
-        String dEUMod = String.format("%.3f", this.getEuModifier() * 100.0F) + "%";
         String[] origin = super.getInfoData();
-        String[] ret = new String[origin.length + 3];
+        String[] ret = new String[origin.length + 1];
         System.arraycopy(origin, 0, ret, 0, origin.length);
-        ret[origin.length] = EnumChatFormatting.AQUA + HTTextHandler.texter("Parallels", "MachineInfoData.Parallels")
+        ret[origin.length] = EnumChatFormatting.AQUA + HTTextHandler
+            .texter("Coefficient Multiplier", "MachineInfoData.HyperdimensionalResonanceEvolver.coefficientMultiplier")
             + ": "
             + EnumChatFormatting.GOLD
-            + this.getLimitedMaxParallel();
-        ret[origin.length + 1] = EnumChatFormatting.AQUA + HTTextHandler
-            .texter("Speed multiplier", "MachineInfoData.SpeedMultiplier") + ": " + EnumChatFormatting.GOLD + dSpeed;
-        ret[origin.length + 2] = EnumChatFormatting.AQUA + HTTextHandler
-            .texter("EU Modifier", "MachineInfoData.EuModifier") + ": " + EnumChatFormatting.GOLD + dEUMod;
+            + this.coefficientMultiplier;
         return ret;
     }
 
@@ -226,7 +370,7 @@ public abstract class HT_MultiMachineBase<T extends HT_MultiMachineBase<T>>
     }
 
     public boolean addEnergyHatchOrExoticEnergyHatchToMachineList(IGregTechTileEntity aTileEntity,
-        int aBaseCasingIndex) {
+                                                                  int aBaseCasingIndex) {
         return this.addEnergyInputToMachineList(aTileEntity, aBaseCasingIndex)
             || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }

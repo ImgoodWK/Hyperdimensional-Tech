@@ -6,6 +6,9 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 
+import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBase;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;

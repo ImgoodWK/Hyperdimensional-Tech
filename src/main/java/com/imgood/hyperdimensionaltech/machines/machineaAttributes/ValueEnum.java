@@ -1,4 +1,4 @@
-package com.imgood.hyperdimensionaltech.machines;
+package com.imgood.hyperdimensionaltech.machines.machineaAttributes;
 
 import com.imgood.hyperdimensionaltech.config.HTConfigurations;
 

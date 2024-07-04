@@ -2,7 +2,7 @@ package com.imgood.hyperdimensionaltech.machines;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import com.imgood.hyperdimensionaltech.recipemap.HT_RecipeMap;
+import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_LiteMultiMachineBase;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * @author Imgood
  */
-public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_SingularityUnravelingDevice>{
+public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_SingularityUnravelingDevice> {
     public HT_SingularityUnravelingDevice(@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming") int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
@@ -34,8 +34,15 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
      * @param enableRender  是否开启特效渲染，需要从HTConfigurations获取
      * @param defaultMode
      */
-    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap, boolean enableRender, byte defaultMode) {
-        super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode);
+    public HT_SingularityUnravelingDevice(int aID,
+                                          String aName,
+                                          String aNameRegional,
+                                          String[][] aConstructor,
+                                          RecipeMap aRecipeMap,
+                                          boolean enableRender,
+                                          byte defaultMode,
+                                          GT_Multiblock_Tooltip_Builder tooltipBuilder) {
+        super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode, tooltipBuilder);
     }
 
     /**
@@ -66,8 +73,9 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
 
     @Override
     protected GT_Multiblock_Tooltip_Builder createTooltip() {
-        return null;
+        return this.tooltipBuilder;
     }
+
 
     /**
      * 必须要重写这个方法，返回的内容:该机器类(this.mName)/构造函数

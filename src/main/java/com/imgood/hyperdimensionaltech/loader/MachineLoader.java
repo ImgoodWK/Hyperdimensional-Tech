@@ -1,7 +1,9 @@
 package com.imgood.hyperdimensionaltech.loader;
 
-import com.imgood.hyperdimensionaltech.machines.HT_MachineConstrucs;
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.machines.HT_SingularityUnravelingDevice;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTooltips;
 import com.imgood.hyperdimensionaltech.recipemap.HT_RecipeMap;
 import net.minecraft.item.ItemStack;
 
@@ -16,12 +18,16 @@ public class MachineLoader {
 
     public static void loadMachines() {
 
+        //region Machine Base
+        HyperdimensionalTech.logger.info("Loading machine HyperdimensionalResonanceEvolver!");
         HyperdimensionalResonanceEvolver = new HT_HyperdimensionalResonanceEvolver(
             10000,
             "NameHyperdimensionalResonanceEvolver",
             HTTextLocalization.NameHyperdimensionalResonanceEvolver).getStackForm(1);
         HT_ItemList.HyperdimensionalResonanceEvolver.set(HyperdimensionalResonanceEvolver);
+        //endregion
 
+        //region Lite Machine Base
         SingularityUnravelingDevice = new HT_SingularityUnravelingDevice(
             10001,
             "SingularityUnravelingDevice",
@@ -29,9 +35,11 @@ public class MachineLoader {
             HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice,
             HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes,
             true,
-            (byte)0)
-            .getStackForm(1);
+            (byte)0,
+            new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice")
+            ).getStackForm(1);
             HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
+        //endregion
     }
 
     public static void loadMachinePostInit() {
