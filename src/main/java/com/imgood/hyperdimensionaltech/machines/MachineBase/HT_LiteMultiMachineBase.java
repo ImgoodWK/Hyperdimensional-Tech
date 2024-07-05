@@ -1,5 +1,6 @@
 package com.imgood.hyperdimensionaltech.machines.MachineBase;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,13 +11,20 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTextureBuilder;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
 import com.imgood.hyperdimensionaltech.utils.HTTextLocalization;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.enums.Textures;
+import gregtech.api.interfaces.IIconContainer;
+import gregtech.api.interfaces.ITexture;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +33,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import org.jetbrains.annotations.ApiStatus.OverrideOnly;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,6 +59,9 @@ import gregtech.api.util.GT_Utility.ItemId;
 import gregtech.common.tileentities.machines.GT_MetaTileEntity_Hatch_InputBus_ME;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
+
+import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
+import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 /**
  * 为了更快速便捷开发机器诞生的快速Base类，只需要传入一堆属性或者别的对象就能正常运作，如有特殊机器请用另一个机器的Base类
@@ -120,13 +132,15 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
                                    RecipeMap aRecipeMap,
                                    boolean enableRender,
                                    byte defaultMode,
-                                   GT_Multiblock_Tooltip_Builder tooltipBuilder) {
+                                   GT_Multiblock_Tooltip_Builder tooltipBuilder
+                                   ) {
         super(aID, aName, aNameRegional);
         this.constructor = aConstructor;
         this.recipeMap = aRecipeMap;
         this.enableRender = enableRender;
         this.defaultMode = defaultMode;
         this.tooltipBuilder = tooltipBuilder;
+
     }
 
     @Override
@@ -178,17 +192,33 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         isWirelessMode = aNBT.getBoolean("isWirelessMode");
         costingWirelessEUTemp = aNBT.getLong("costingWirelessEUTemp");
     }
-    /**
-     * final GT_Multiblock_Tooltip_Builder tt = new GT_Multiblock_Tooltip
-     * tt.addMachineType(HTTextLocalization.机器类)
-     * @return GT_Multiblock_Tooltip_Builder
-     */
-   /* @Override
-    protected GT_Multiblock_Tooltip_Builder createTooltip() {
-        HyperdimensionalTech.logger.info("testmsg"+this.tooltipBuilder.getInformation());
-        return this.tooltipBuilder;
+
+    @Override
+    public RecipeMap<?> getRecipeMap() {
+        return this.recipeMap;
     }
-*/
+
+    @Override
+    public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
+        if (getBaseMetaTileEntity().isServerSide()) {
+            this.mode = (byte) ((this.mode + 1) % 2);
+            GT_Utility.sendChatToPlayer(
+                aPlayer,
+                StatCollector.translateToLocal(this.mName +".modeMsg." + this.mode));
+        }
+    }
+
+    @Override
+    protected void setProcessingLogicPower(ProcessingLogic logic) {
+        if (isWirelessMode) {
+            // wireless mode ignore voltage limit
+            logic.setAvailableVoltage(0);
+            logic.setAvailableAmperage(1);
+            logic.setAmperageOC(false);
+        } else {
+            super.setProcessingLogicPower(logic);
+        }
+    }
 
     public void repairMachine() {
         this.mHardHammer = true;
@@ -199,6 +229,10 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         this.mWrench = true;
     }
 
+    /**
+     * 还需要施工，这里的内容是实现后自带的
+     * @return
+     */
     @OverrideOnly
     protected ProcessingLogic createProcessingLogic() {
         return (ProcessingLogic) (new HT_ProcessingLogic() {
@@ -237,29 +271,66 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         return this.getMaxParallelRecipes();
     }
 
+    /*此处正在施工
     @Nonnull
     public CheckRecipeResult checkProcessing() {
-        if (this.processingLogic == null) {
-            return this.checkRecipe(this.mInventory[1]) ? CheckRecipeResultRegistry.SUCCESSFUL
-                : CheckRecipeResultRegistry.NO_RECIPE;
+        boolean flag = false;
+
+        if (!isWirelessMode) {
+            if (this.getBaseMetaTileEntity().isActive()) {
+                this.isRendering = true;
+                if (this.enableRender && this.isRendering) {
+                    HyperdimensionalTech.logger.info("testmsgend"+(this.enableRender && !this.isRendering)+this.enableRender+this.isRendering);
+                    this.createRenderBlock();
+                }
+            }else {
+                this.isRendering = false;
+                this.destroyRenderBlock();
+            }
+            return super.checkProcessing();
+        }
+        if (!flag) {
+            return CheckRecipeResultRegistry.NO_RECIPE;
         } else {
-            this.setupProcessingLogic(this.processingLogic);
-            CheckRecipeResult result = this.doCheckRecipe();
-            result = this.postCheckRecipe(result, this.processingLogic);
-            this.updateSlots();
+            setupProcessingLogic(processingLogic);
+
+            CheckRecipeResult result = doCheckRecipe();
+            result = postCheckRecipe(result, processingLogic);
+            // inputs are consumed at this point
+            updateSlots();
             if (!result.wasSuccessful()) {
                 return result;
-            } else {
-                this.mEfficiency = 10000 - (this.getIdealStatus() - this.getRepairStatus()) * 1000;
-                this.mEfficiencyIncrease = 10000;
-                this.mMaxProgresstime = this.processingLogic.getDuration();
-                this.setEnergyUsage(this.processingLogic);
-                this.mOutputItems = this.processingLogic.getOutputItems();
-                this.mOutputFluids = this.processingLogic.getOutputFluids();
-                return result;
             }
+
+            mEfficiency = 10000;
+            mEfficiencyIncrease = 10000;
+
+            if (processingLogic.getCalculatedEut() > Long.MAX_VALUE / processingLogic.getDuration()) {
+                // total eu cost has overflowed
+                costingWirelessEUTemp = 1145141919810L;
+                BigInteger finalCostEU = BigInteger.valueOf(-1)
+                    .multiply(BigInteger.valueOf(processingLogic.getCalculatedEut()))
+                    .multiply(BigInteger.valueOf(processingLogic.getDuration()));
+                if (!addEUToGlobalEnergyMap(ownerUUID, finalCostEU)) {
+                    return CheckRecipeResultRegistry.insufficientPower(1145141919810L);
+                }
+            } else {
+                // fine
+                costingWirelessEUTemp = processingLogic.getCalculatedEut() * processingLogic.getDuration();
+                if (!addEUToGlobalEnergyMap(ownerUUID, -costingWirelessEUTemp)) {
+                    return CheckRecipeResultRegistry.insufficientPower(costingWirelessEUTemp);
+                }
+            }
+            mMaxProgresstime = ValueEnum.TickPerProgressing_WirelessMode_HyperdimensionalResonanceEvolver;
+
+            mOutputItems = processingLogic.getOutputItems();
+            mOutputFluids = processingLogic.getOutputFluids();
+
+
+            return result;
         }
-    }
+        // wireless mode
+    }*/
 
     public ArrayList<ItemStack> getStoredInputsWithoutDualInputHatch() {
         ArrayList<ItemStack> rList = new ArrayList();
@@ -502,6 +573,4 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         return true;
     }
 
-    @SideOnly(Side.CLIENT)
-    public abstract boolean renderInWorld();
 }

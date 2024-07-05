@@ -3,13 +3,20 @@ package com.imgood.hyperdimensionaltech.machines;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_LiteMultiMachineBase;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTextureBuilder;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.recipe.RecipeMap;
+import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_OFF;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_ON;
+import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FUSION1_GLOW;
+import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
 
 /**
  * @author Imgood
@@ -104,27 +111,34 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
     }
 
     @Override
-    public boolean renderInWorld() {
-        return false;
-    }
-
-
-
-    /**
-     * Icon of the Texture. If this returns null then it falls back to getTextureIndex.
-     *
-     * @param baseMetaTileEntity
-     * @param side               is the Side of the Block
-     * @param facing             is the direction the Block is facing
-     * @param colorIndex         The Minecraft Color the Block is having
-     * @param active             if the Machine is currently active (use this instead of calling
-     *                           {@code mBaseMetaTileEntity.mActive)}. Note: In case of Pipes this means if this Side is
-     *                           connected to something or not.
-     * @param redstoneLevel      if the Machine is currently outputting a RedstoneSignal (use this instead of calling
-     *                           {@code mBaseMetaTileEntity.mRedstone} !!!)
-     */
-    @Override
-    public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection side, ForgeDirection facing, int colorIndex, boolean active, boolean redstoneLevel) {
-        return new ITexture[0];
+    public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
+                                 int colorIndex, boolean aActive, boolean redstoneLevel) {
+        ITexture[] rTexture;
+        if (side == aFacing) {
+            if (aActive) {
+                rTexture = new ITexture[] { casingTexturePages[0][12], TextureFactory.builder()
+                    .addIcon(OVERLAY_DTPF_ON)
+                    .extFacing()
+                    .build(),
+                    TextureFactory.builder()
+                        .addIcon(OVERLAY_FUSION1_GLOW)
+                        .extFacing()
+                        .glow()
+                        .build() };
+            } else {
+                rTexture = new ITexture[] { casingTexturePages[0][12], TextureFactory.builder()
+                    .addIcon(OVERLAY_DTPF_OFF)
+                    .extFacing()
+                    .build(),
+                    TextureFactory.builder()
+                        .addIcon(OVERLAY_DTPF_OFF)
+                        .extFacing()
+                        .glow()
+                        .build() };
+            }
+        } else {
+            rTexture = new ITexture[] { casingTexturePages[0][12] };
+        }
+        return rTexture;
     }
 }

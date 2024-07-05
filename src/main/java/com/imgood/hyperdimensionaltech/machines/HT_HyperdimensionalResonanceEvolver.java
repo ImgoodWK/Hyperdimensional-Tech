@@ -12,6 +12,7 @@ import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -20,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -81,6 +83,8 @@ public class HT_HyperdimensionalResonanceEvolver
     private boolean isRendering = true;
 
     private boolean enableRender = HTConfigurations.EnableRenderDefaultHyperdimensionalResonanceEvolver;
+
+
 
     public HT_HyperdimensionalResonanceEvolver(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -212,7 +216,7 @@ public class HT_HyperdimensionalResonanceEvolver
         boolean flag = false;
 
         if (!isWirelessMode) {
-            if (this.getBaseMetaTileEntity().isActive() && this.maxProgresstime() != 0) {
+            if (this.getBaseMetaTileEntity().isActive()) {
                 this.isRendering = true;
                 if (this.enableRender && this.isRendering) {
                     HyperdimensionalTech.logger.info("testmsgend"+(this.enableRender && !this.isRendering)+this.enableRender+this.isRendering);
@@ -264,7 +268,6 @@ public class HT_HyperdimensionalResonanceEvolver
 
             return result;
         }
-
         // wireless mode
 
     }
@@ -382,7 +385,6 @@ public class HT_HyperdimensionalResonanceEvolver
                 .addElement('L', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")),10000))
                 .build();
         }
-
         return STRUCTURE_DEFINITION;
     }
 
@@ -485,7 +487,6 @@ public class HT_HyperdimensionalResonanceEvolver
         }
         return rTexture;
     }
-
     /*
     @SideOnly(Side.CLIENT)
     private void renderField(double x, double y, double z, int side, double minU, double maxU, double minV,

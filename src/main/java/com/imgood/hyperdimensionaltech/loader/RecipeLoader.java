@@ -7,7 +7,7 @@ import com.imgood.hyperdimensionaltech.recipe.machineRecipe.HyperdimensionalReso
 public class RecipeLoader {
 
     public static void loadRecipes() {
-        IRecipePool[] recipePools = new IRecipePool[] { new HyperdimensionalResonanceEvolverRecipePool() };
+        IRecipePool[] recipePools = new IRecipePool[] { new HyperdimensionalResonanceEvolverRecipePool()};
 
         for (IRecipePool recipePool : recipePools) {
             HyperdimensionalTech.logger.info("Loading recipes:" + recipePool);
