@@ -21,14 +21,12 @@ public class MachineLoader {
     public static void loadMachines() {
 
         //region Machine Base
-        HyperdimensionalTech.logger.info("Loading machine HyperdimensionalResonanceEvolver!");
         HyperdimensionalResonanceEvolver = new HT_HyperdimensionalResonanceEvolver(
             10000,
             "NameHyperdimensionalResonanceEvolver",
             HTTextLocalization.NameHyperdimensionalResonanceEvolver).getStackForm(1);
         HT_ItemList.HyperdimensionalResonanceEvolver.set(HyperdimensionalResonanceEvolver);
         //endregion
-        HyperdimensionalTech.logger.info("testmsgonload"+new HT_MachineTextureBuilder().getMachineTextures("SingularityUnravelingDevice"));
         //region Lite Machine Base
         SingularityUnravelingDevice = new HT_SingularityUnravelingDevice(
             10001,
@@ -39,7 +37,8 @@ public class MachineLoader {
             true,
             (byte)0,
             new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"),
-            5,5,5, BasicBlocks.Block_HRERender).getStackForm(1);
+            5,5,5, BasicBlocks.Block_HRERender,
+            false).getStackForm(1);
             HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
         //endregion
     }

@@ -5,8 +5,8 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_LiteMultiMachineBase;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
-import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTextureBuilder;
 import gregtech.api.enums.GT_HatchElement;
+
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -48,7 +48,31 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
      */
     @Override
     public IStructureDefinition<HT_SingularityUnravelingDevice> getStructureDefinition() {
-        return null;
+        HyperdimensionalTech.logger.info("testmsggetstructure");
+        if (STRUCTURE_DEFINITION == null) {
+            STRUCTURE_DEFINITION = StructureDefinition
+                .<HT_SingularityUnravelingDevice>builder()
+                .addShape("mainSingularityUnravelingDevice", transpose(HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice))
+                .addElement('A', GT_HatchElementBuilder.<HT_SingularityUnravelingDevice>builder()
+                    .atLeast(GT_HatchElement.InputBus, GT_HatchElement.OutputBus)
+                    .adder(HT_SingularityUnravelingDevice::addToMachineList)
+                    .casingIndex(12)
+                    .dot(2)
+                    .buildAndChain(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))
+                .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),13))
+                .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),14))
+                .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")),13))
+                .addElement('E', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsBA0")),12))
+                .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsTT")),11))
+                .addElement('G', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.spacetime_compression_field_generator")),8))
+                .addElement('H', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.stabilisation_field_generator")),8))
+                .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.time_acceleration_field_generator")),8))
+                .addElement('J', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")),6))
+                .addElement('K', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")),0))
+                .addElement('L', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")),10001))
+                .build();
+        }
+        return STRUCTURE_DEFINITION;
     }
 
 
@@ -68,8 +92,8 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
      * @param renderBlockOffsetZ
      * @param renderBlock
      */
-    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap, boolean enableRender, byte defaultMode, GT_Multiblock_Tooltip_Builder tooltipBuilder, int renderBlockOffsetX, int renderBlockOffsetY, int renderBlockOffsetZ, Block renderBlock) {
-        super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode, tooltipBuilder, renderBlockOffsetX, renderBlockOffsetY, renderBlockOffsetZ, renderBlock);
+    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap, boolean enableRender, byte defaultMode, GT_Multiblock_Tooltip_Builder tooltipBuilder, int renderBlockOffsetX, int renderBlockOffsetY, int renderBlockOffsetZ, Block renderBlock, boolean isEnablePerfectOverclock) {
+        super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode, tooltipBuilder, renderBlockOffsetX, renderBlockOffsetY, renderBlockOffsetZ, renderBlock, isEnablePerfectOverclock);
     }
 
     /**
@@ -112,20 +136,9 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         return new HT_SingularityUnravelingDevice(this.mName);
     }
 
-    @Override
-    protected boolean isEnablePerfectOverclock() {
-        return false;
-    }
 
-    @Override
-    protected float getSpeedBonus() {
-        return 0;
-    }
 
-    @Override
-    protected int getMaxParallelRecipes() {
-        return 0;
-    }
+
     @Override
     public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         return super.addToMachineList(aTileEntity, aBaseCasingIndex) || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);

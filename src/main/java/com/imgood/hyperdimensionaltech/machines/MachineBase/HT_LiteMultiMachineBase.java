@@ -116,6 +116,7 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
     private int renderBlockOffsetZ = 0;
     private Block renderBlock;
 
+    private boolean enablePerfectOverclock;
     public GT_Multiblock_Tooltip_Builder tooltipBuilder = new GT_Multiblock_Tooltip_Builder();
 
 
@@ -147,7 +148,8 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
                                    int renderBlockOffsetX,
                                    int renderBlockOffsetY,
                                    int renderBlockOffsetZ,
-                                   Block renderBlock
+                                   Block renderBlock,
+                                   boolean isEnablePerfectOverclock
                                    ) {
         super(aID, aName, aNameRegional);
         this.constructor = aConstructor;
@@ -160,6 +162,7 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         this.renderBlockOffsetY = renderBlockOffsetY;
         this.renderBlockOffsetZ = renderBlockOffsetZ;
         this.renderBlock = renderBlock;
+        this.enablePerfectOverclock = isEnablePerfectOverclock;
     }
 
     @Override
@@ -256,11 +259,28 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         double yOffset = (double)(offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetY + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetY + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetY);
         if (isRendering) {
             this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
-            this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), renderBlock);
+            this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), this.renderBlock);
         }else {
             this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
         }
     }
+    @Override
+    public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
+        return super.addToMachineList(aTileEntity, aBaseCasingIndex)
+            || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
+    }
+
+    @Override
+    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
+        super.onFirstTick(aBaseMetaTileEntity);
+        this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
+    }
+//施工到这里
+    @Override
+    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+        return false;
+    }
+
     public void repairMachine() {
         this.mHardHammer = true;
         this.mSoftHammer = true;
@@ -283,7 +303,7 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
             public @NotNull CheckRecipeResult process() {
                 this.setEuModifier(HT_LiteMultiMachineBase.this.getEuModifier());
                 this.setSpeedBonus(HT_LiteMultiMachineBase.this.getSpeedBonus());
-                this.setOverclock(HT_LiteMultiMachineBase.this.isEnablePerfectOverclock() ? 2 : 1, 2);
+                this.setOverclock(HT_LiteMultiMachineBase.this.enablePerfectOverclock ? 2 : 1, 2);
                 return super.process();
             }
         }).setMaxParallelSupplier(this::getLimitedMaxParallel);
@@ -297,18 +317,25 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         return null;
     }
 
-    protected abstract boolean isEnablePerfectOverclock();
-
-    @OverrideOnly
-    protected float getEuModifier() {
-        return 1.0F;
+    protected boolean isEnablePerfectOverclock(boolean isEnablePerfectOverclock){
+        return isEnablePerfectOverclock;
     }
 
-    @OverrideOnly
-    protected abstract float getSpeedBonus();
+    protected float getEuModifier() {
+        return mode == 0 ? 1 : 1F / coefficientMultiplier;
+    }
 
-    @OverrideOnly
-    protected abstract int getMaxParallelRecipes();
+    protected float getSpeedBonus() {
+        return mode == 1 ? 1 : 0.5F / coefficientMultiplier;
+    }
+
+    protected  int getMaxParallelRecipes() {
+        if (isWirelessMode) {
+            return Integer.MAX_VALUE;
+        }
+        return mode == 1 ? ValueEnum.Parallel_HighParallelMode_HyperdimensionalResonanceEvolver
+            : ValueEnum.Parallel_HighSpeedMode_HyperdimensionalResonanceEvolver;
+    }
 
     protected int getLimitedMaxParallel() {
         return this.getMaxParallelRecipes();
