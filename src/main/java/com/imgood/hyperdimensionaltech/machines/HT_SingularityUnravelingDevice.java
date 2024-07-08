@@ -52,12 +52,12 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition
                 .<HT_SingularityUnravelingDevice>builder()
-                .addShape("mainSingularityUnravelingDevice", transpose(HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice))
-                .addElement('A', GT_HatchElementBuilder.<HT_SingularityUnravelingDevice>builder()
+                .addShape("mainsingularityunravelingdevice", transpose(HT_MachineConstrucs.CONSTRUCTOR_HyperdimensionalResonanceEvolver))
+                    .addElement('A', GT_HatchElementBuilder.<HT_SingularityUnravelingDevice>builder()
                     .atLeast(GT_HatchElement.InputBus, GT_HatchElement.OutputBus)
                     .adder(HT_SingularityUnravelingDevice::addToMachineList)
                     .casingIndex(12)
-                    .dot(2)
+                    .dot(1)
                     .buildAndChain(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))
                 .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),13))
                 .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),14))

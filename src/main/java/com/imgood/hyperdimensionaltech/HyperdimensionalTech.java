@@ -24,7 +24,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
     version = Tags.VERSION,
     name = "HyperdimensionalTech",
     acceptedMinecraftVersions = "[1.7.10]",
-    dependencies = "before:eternalsingularity")
+    dependencies = "before:eternalsingularity; before:structurelib")
 
 public class HyperdimensionalTech {
 

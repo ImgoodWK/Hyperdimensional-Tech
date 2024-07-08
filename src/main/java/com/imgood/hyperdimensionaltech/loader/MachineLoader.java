@@ -40,6 +40,7 @@ public class MachineLoader {
             5,5,5, BasicBlocks.Block_HRERender,
             false).getStackForm(1);
             HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
+
         //endregion
     }
 

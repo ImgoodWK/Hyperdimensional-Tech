@@ -2,6 +2,7 @@ package com.imgood.hyperdimensionaltech.machines.MachineBase;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 
 
+import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
@@ -19,6 +21,7 @@ import com.imgood.hyperdimensionaltech.machines.HT_SingularityUnravelingDevice;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
 import com.imgood.hyperdimensionaltech.utils.HTTextLocalization;
 
+import gregtech.api.enums.ItemList;
 import gregtech.api.recipe.RecipeMap;
 
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
@@ -115,6 +118,10 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
     private int renderBlockOffsetY = 0;
     private int renderBlockOffsetZ = 0;
     private Block renderBlock;
+    private int horizontalOffSet = 27;
+    private int verticalOffSet = 37;
+    private int depthOffSet = 10;
+    private String STRUCTURE_PIECE_MAIN = "main"+this.mName;
 
     private boolean enablePerfectOverclock;
     public GT_Multiblock_Tooltip_Builder tooltipBuilder = new GT_Multiblock_Tooltip_Builder();
@@ -163,6 +170,9 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         this.renderBlockOffsetZ = renderBlockOffsetZ;
         this.renderBlock = renderBlock;
         this.enablePerfectOverclock = isEnablePerfectOverclock;
+        this.STRUCTURE_PIECE_MAIN = "main" + aName;
+        HyperdimensionalTech.logger.info(this.toString());
+
     }
 
     @Override
@@ -278,7 +288,23 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
 //施工到这里
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return false;
+        repairMachine();
+        return this.checkPiece(STRUCTURE_PIECE_MAIN, horizontalOffSet, verticalOffSet, depthOffSet);
+    }
+    public int getExtraCoefficientMultiplierByVoltageTier() {
+        return (int) Utils.calculatePowerTier(getMaxInputEu());
+    }
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        buildPiece(STRUCTURE_PIECE_MAIN, stackSize, hintsOnly, horizontalOffSet, verticalOffSet, depthOffSet);
+    }
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        /*if (mMachine) {
+            return -1;
+        }*/
+        HyperdimensionalTech.logger.info("testmsgstructuremain" + STRUCTURE_PIECE_MAIN);
+        return survivialBuildPiece(STRUCTURE_PIECE_MAIN, stackSize, horizontalOffSet, verticalOffSet, depthOffSet, elementBudget, env, false, true);
     }
 
     public void repairMachine() {
@@ -649,4 +675,28 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "HT_LiteMultiMachineBase{" +
+            "mode=" + mode +
+            ", defaultMode=" + defaultMode +
+            ", isWirelessMode=" + isWirelessMode +
+            ", ownerUUID=" + ownerUUID +
+            ", costingWirelessEUTemp=" + costingWirelessEUTemp +
+            ", coefficientMultiplier=" + coefficientMultiplier +
+            ", enableRender=" + enableRender +
+            ", constructor=" + Arrays.toString(constructor) +
+            ", recipeMap=" + recipeMap +
+            ", isRendering=" + isRendering +
+            ", renderBlockOffsetX=" + renderBlockOffsetX +
+            ", renderBlockOffsetY=" + renderBlockOffsetY +
+            ", renderBlockOffsetZ=" + renderBlockOffsetZ +
+            ", renderBlock=" + renderBlock +
+            ", horizontalOffSet=" + horizontalOffSet +
+            ", verticalOffSet=" + verticalOffSet +
+            ", depthOffSet=" + depthOffSet +
+            ", enablePerfectOverclock=" + enablePerfectOverclock +
+            ", tooltipBuilder=" + tooltipBuilder + ",name=" + this.mName +
+            '}';
+    }
 }
