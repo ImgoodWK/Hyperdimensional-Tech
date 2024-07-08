@@ -1,6 +1,7 @@
 package com.imgood.hyperdimensionaltech.loader;
 
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.block.BasicBlocks;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.machines.HT_SingularityUnravelingDevice;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTextureBuilder;
@@ -37,7 +38,8 @@ public class MachineLoader {
             HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes,
             true,
             (byte)0,
-            new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice")).getStackForm(1);
+            new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"),
+            5,5,5, BasicBlocks.Block_HRERender).getStackForm(1);
             HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
         //endregion
     }

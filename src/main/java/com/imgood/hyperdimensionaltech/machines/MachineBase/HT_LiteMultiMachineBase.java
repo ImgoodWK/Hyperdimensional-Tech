@@ -10,22 +10,24 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
+
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTextureBuilder;
+
+import com.imgood.hyperdimensionaltech.block.BasicBlocks;
+import com.imgood.hyperdimensionaltech.machines.HT_HyperdimensionalResonanceEvolver;
+import com.imgood.hyperdimensionaltech.machines.HT_SingularityUnravelingDevice;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
 import com.imgood.hyperdimensionaltech.utils.HTTextLocalization;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.api.enums.Textures;
-import gregtech.api.interfaces.IIconContainer;
-import gregtech.api.interfaces.ITexture;
+
 import gregtech.api.recipe.RecipeMap;
-import gregtech.api.render.TextureFactory;
+
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -60,7 +62,7 @@ import gregtech.common.tileentities.machines.GT_MetaTileEntity_Hatch_InputBus_ME
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 
-import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
+
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 /**
@@ -105,8 +107,17 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
      * 机器的recipe map（配方NEI界面
      */
     private RecipeMap recipeMap;
+    /**
+     * 内部属性，是否渲染
+     */
+    private boolean isRendering = true;
+    private int renderBlockOffsetX = 0;
+    private int renderBlockOffsetY = 0;
+    private int renderBlockOffsetZ = 0;
+    private Block renderBlock;
 
     public GT_Multiblock_Tooltip_Builder tooltipBuilder = new GT_Multiblock_Tooltip_Builder();
+
 
     public HT_LiteMultiMachineBase(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -132,15 +143,23 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
                                    RecipeMap aRecipeMap,
                                    boolean enableRender,
                                    byte defaultMode,
-                                   GT_Multiblock_Tooltip_Builder tooltipBuilder
+                                   GT_Multiblock_Tooltip_Builder tooltipBuilder,
+                                   int renderBlockOffsetX,
+                                   int renderBlockOffsetY,
+                                   int renderBlockOffsetZ,
+                                   Block renderBlock
                                    ) {
         super(aID, aName, aNameRegional);
         this.constructor = aConstructor;
         this.recipeMap = aRecipeMap;
         this.enableRender = enableRender;
         this.defaultMode = defaultMode;
+        this.enableRender = enableRender;
         this.tooltipBuilder = tooltipBuilder;
-
+        this.renderBlockOffsetX = renderBlockOffsetX;
+        this.renderBlockOffsetY = renderBlockOffsetY;
+        this.renderBlockOffsetZ = renderBlockOffsetZ;
+        this.renderBlock = renderBlock;
     }
 
     @Override
@@ -220,6 +239,28 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         }
     }
 
+    /**
+     * 机器的渲染器生成，需要先写好渲染器后给此方法，偏移量的使用自己摸索，偏移量指的是相对于主机
+     * @param offsetX X轴偏移量，也就是主机面向你时的左右偏移
+     * @param offsetY Y轴偏移量，也就是主机面向你时的上下偏移
+     * @param offsetZ Z轴偏移量，也就是主机面向你时的左右偏移
+     * @param isRendering True放置渲染器，False清除渲染器
+     * @param renderBlock 渲染器直接放这里就行，支持现有的渲染器，如果你想用TST或者GTNH里其他的渲染器你可以找到代码把渲染器传进去
+     */
+    public void RenderBlock(int offsetX, int offsetY, int offsetZ, boolean isRendering, Block renderBlock) {
+        int x = this.getBaseMetaTileEntity().getXCoord();
+        int y = this.getBaseMetaTileEntity().getYCoord();
+        int z = this.getBaseMetaTileEntity().getZCoord();
+        double xOffset = (double)(offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetX + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetX + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetX);
+        double zOffset = (double)(offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetZ + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetZ + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetZ);
+        double yOffset = (double)(offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetY + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetY + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetY);
+        if (isRendering) {
+            this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
+            this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), renderBlock);
+        }else {
+            this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
+        }
+    }
     public void repairMachine() {
         this.mHardHammer = true;
         this.mSoftHammer = true;
@@ -234,9 +275,11 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
      * @return
      */
     @OverrideOnly
+    @Override
     protected ProcessingLogic createProcessingLogic() {
         return (ProcessingLogic) (new HT_ProcessingLogic() {
 
+            @Override
             public @NotNull CheckRecipeResult process() {
                 this.setEuModifier(HT_LiteMultiMachineBase.this.getEuModifier());
                 this.setSpeedBonus(HT_LiteMultiMachineBase.this.getSpeedBonus());
@@ -271,7 +314,7 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         return this.getMaxParallelRecipes();
     }
 
-    /*此处正在施工
+    @Override
     @Nonnull
     public CheckRecipeResult checkProcessing() {
         boolean flag = false;
@@ -281,11 +324,11 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
                 this.isRendering = true;
                 if (this.enableRender && this.isRendering) {
                     HyperdimensionalTech.logger.info("testmsgend"+(this.enableRender && !this.isRendering)+this.enableRender+this.isRendering);
-                    this.createRenderBlock();
+                    RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, true, BasicBlocks.Block_HRERender);
                 }
             }else {
                 this.isRendering = false;
-                this.destroyRenderBlock();
+                RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, false, BasicBlocks.Block_HRERender);;
             }
             return super.checkProcessing();
         }
@@ -330,7 +373,7 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
             return result;
         }
         // wireless mode
-    }*/
+    }
 
     public ArrayList<ItemStack> getStoredInputsWithoutDualInputHatch() {
         ArrayList<ItemStack> rList = new ArrayList();
@@ -434,11 +477,6 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         return ret;
     }
 
-    @Override
-    public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        return super.addToMachineList(aTileEntity, aBaseCasingIndex)
-            || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
-    }
 
     public boolean addEnergyHatchOrExoticEnergyHatchToMachineList(IGregTechTileEntity aTileEntity,
                                                                   int aBaseCasingIndex) {
@@ -476,6 +514,7 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         }
     }
 
+    @Override
     public boolean addEnergyOutput(long aEU) {
         if (aEU <= 0L) {
             return true;
@@ -484,6 +523,7 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         }
     }
 
+    @Override
     public boolean addEnergyOutputMultipleDynamos(long aEU, boolean aAllowMixedVoltageDynamos) {
         int injected = 0;
         long totalOutput = 0L;
@@ -537,38 +577,47 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         return injected > 0;
     }
 
+    @Override
     public boolean isCorrectMachinePart(ItemStack aStack) {
         return true;
     }
 
+    @Override
     public boolean doRandomMaintenanceDamage() {
         return true;
     }
 
+    @Override
     public int getMaxEfficiency(ItemStack aStack) {
         return 10000;
     }
 
+    @Override
     public int getDamageToComponent(ItemStack aStack) {
         return 0;
     }
 
+    @Override
     public boolean explodesOnComponentBreak(ItemStack aStack) {
         return false;
     }
 
+    @Override
     public boolean supportsVoidProtection() {
         return true;
     }
 
+    @Override
     public boolean supportsInputSeparation() {
         return true;
     }
 
+    @Override
     public boolean supportsBatchMode() {
         return true;
     }
 
+    @Override
     public boolean supportsSingleRecipeLocking() {
         return true;
     }
