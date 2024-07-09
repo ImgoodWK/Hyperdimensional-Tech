@@ -122,6 +122,7 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
     private int verticalOffSet = 37;
     private int depthOffSet = 10;
     private String STRUCTURE_PIECE_MAIN = "main"+this.mName;
+    private int mCasingAmount = 0;
 
     private boolean enablePerfectOverclock;
     public GT_Multiblock_Tooltip_Builder tooltipBuilder = new GT_Multiblock_Tooltip_Builder();
@@ -276,8 +277,7 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
     }
     @Override
     public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        return super.addToMachineList(aTileEntity, aBaseCasingIndex)
-            || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
+        return super.addToMachineList(aTileEntity, aBaseCasingIndex) || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
     @Override

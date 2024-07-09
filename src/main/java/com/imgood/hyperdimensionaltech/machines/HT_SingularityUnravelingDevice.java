@@ -1,12 +1,15 @@
 package com.imgood.hyperdimensionaltech.machines;
 
+import com.google.common.collect.ImmutableList;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_LiteMultiMachineBase;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
+import gregtech.api.GregTech_API;
 import gregtech.api.enums.GT_HatchElement;
 
+import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -14,14 +17,27 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_HatchElementBuilder;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
+import gregtech.api.util.GT_StructureUtility;
+import gregtech.common.tileentities.machines.multi.GT_MetaTileEntity_ProcessingArray;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.List;
 import java.util.Objects;
 
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.lazy;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static gregtech.api.enums.GT_HatchElement.Energy;
+import static gregtech.api.enums.GT_HatchElement.ExoticEnergy;
+import static gregtech.api.enums.GT_HatchElement.InputBus;
+import static gregtech.api.enums.GT_HatchElement.InputHatch;
+import static gregtech.api.enums.GT_HatchElement.Maintenance;
+import static gregtech.api.enums.GT_HatchElement.OutputBus;
+import static gregtech.api.enums.GT_HatchElement.OutputHatch;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_OFF;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_ON;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FUSION1_GLOW;
@@ -32,6 +48,7 @@ import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
  */
 public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_SingularityUnravelingDevice> {
 
+    private int mCasingAmount = 0;
     public IStructureDefinition<HT_SingularityUnravelingDevice> STRUCTURE_DEFINITION = null;
     public HT_SingularityUnravelingDevice(@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming") int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -53,12 +70,14 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
             STRUCTURE_DEFINITION = StructureDefinition
                 .<HT_SingularityUnravelingDevice>builder()
                 .addShape("mainsingularityunravelingdevice", transpose(HT_MachineConstrucs.CONSTRUCTOR_HyperdimensionalResonanceEvolver))
-                    .addElement('A', GT_HatchElementBuilder.<HT_SingularityUnravelingDevice>builder()
-                    .atLeast(GT_HatchElement.InputBus, GT_HatchElement.OutputBus)
-                    .adder(HT_SingularityUnravelingDevice::addToMachineList)
-                    .casingIndex(12)
-                    .dot(1)
-                    .buildAndChain(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))
+                    .addElement('A', ofChain(
+                        lazy(
+                            t -> GT_StructureUtility.<HT_SingularityUnravelingDevice>buildHatchAdder()
+                                .atLeastList(t.getAllowedHatches())
+                                .casingIndex(48)
+                                .dot(1)
+                                .build()),
+                        onElementPass(t -> t.mCasingAmount++, ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))))
                 .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),13))
                 .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),14))
                 .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")),13))
@@ -74,7 +93,9 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         }
         return STRUCTURE_DEFINITION;
     }
-
+    private List<IHatchElement<? super HT_SingularityUnravelingDevice>> getAllowedHatches() {
+        return ImmutableList.of(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy, ExoticEnergy);
+    }
 
     /**
      * 快速开发简单的机器的构造方法，所以参数直接给进去就ok了，在loadMachines直接加进去
@@ -96,16 +117,7 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode, tooltipBuilder, renderBlockOffsetX, renderBlockOffsetY, renderBlockOffsetZ, renderBlock, isEnablePerfectOverclock);
     }
 
-    /**
-     * Checks the Machine. You have to assign the MetaTileEntities for the Hatches here.
-     *
-     * @param aBaseMetaTileEntity
-     * @param aStack
-     */
-    @Override
-    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        return false;
-    }
+
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
@@ -136,12 +148,9 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         return new HT_SingularityUnravelingDevice(this.mName);
     }
 
-
-
-
     @Override
     public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        return super.addToMachineList(aTileEntity, aBaseCasingIndex) || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
+        return super.addToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
     @Override
