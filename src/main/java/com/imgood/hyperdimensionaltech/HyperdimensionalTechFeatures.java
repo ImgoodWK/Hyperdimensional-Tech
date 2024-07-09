@@ -66,16 +66,12 @@ public enum HyperdimensionalTechFeatures {
         HyperdimensionalTech.logger.info("Loading blocks...");
         int num = 0;
         for (HyperdimensionalTechFeatures f : values()) {
-            HyperdimensionalTech.logger.info("if enabled check");
+            HyperdimensionalTech.logger.info("Enabled check");
             HyperdimensionalTech.logger.info(f.enabled());
             HyperdimensionalTech.logger.info(f);
             f.addBlocks();
             ++num;
         }
-        HyperdimensionalTech.logger.info(num + " Feature's blocks loaded.");
-        HyperdimensionalTech.logger.info("Loading Tile Entities...");
-        // 。。。
-        HyperdimensionalTech.logger.info("Tile Entities loaded.");
     }
 
     private static void loadItems() {

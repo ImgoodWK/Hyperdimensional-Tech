@@ -219,7 +219,6 @@ public class HT_HyperdimensionalResonanceEvolver
             if (this.getBaseMetaTileEntity().isActive()) {
                 this.isRendering = true;
                 if (this.enableRender && this.isRendering) {
-                    HyperdimensionalTech.logger.info("testmsgend"+(this.enableRender && !this.isRendering)+this.enableRender+this.isRendering);
                     this.createRenderBlock();
                 }
             }else {

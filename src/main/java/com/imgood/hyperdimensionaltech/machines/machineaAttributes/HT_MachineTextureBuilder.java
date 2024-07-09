@@ -26,16 +26,14 @@ public class HT_MachineTextureBuilder {
 
     public HT_MachineTextureBuilder getMachineTextures(String machineName) {
             HT_MachineTextureBuilder SingularityUnravelingDevice = new HT_MachineTextureBuilder();
-        HyperdimensionalTech.logger.info("testmsgsingop1"+SingularityUnravelingDevice);
             SingularityUnravelingDevice.setMaachineName("SingularityUnravelingDevice")
             .setMachineON(OVERLAY_DTPF_ON)
             .setMachineOFF(OVERLAY_DTPF_OFF)
             .setMachineControll(OVERLAY_FUSION1_GLOW)
             .setMachineCasing(0, 12);
-        HyperdimensionalTech.logger.info("testmsgsingop2"+SingularityUnravelingDevice);
         switch (machineName){
             case "SingularityUnravelingDevice":
-                HyperdimensionalTech.logger.info("testmsgbuilder" + SingularityUnravelingDevice); return SingularityUnravelingDevice;
+                 return SingularityUnravelingDevice;
             default: return null;
         }
     }

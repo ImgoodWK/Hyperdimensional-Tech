@@ -6,7 +6,8 @@ import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_LiteMultiMachineBase;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
-import gregtech.api.GregTech_API;
+
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_StructureDefinitionBuilder;
 import gregtech.api.enums.GT_HatchElement;
 
 import gregtech.api.interfaces.IHatchElement;
@@ -17,8 +18,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_HatchElementBuilder;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
-import gregtech.api.util.GT_StructureUtility;
-import gregtech.common.tileentities.machines.multi.GT_MetaTileEntity_ProcessingArray;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -26,10 +26,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.List;
 import java.util.Objects;
 
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.lazy;
+
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.onElementPass;
+
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static gregtech.api.enums.GT_HatchElement.Energy;
 import static gregtech.api.enums.GT_HatchElement.ExoticEnergy;
@@ -48,7 +47,30 @@ import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
  */
 public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_SingularityUnravelingDevice> {
 
-    private int mCasingAmount = 0;
+    /**
+     * 快速开发简单的机器的构造方法，所以参数直接给进去就ok了，在loadMachines直接加进去
+     *
+     * @param aID                      机器的meta值，从10000开始，依次累增，不能重复，开发的时候乱动前面写好的id会导致存档机器出事
+     * @param aName                    “Name”+机器的名称
+     * @param aNameRegional            HTTextLocalization.Name机器的名称.getStackForm(1)
+     * @param aConstructor             机器结构构成的二维String数组，用结构扫描器扫描获得，写在HT_MachineConstrucs里
+     * @param aRecipeMap               机器的NEI界面相关，如：nei界面的进度条图标类型，输入输出物品/流体的格子数量，需要给定这个机器对应的Recipemap对象
+     * @param enableRender             是否开启特效渲染，需要从HTConfigurations获取
+     * @param defaultMode
+     * @param tooltipBuilder
+     * @param renderBlockOffsetX
+     * @param renderBlockOffsetY
+     * @param renderBlockOffsetZ
+     * @param renderBlock
+     * @param isEnablePerfectOverclock
+     * @param verticalOffSet
+     * @param horizontalOffSet
+     * @param depthOffSet
+     */
+    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap, boolean enableRender, byte defaultMode, GT_Multiblock_Tooltip_Builder tooltipBuilder, int renderBlockOffsetX, int renderBlockOffsetY, int renderBlockOffsetZ, Block renderBlock, boolean isEnablePerfectOverclock, int verticalOffSet, int horizontalOffSet, int depthOffSet) {
+        super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode, tooltipBuilder, renderBlockOffsetX, renderBlockOffsetY, renderBlockOffsetZ, renderBlock, isEnablePerfectOverclock, verticalOffSet, horizontalOffSet, depthOffSet);
+    }
+
     public IStructureDefinition<HT_SingularityUnravelingDevice> STRUCTURE_DEFINITION = null;
     public HT_SingularityUnravelingDevice(@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming") int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -58,26 +80,50 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         super(aName);
     }
 
-    /**
-     * Due to limitation of Java type system, you might need to do an unchecked cast. HOWEVER, the returned
-     * IStructureDefinition is expected to be evaluated against current instance only, and should not be used against
-     * other instances, even for those of the same class.
-     */
-    @Override
     public IStructureDefinition<HT_SingularityUnravelingDevice> getStructureDefinition() {
-        HyperdimensionalTech.logger.info("testmsggetstructure");
+        HyperdimensionalTech.logger.info( new HT_StructureDefinitionBuilder<HT_SingularityUnravelingDevice>()
+            .setStructureName(this.getStructureName())
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockmachines" , 10001)
+            .build());
+        return new HT_StructureDefinitionBuilder<HT_SingularityUnravelingDevice>()
+            .setStructureName(this.getStructureName())
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockcasings" , 12)
+            .addElement("gregtech:gt.blockmachines" , 10001)
+            .build();
+    }
+    /*@Override
+    public IStructureDefinition<HT_SingularityUnravelingDevice> getStructureDefinition() {
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition
                 .<HT_SingularityUnravelingDevice>builder()
-                .addShape("mainsingularityunravelingdevice", transpose(HT_MachineConstrucs.CONSTRUCTOR_HyperdimensionalResonanceEvolver))
-                    .addElement('A', ofChain(
-                        lazy(
-                            t -> GT_StructureUtility.<HT_SingularityUnravelingDevice>buildHatchAdder()
-                                .atLeastList(t.getAllowedHatches())
-                                .casingIndex(48)
-                                .dot(1)
-                                .build()),
-                        onElementPass(t -> t.mCasingAmount++, ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))))
+                .addShape(this.getStructUre_Pice_Main(), transpose(HT_MachineConstrucs.CONSTRUCTOR_HyperdimensionalResonanceEvolver))
+                .addElement('A', GT_HatchElementBuilder.<HT_SingularityUnravelingDevice>builder()
+                    .atLeast(GT_HatchElement.InputBus, GT_HatchElement.OutputBus)
+                    .adder(HT_SingularityUnravelingDevice::addToMachineList)
+                    .casingIndex(12)
+                    .dot(2)
+                    .buildAndChain(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))
                 .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),13))
                 .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),14))
                 .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")),13))
@@ -92,31 +138,10 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
                 .build();
         }
         return STRUCTURE_DEFINITION;
-    }
+    }*/
     private List<IHatchElement<? super HT_SingularityUnravelingDevice>> getAllowedHatches() {
         return ImmutableList.of(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy, ExoticEnergy);
     }
-
-    /**
-     * 快速开发简单的机器的构造方法，所以参数直接给进去就ok了，在loadMachines直接加进去
-     *
-     * @param aID                机器的meta值，从10000开始，依次累增，不能重复，开发的时候乱动前面写好的id会导致存档机器出事
-     * @param aName              “Name”+机器的名称
-     * @param aNameRegional      HTTextLocalization.Name机器的名称.getStackForm(1)
-     * @param aConstructor       机器结构构成的二维String数组，用结构扫描器扫描获得，写在HT_MachineConstrucs里
-     * @param aRecipeMap         机器的NEI界面相关，如：nei界面的进度条图标类型，输入输出物品/流体的格子数量，需要给定这个机器对应的Recipemap对象
-     * @param enableRender       是否开启特效渲染，需要从HTConfigurations获取
-     * @param defaultMode
-     * @param tooltipBuilder
-     * @param renderBlockOffsetX
-     * @param renderBlockOffsetY
-     * @param renderBlockOffsetZ
-     * @param renderBlock
-     */
-    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap, boolean enableRender, byte defaultMode, GT_Multiblock_Tooltip_Builder tooltipBuilder, int renderBlockOffsetX, int renderBlockOffsetY, int renderBlockOffsetZ, Block renderBlock, boolean isEnablePerfectOverclock) {
-        super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode, tooltipBuilder, renderBlockOffsetX, renderBlockOffsetY, renderBlockOffsetZ, renderBlock, isEnablePerfectOverclock);
-    }
-
 
 
     @Override
@@ -133,7 +158,7 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
 
     @Override
     protected GT_Multiblock_Tooltip_Builder createTooltip() {
-        return this.tooltipBuilder;
+        return this.getTooltipBuilder();
     }
 
 
@@ -144,7 +169,6 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
      */
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        HyperdimensionalTech.logger.info("HTtestmsg" + new HT_SingularityUnravelingDevice(this.mName));
         return new HT_SingularityUnravelingDevice(this.mName);
     }
 

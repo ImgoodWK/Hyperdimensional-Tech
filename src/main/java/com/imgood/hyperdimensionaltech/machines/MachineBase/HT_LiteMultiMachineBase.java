@@ -113,19 +113,28 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
     /**
      * 内部属性，是否渲染
      */
+    // 控制渲染状态的变量
     private boolean isRendering = true;
+
+    // 渲染块的偏移量，用于调整渲染位置
     private int renderBlockOffsetX = 0;
     private int renderBlockOffsetY = 0;
     private int renderBlockOffsetZ = 0;
+
+    // 渲染器块
     private Block renderBlock;
-    private int horizontalOffSet = 27;
-    private int verticalOffSet = 37;
-    private int depthOffSet = 10;
-    private String STRUCTURE_PIECE_MAIN = "main"+this.mName;
-    private int mCasingAmount = 0;
+
+    // 水平、垂直和深度偏移量，用于调整结构位置（如果扫描结构设置了偏移量就填在这
+    private int horizontalOffSet = 0;
+    private int verticalOffSet = 0;
+    private int depthOffSet = 0;
+
+    // 结构件主名称，用于标识和区分不同的结构件
+    private String STRUCTURE_PIECE_MAIN;
+
 
     private boolean enablePerfectOverclock;
-    public GT_Multiblock_Tooltip_Builder tooltipBuilder = new GT_Multiblock_Tooltip_Builder();
+    private GT_Multiblock_Tooltip_Builder tooltipBuilder = new GT_Multiblock_Tooltip_Builder();
 
 
     public HT_LiteMultiMachineBase(int aID, String aName, String aNameRegional) {
@@ -157,7 +166,10 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
                                    int renderBlockOffsetY,
                                    int renderBlockOffsetZ,
                                    Block renderBlock,
-                                   boolean isEnablePerfectOverclock
+                                   boolean isEnablePerfectOverclock,
+                                   int verticalOffSet,
+                                   int horizontalOffSet,
+                                   int depthOffSet
                                    ) {
         super(aID, aName, aNameRegional);
         this.constructor = aConstructor;
@@ -172,8 +184,9 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         this.renderBlock = renderBlock;
         this.enablePerfectOverclock = isEnablePerfectOverclock;
         this.STRUCTURE_PIECE_MAIN = "main" + aName;
-        HyperdimensionalTech.logger.info(this.toString());
-
+        this.depthOffSet = depthOffSet;
+        this.horizontalOffSet = horizontalOffSet;
+        this.verticalOffSet = verticalOffSet;
     }
 
     @Override
@@ -300,10 +313,9 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
     }
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        /*if (mMachine) {
+        if (mMachine) {
             return -1;
-        }*/
-        HyperdimensionalTech.logger.info("testmsgstructuremain" + STRUCTURE_PIECE_MAIN);
+        }
         return survivialBuildPiece(STRUCTURE_PIECE_MAIN, stackSize, horizontalOffSet, verticalOffSet, depthOffSet, elementBudget, env, false, true);
     }
 
@@ -675,28 +687,11 @@ public abstract class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "HT_LiteMultiMachineBase{" +
-            "mode=" + mode +
-            ", defaultMode=" + defaultMode +
-            ", isWirelessMode=" + isWirelessMode +
-            ", ownerUUID=" + ownerUUID +
-            ", costingWirelessEUTemp=" + costingWirelessEUTemp +
-            ", coefficientMultiplier=" + coefficientMultiplier +
-            ", enableRender=" + enableRender +
-            ", constructor=" + Arrays.toString(constructor) +
-            ", recipeMap=" + recipeMap +
-            ", isRendering=" + isRendering +
-            ", renderBlockOffsetX=" + renderBlockOffsetX +
-            ", renderBlockOffsetY=" + renderBlockOffsetY +
-            ", renderBlockOffsetZ=" + renderBlockOffsetZ +
-            ", renderBlock=" + renderBlock +
-            ", horizontalOffSet=" + horizontalOffSet +
-            ", verticalOffSet=" + verticalOffSet +
-            ", depthOffSet=" + depthOffSet +
-            ", enablePerfectOverclock=" + enablePerfectOverclock +
-            ", tooltipBuilder=" + tooltipBuilder + ",name=" + this.mName +
-            '}';
+    public String getStructureName() {
+        return STRUCTURE_PIECE_MAIN;
+    }
+
+    public GT_Multiblock_Tooltip_Builder getTooltipBuilder() {
+        return tooltipBuilder;
     }
 }

@@ -1,5 +1,9 @@
 package com.imgood.hyperdimensionaltech.machines.machineaAttributes;
 
+/**
+ * @author Imgood
+ */
+@SuppressWarnings("SpellCheckingInspection")
 public final class HT_MachineConstrucs {
     /**
      * 超维度谐振演变器结构

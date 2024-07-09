@@ -37,8 +37,10 @@ public class MachineLoader {
             true,
             (byte)0,
             new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"),
-            5,5,5, BasicBlocks.Block_HRERender,
-            false).getStackForm(1);
+            5, 5, 5,
+            BasicBlocks.Block_HRERender,
+            false,
+            0,0,0).getStackForm(1);
             HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
 
         //endregion

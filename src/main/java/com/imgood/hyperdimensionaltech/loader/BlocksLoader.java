@@ -10,6 +10,5 @@ public class BlocksLoader {
     public static void loadBlocks() {
         GameRegistry.registerTileEntity(TileHREFeild.class, "HREFeildRender");
         BasicBlocks.Block_HRERender = new BlockHRERender();
-        HyperdimensionalTech.logger.info("testmsgHREFeildRender666");
     }
 }
