@@ -2,14 +2,17 @@ package com.imgood.hyperdimensionaltech.machines;
 
 import com.google.common.collect.ImmutableList;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_LiteMultiMachineBase;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_StructureDefinitionBuilder;
+import com.imgood.hyperdimensionaltech.utils.Utils;
 import gregtech.api.enums.GT_HatchElement;
 
+import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
@@ -47,6 +50,11 @@ import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
  */
 public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_SingularityUnravelingDevice> {
 
+
+    public int horizontalOffSet = 31;
+    public int verticalOffSet = 16;
+    public int depthOffSet = 3;
+    HT_MachineConstrucs machineConstrucs = new HT_MachineConstrucs();
     /**
      * 快速开发简单的机器的构造方法，所以参数直接给进去就ok了，在loadMachines直接加进去
      *
@@ -67,8 +75,28 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
      * @param horizontalOffSet
      * @param depthOffSet
      */
-    public HT_SingularityUnravelingDevice(int aID, String aName, String aNameRegional, String[][] aConstructor, RecipeMap aRecipeMap, boolean enableRender, byte defaultMode, GT_Multiblock_Tooltip_Builder tooltipBuilder, int renderBlockOffsetX, int renderBlockOffsetY, int renderBlockOffsetZ, Block renderBlock, boolean isEnablePerfectOverclock, int verticalOffSet, int horizontalOffSet, int depthOffSet) {
-        super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode, tooltipBuilder, renderBlockOffsetX, renderBlockOffsetY, renderBlockOffsetZ, renderBlock, isEnablePerfectOverclock, verticalOffSet, horizontalOffSet, depthOffSet);
+
+    public HT_SingularityUnravelingDevice(int aID, String aName,
+                                          String aNameRegional,
+                                          String[][] aConstructor,
+                                          RecipeMap aRecipeMap,
+                                          boolean enableRender,
+                                          byte defaultMode,
+                                          GT_Multiblock_Tooltip_Builder tooltipBuilder,
+                                          int renderBlockOffsetX,
+                                          int renderBlockOffsetY,
+                                          int renderBlockOffsetZ,
+                                          Block renderBlock,
+                                          boolean isEnablePerfectOverclock,
+                                          int horizontalOffSet,
+                                          int verticalOffSet,
+                                          int depthOffSet) {
+
+        super(aID, aName, aNameRegional, aConstructor, aRecipeMap, enableRender, defaultMode, tooltipBuilder, renderBlockOffsetX, renderBlockOffsetY, renderBlockOffsetZ, renderBlock, isEnablePerfectOverclock, horizontalOffSet, verticalOffSet, depthOffSet);
+        this.horizontalOffSet = machineConstrucs.getOffset(this.mName)[0];
+        this.verticalOffSet = machineConstrucs.getOffset(this.mName)[1];
+        this.depthOffSet = machineConstrucs.getOffset(this.mName)[2];
+        this.setConstructor(aConstructor);
     }
 
     public IStructureDefinition<HT_SingularityUnravelingDevice> STRUCTURE_DEFINITION = null;
@@ -80,7 +108,7 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         super(aName);
     }
 
-    public IStructureDefinition<HT_SingularityUnravelingDevice> getStructureDefinition() {
+    /*public IStructureDefinition<HT_SingularityUnravelingDevice> getStructureDefinition() {
         HyperdimensionalTech.logger.info( new HT_StructureDefinitionBuilder<HT_SingularityUnravelingDevice>()
             .setStructureName(this.getStructureName())
             .addElement("gregtech:gt.blockcasings" , 12)
@@ -111,43 +139,37 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
             .addElement("gregtech:gt.blockcasings" , 12)
             .addElement("gregtech:gt.blockmachines" , 10001)
             .build();
-    }
-    /*@Override
+    }*/
+    @Override
     public IStructureDefinition<HT_SingularityUnravelingDevice> getStructureDefinition() {
+        HyperdimensionalTech.logger.info("httestmsggetconstructor"+getConstructor());
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition
                 .<HT_SingularityUnravelingDevice>builder()
-                .addShape(this.getStructUre_Pice_Main(), transpose(HT_MachineConstrucs.CONSTRUCTOR_HyperdimensionalResonanceEvolver))
+                .addShape(mName, transpose(HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice))
                 .addElement('A', GT_HatchElementBuilder.<HT_SingularityUnravelingDevice>builder()
                     .atLeast(GT_HatchElement.InputBus, GT_HatchElement.OutputBus)
                     .adder(HT_SingularityUnravelingDevice::addToMachineList)
                     .casingIndex(12)
                     .dot(2)
                     .buildAndChain(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))
-                .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),13))
-                .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),14))
-                .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")),13))
-                .addElement('E', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsBA0")),12))
-                .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsTT")),11))
-                .addElement('G', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.spacetime_compression_field_generator")),8))
-                .addElement('H', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.stabilisation_field_generator")),8))
-                .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.time_acceleration_field_generator")),8))
-                .addElement('J', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")),6))
-                .addElement('K', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")),0))
-                .addElement('L', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")),10001))
+                .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),14))
+                .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")),13))
+                .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsTT")),11))
+                .addElement('E', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.spacetime_compression_field_generator")),8))
+                .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.stabilisation_field_generator")),8))
+                .addElement('G', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")),6))
+                .addElement('H', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")),0))
+                .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")),10001))
                 .build();
         }
         return STRUCTURE_DEFINITION;
-    }*/
+    }
     private List<IHatchElement<? super HT_SingularityUnravelingDevice>> getAllowedHatches() {
         return ImmutableList.of(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy, ExoticEnergy);
     }
 
 
-    @Override
-    public void construct(ItemStack stackSize, boolean hintsOnly) {
-
-    }
 
     /**
      * Due to limitation of Java type system, you might need to do an unchecked cast. HOWEVER, the returned
@@ -208,4 +230,37 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         }
         return rTexture;
     }
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        HyperdimensionalTech.logger.warn("testmsgsurvivalConstruct");
+        if (mMachine) {
+            return -1;
+        }
+
+
+        int result = survivialBuildPiece(mName, stackSize,31,16,3, elementBudget, env, false, true);
+
+        return result;
+    }
+    @Override
+    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+        HyperdimensionalTech.logger.warn("testmsgcheckMachine");
+        repairMachine();
+        if (!checkPiece(mName, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet)) {
+
+            return false;
+        }
+        this.setCoefficientMultiplier(1 + getExtraCoefficientMultiplierByVoltageTier());
+        ItemStack controllerSlot = getControllerSlot();
+        setIsWirelessMode(controllerSlot != null && controllerSlot.stackSize > 0
+            && Utils.metaItemEqual(controllerSlot, ItemList.EnergisedTesseract.get(1)));
+
+        return true;
+    }
+    /*@Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        HyperdimensionalTech.logger.warn("testmsgconstruct");
+        buildPiece(mName, stackSize, hintsOnly, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet);
+    }*/
+
 }

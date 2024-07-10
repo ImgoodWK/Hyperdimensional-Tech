@@ -34,13 +34,13 @@ public class MachineLoader {
             HTTextLocalization.NameSingularityUnravelingDevice,
             HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice,
             HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes,
-            true,
+            false,
             (byte)0,
             new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"),
             5, 5, 5,
             BasicBlocks.Block_HRERender,
             false,
-            0,0,0).getStackForm(1);
+            31,16,3).getStackForm(1);
             HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
 
         //endregion

@@ -74,7 +74,7 @@ import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap
 /**
  * 为了更快速便捷开发机器诞生的快速Base类，只需要传入一堆属性或者别的对象就能正常运作，如有特殊机器请用另一个机器的Base类
  */
-public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
+public class HT_MultiMachineBuilder<T extends HT_LiteMultiMachineBase<T>>
     extends GT_MetaTileEntity_ExtendedPowerMultiBlockBase<T> implements IConstructable, ISurvivalConstructable {
 
     /**
@@ -140,11 +140,11 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
     private GT_Multiblock_Tooltip_Builder tooltipBuilder = new GT_Multiblock_Tooltip_Builder();
     HT_MachineConstrucs machineConstrucs = new HT_MachineConstrucs();
 
-    public HT_LiteMultiMachineBase(int aID, String aName, String aNameRegional) {
+    public HT_MultiMachineBuilder(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
 
-    public HT_LiteMultiMachineBase(String aName) {
+    public HT_MultiMachineBuilder(String aName) {
         super(aName);
     }
 
@@ -167,7 +167,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
      * @param aRecipeMap 机器的NEI界面相关，如：nei界面的进度条图标类型，输入输出物品/流体的格子数量，需要给定这个机器对应的Recipemap对象
      * @param enableRender 是否开启特效渲染，需要从HTConfigurations获取
      */
-    public HT_LiteMultiMachineBase(int aID,
+    public HT_MultiMachineBuilder(int aID,
                                    String aName,
                                    String aNameRegional,
                                    String[][] aConstructor,
@@ -183,7 +183,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
                                    int horizontalOffSet,
                                    int verticalOffSet,
                                    int depthOffSet
-                                   ) {
+    ) {
         super(aID, aName, aNameRegional);
         this.constructor = aConstructor;
         this.recipeMap = aRecipeMap;
@@ -407,9 +407,9 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
 
             @Override
             public @NotNull CheckRecipeResult process() {
-                this.setEuModifier(HT_LiteMultiMachineBase.this.getEuModifier());
-                this.setSpeedBonus(HT_LiteMultiMachineBase.this.getSpeedBonus());
-                this.setOverclock(HT_LiteMultiMachineBase.this.enablePerfectOverclock ? 2 : 1, 2);
+                this.setEuModifier(HT_MultiMachineBuilder.this.getEuModifier());
+                this.setSpeedBonus(HT_MultiMachineBuilder.this.getSpeedBonus());
+                this.setOverclock(HT_MultiMachineBuilder.this.enablePerfectOverclock ? 2 : 1, 2);
                 return super.process();
             }
         }).setMaxParallelSupplier(this::getLimitedMaxParallel);
@@ -868,11 +868,8 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
         isWirelessMode = wirelessMode;
     }
 
-    public String[][] getConstructor() {
-        return constructor;
-    }
-
-    public void setConstructor(String[][] constructor) {
+    public HT_MultiMachineBuilder<T> setConstructor(String[][] constructor) {
         this.constructor = constructor;
+        return this;
     }
 }

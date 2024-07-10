@@ -39,4 +39,14 @@ public class HT_RecipeMap extends GT_Recipe {
         .disableOptimize()
         .frontend(HT_GeneralFrontend::new)
         .build();
+    public static final RecipeMap<RecipeMapBackend> SingularityUnravelingDeviceRecipes = RecipeMapBuilder
+        // At the same time , the localization key of the NEI Name
+        // of this page.
+        .of("ht.recipe.SingularityUnravelingDeviceRecipes")
+        .maxIO(28, 28, 4, 4)
+        .progressBar(GT_UITextures.PROGRESSBAR_ARROW_MULTIPLE)
+        .neiHandlerInfo(builder -> builder.setDisplayStack(HT_ItemList.SingularityUnravelingDevice.get(1)))
+        .disableOptimize()
+        .frontend(HT_GeneralFrontend::new)
+        .build();
 }
