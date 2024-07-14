@@ -7,7 +7,12 @@
 注：目前本模组正在进行缓慢的开发，机器等合成配方还未添加。
 模组预览：  
 ![~)GGP0583_V@NIAT@AAC3KH_tmb](https://github.com/ImgoodWK/Hyperdimensional-Tech/assets/62410956/94b3bd01-c214-4a5b-8d5a-afb7d48a04d7)  
-![V3(O{) TVC)W}B$ZB3F$RCU_tmb](https://github.com/ImgoodWK/Hyperdimensional-Tech/assets/62410956/727e06cb-c789-465f-8fb0-307422c4744b)  
+![V3(O{) TVC)W}B$ZB3F$RCU_tmb](https://github.com/ImgoodWK/Hyperdimensional-Tech/assets/62410956/727e06cb-c789-465f-8fb0-307422c4744b) 
+![image](https://github.com/user-attachments/assets/174a3c0d-2996-48d8-bcf7-c1af04282d5b) 
+![image](https://github.com/user-attachments/assets/b0efa790-260f-4f00-9e4d-0e2c96a75615) 
+
+
+
 机器特效预览：  
 https://github.com/ImgoodWK/Hyperdimensional-Tech/assets/62410956/f022336f-ba32-4ce1-b5a5-a15120b719c1  
 

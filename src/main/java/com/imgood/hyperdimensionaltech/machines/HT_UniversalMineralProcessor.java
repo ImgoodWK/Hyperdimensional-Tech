@@ -1,6 +1,7 @@
 package com.imgood.hyperdimensionaltech.machines;
 
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBuilder;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTooltips;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import net.minecraft.block.Block;

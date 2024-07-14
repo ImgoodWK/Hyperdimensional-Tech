@@ -23,14 +23,14 @@ public class MachineLoader {
 
     public static void loadMachines() {
 
-        //region Machine Base
+        //region HyperdimensionalResonanceEvolver
         HyperdimensionalResonanceEvolver = new HT_HyperdimensionalResonanceEvolver(
             10000,
             "NameHyperdimensionalResonanceEvolver",
             HTTextLocalization.NameHyperdimensionalResonanceEvolver).getStackForm(1);
         HT_ItemList.HyperdimensionalResonanceEvolver.set(HyperdimensionalResonanceEvolver);
         //endregion
-        //region Lite Machine Base
+        //region SingularityUnravelingDevice
         SingularityUnravelingDevice = new HT_SingularityUnravelingDevice(
             10001,
             "SingularityUnravelingDevice",
@@ -45,10 +45,13 @@ public class MachineLoader {
             false,
             31,16,3).getStackForm(1);
             HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
+            //endregion
+        //region UniversalMineralProcessor 测试完记得改
         UniversalMineralProcessor = new HT_UniversalMineralProcessor(10002,
             "UniversalMineralProcessor",
             HTTextLocalization.NameUniversalMineralProcessor)
             .setConstructor(HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice)
+            .setRecipeMap(HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes)
             .setTooltipBuilder(new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"))
             .getStackForm(1);
         HT_ItemList.SingularityUnravelingDevice.set(UniversalMineralProcessor);

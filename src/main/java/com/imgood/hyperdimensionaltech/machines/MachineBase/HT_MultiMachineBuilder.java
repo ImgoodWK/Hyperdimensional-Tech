@@ -137,7 +137,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
 
     private boolean enablePerfectOverclock;
-    private GT_Multiblock_Tooltip_Builder tooltipBuilder = new GT_Multiblock_Tooltip_Builder();
+    private GT_Multiblock_Tooltip_Builder tooltipBuilder;
     HT_MachineConstrucs machineConstrucs = new HT_MachineConstrucs();
 
     public HT_MultiMachineBuilder(int aID, String aName, String aNameRegional) {
@@ -155,7 +155,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     protected GT_Multiblock_Tooltip_Builder createTooltip() {
-        return null;
+        return this.getTooltipBuilder();
     }
 
     /**
@@ -867,6 +867,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
         HyperdimensionalTech.logger.warn("httestmsgsetIsWirelessMode"+this.isWirelessMode);
         isWirelessMode = wirelessMode;
     }
+
 
     //Builder用
     public HT_MultiMachineBuilder<T> setConstructor(String[][] constructor) {
