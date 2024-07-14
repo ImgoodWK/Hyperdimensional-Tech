@@ -2,6 +2,8 @@ package com.imgood.hyperdimensionaltech.loader;
 
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
+import com.imgood.hyperdimensionaltech.machines.HT_UniversalMineralProcessor;
+import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBase;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.machines.HT_SingularityUnravelingDevice;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTextureBuilder;
@@ -17,6 +19,7 @@ public class MachineLoader {
 
     public static ItemStack HyperdimensionalResonanceEvolver;
     public static ItemStack SingularityUnravelingDevice;
+    public static ItemStack UniversalMineralProcessor;
 
     public static void loadMachines() {
 
@@ -42,7 +45,13 @@ public class MachineLoader {
             false,
             31,16,3).getStackForm(1);
             HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
-
+        UniversalMineralProcessor = new HT_UniversalMineralProcessor(10002,
+            "UniversalMineralProcessor",
+            HTTextLocalization.NameUniversalMineralProcessor)
+            .setConstructor(HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice)
+            .setTooltipBuilder(new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"))
+            .getStackForm(1);
+        HT_ItemList.SingularityUnravelingDevice.set(UniversalMineralProcessor);
         //endregion
     }
 

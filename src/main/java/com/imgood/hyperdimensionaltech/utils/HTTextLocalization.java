@@ -43,6 +43,10 @@ public class HTTextLocalization {
     public static final String textUseBlueprint = texter("Use " + EnumChatFormatting.BLUE + "Blue" + EnumChatFormatting.AQUA + "print" + EnumChatFormatting.RESET + " to preview", "textUseBlueprint");
     public static final String Waila_WirelessMode = texter("Wireless Mode", "Waila.General.WirelessMode");
     public static final String Waila_CurrentEuCost = texter("Current EU Cost", "Waila.General.CurrentEuCost");
+    //region UniversalMineralProcessor
+    public static final String NameUniversalMineralProcessor = texter("UniversalMineralProcessor", "NameUniversalMineralProcessor");
+    //endregion
 }
+
 
 // spotless:on

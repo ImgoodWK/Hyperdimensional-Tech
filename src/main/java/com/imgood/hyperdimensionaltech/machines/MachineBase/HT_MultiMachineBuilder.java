@@ -74,7 +74,7 @@ import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap
 /**
  * 为了更快速便捷开发机器诞生的快速Base类，只需要传入一堆属性或者别的对象就能正常运作，如有特殊机器请用另一个机器的Base类
  */
-public class HT_MultiMachineBuilder<T extends HT_LiteMultiMachineBase<T>>
+public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     extends GT_MetaTileEntity_ExtendedPowerMultiBlockBase<T> implements IConstructable, ISurvivalConstructable {
 
     /**
@@ -868,8 +868,48 @@ public class HT_MultiMachineBuilder<T extends HT_LiteMultiMachineBase<T>>
         isWirelessMode = wirelessMode;
     }
 
+    //Builder用
     public HT_MultiMachineBuilder<T> setConstructor(String[][] constructor) {
         this.constructor = constructor;
+        return this;
+    }
+
+    public HT_MultiMachineBuilder<T> setRecipeMap(RecipeMap<?> recipeMap) {
+        this.recipeMap = recipeMap;
+        return this;
+    }
+    public HT_MultiMachineBuilder<T> setRenderBlock(Block renderBlock) {
+        this.renderBlock = renderBlock;
+        return this;
+    }
+    public HT_MultiMachineBuilder<T> setRenderBlockOffset(int x, int y, int z) {
+        this.renderBlockOffsetX = x;
+        this.renderBlockOffsetY = y;
+        this.renderBlockOffsetZ = z;
+        return this;
+    }
+    public HT_MultiMachineBuilder<T> setEnablePerfectOverclock(boolean enablePerfectOverclock) {
+        this.enablePerfectOverclock = enablePerfectOverclock;
+        return this;
+    }
+    public HT_MultiMachineBuilder<T> setConstructorOffSet(int horizontalOffSet, int verticalOffSet, int depthOffSet) {
+        this.horizontalOffSet = horizontalOffSet;
+        this.verticalOffSet = verticalOffSet;
+        this.depthOffSet = depthOffSet;
+        return this;
+    }
+    public HT_MultiMachineBuilder<T> setTooltipBuilder(GT_Multiblock_Tooltip_Builder tooltipBuilder) {
+        this.tooltipBuilder = tooltipBuilder;
+        return this;
+    }
+
+    public HT_MultiMachineBuilder<T> setEnableRender(boolean enableRender) {
+        this.enableRender = enableRender;
+        return this;
+    }
+
+    public HT_MultiMachineBuilder<T> setDefaultMode(byte defaultMode) {
+        this.defaultMode = defaultMode;
         return this;
     }
 }
