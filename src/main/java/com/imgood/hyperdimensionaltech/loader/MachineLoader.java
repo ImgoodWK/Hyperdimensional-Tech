@@ -57,19 +57,6 @@ public class MachineLoader {
             .setRecipeMap(HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes)
             .setTooltipBuilder(new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"))
             .setConstructorOffSet(5,5,5)
-            .setStructureDefinition(new HT_StructureDefinitionBuilder<HT_UniversalMineralProcessor>()
-                .addShape(HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice)
-                .addElement("gregtech:gt.blockcasings",12)
-                .addElement("gregtech:gt.blockcasings",12)
-                .addElement("gregtech:gt.blockcasings",12)
-                .addElement("gregtech:gt.blockcasings",12)
-                .addElement("gregtech:gt.blockcasings",12)
-                .addElement("gregtech:gt.blockcasings",12)
-                .addElement("gregtech:gt.blockcasings",12)
-                .addElement("gregtech:gt.blockcasings",12)
-                .addElement("gregtech:gt.blockcasings",12)
-                .setStructureName("UniversalMineralProcessor")
-                .build())
             .getStackForm(1);
         HT_ItemList.SingularityUnravelingDevice.set(UniversalMineralProcessor);
         //endregion

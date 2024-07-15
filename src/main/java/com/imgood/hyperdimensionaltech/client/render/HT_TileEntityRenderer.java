@@ -1,7 +1,7 @@
 package com.imgood.hyperdimensionaltech.client.render;
 
 
-import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHREFeild;
+import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileFeild;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
 
 @SideOnly(Side.CLIENT)
-public class TileEntityRenderer_HyperdimensionalResonanceEvolver extends TileEntitySpecialRenderer {
+public class HT_TileEntityRenderer extends TileEntitySpecialRenderer {
 
     //private static final ResourceLocation FEILDTEXTURE = TexturesGtBlock.HyperDimensionalResonanceEvolverField.getTextureFile();
     private static final ResourceLocation FEILDTEXTURE = new ResourceLocation(MOD.ID + ":textures/model/HyperDimensionalResonanceEvolverField.png");
@@ -32,13 +32,13 @@ public class TileEntityRenderer_HyperdimensionalResonanceEvolver extends TileEnt
     private boolean feildFlag= true;
     private double feildChangeSspeed = 0.0005;
 
-    public TileEntityRenderer_HyperdimensionalResonanceEvolver() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileHREFeild.class, this);
+    public HT_TileEntityRenderer() {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileFeild.class, this);
     }
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
-        if (!(tile instanceof TileHREFeild tileHREFeild)) return;
+        if (!(tile instanceof TileFeild tileFeild)) return;
         //final double size = TILEhrefEILD.size;
 
         if(feildSizeX >= feildSizeMax) {
@@ -56,7 +56,7 @@ public class TileEntityRenderer_HyperdimensionalResonanceEvolver extends TileEnt
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
         //GL11.glRotated(TILEhrefEILD.Rotation, 1, 1, 1);
-        GL11.glRotated(tileHREFeild.Rotation, 0,10,0);
+        GL11.glRotated(tileFeild.Rotation, 0,10,0);
         renderFeild(feildSizeX, feildSizeY, feildSizeZ);
         GL11.glPopMatrix();
     }

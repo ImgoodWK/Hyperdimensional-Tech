@@ -4,7 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-public class TileHREFeild extends TileEntity {
+public class TileFeild extends TileEntity {
     public double Rotation = 0;
     public double size = 1;
 

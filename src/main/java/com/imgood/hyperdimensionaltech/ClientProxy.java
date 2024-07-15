@@ -1,6 +1,6 @@
 package com.imgood.hyperdimensionaltech;
 
-import com.imgood.hyperdimensionaltech.client.render.TileEntityRenderer_HyperdimensionalResonanceEvolver;
+import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
@@ -11,7 +11,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-        new TileEntityRenderer_HyperdimensionalResonanceEvolver();
+        new HT_TileEntityRenderer();
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.imgood.hyperdimensionaltech.machines.MachineBase;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,13 +13,11 @@ import javax.annotation.Nonnull;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
-import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
-import com.imgood.hyperdimensionaltech.machines.HT_HyperdimensionalResonanceEvolver;
-import com.imgood.hyperdimensionaltech.machines.HT_SingularityUnravelingDevice;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTextureBuilder;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
 import com.imgood.hyperdimensionaltech.utils.HTTextLocalization;
 
@@ -28,6 +25,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.recipe.RecipeMap;
 
+import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -70,6 +68,7 @@ import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
 
 
+import static gregtech.api.enums.Textures.BlockIcons.*;
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 /**
@@ -133,21 +132,21 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     public int verticalOffSet;
     public int depthOffSet;
 
-    // 结构件主名称，用于标识和区分不同的结构件
-    private String STRUCTURE_PIECE_MAIN;
-
-
     private boolean enablePerfectOverclock;
     private GT_Multiblock_Tooltip_Builder tooltipBuilder;
-    HT_MachineConstrucs machineConstrucs = new HT_MachineConstrucs();
-    IStructureDefinition<T> structureDefinition;
+    private HT_MachineConstrucs machineConstrucs;
+    private IStructureDefinition<T> structureDefinition = null;
+    private HT_MachineTextureBuilder machineTextureBuilder;;
+
 
     public HT_MultiMachineBuilder(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+        this.machineTextureBuilder = new HT_MachineTextureBuilder().getMachineTextures(aName);
     }
 
     public HT_MultiMachineBuilder(String aName) {
         super(aName);
+        this.machineTextureBuilder = new HT_MachineTextureBuilder().getMachineTextures(aName);
     }
 
     @Override
@@ -158,51 +157,6 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     @Override
     protected GT_Multiblock_Tooltip_Builder createTooltip() {
         return this.getTooltipBuilder();
-    }
-
-    /**
-     * 快速开发简单的机器的构造方法，所以参数直接给进去就ok了，在loadMachines直接加进去
-     * @param aID 机器的meta值，从10000开始，依次累增，不能重复，开发的时候乱动前面写好的id会导致存档机器出事
-     * @param aName “Name”+机器的名称
-     * @param aNameRegional HTTextLocalization.Name机器的名称.getStackForm(1)
-     * @param aConstructor 机器结构构成的二维String数组，用结构扫描器扫描获得，写在HT_MachineConstrucs里
-     * @param aRecipeMap 机器的NEI界面相关，如：nei界面的进度条图标类型，输入输出物品/流体的格子数量，需要给定这个机器对应的Recipemap对象
-     * @param enableRender 是否开启特效渲染，需要从HTConfigurations获取
-     */
-    public HT_MultiMachineBuilder(int aID,
-                                   String aName,
-                                   String aNameRegional,
-                                   String[][] aConstructor,
-                                   RecipeMap aRecipeMap,
-                                   boolean enableRender,
-                                   byte defaultMode,
-                                   GT_Multiblock_Tooltip_Builder tooltipBuilder,
-                                   int renderBlockOffsetX,
-                                   int renderBlockOffsetY,
-                                   int renderBlockOffsetZ,
-                                   Block renderBlock,
-                                   boolean isEnablePerfectOverclock,
-                                   int horizontalOffSet,
-                                   int verticalOffSet,
-                                   int depthOffSet
-    ) {
-        super(aID, aName, aNameRegional);
-        this.constructor = aConstructor;
-        this.recipeMap = aRecipeMap;
-        this.enableRender = enableRender;
-        this.defaultMode = defaultMode;
-        this.enableRender = enableRender;
-        this.tooltipBuilder = tooltipBuilder;
-        this.renderBlockOffsetX = renderBlockOffsetX;
-        this.renderBlockOffsetY = renderBlockOffsetY;
-        this.renderBlockOffsetZ = renderBlockOffsetZ;
-        this.renderBlock = renderBlock;
-        this.enablePerfectOverclock = isEnablePerfectOverclock;
-        this.STRUCTURE_PIECE_MAIN = aName;
-        this.horizontalOffSet = machineConstrucs.getOffset(aName)[0];
-        this.verticalOffSet = machineConstrucs.getOffset(aName)[1];
-        this.depthOffSet = machineConstrucs.getOffset(aName)[2];
-
     }
 
     @Override
@@ -327,7 +281,33 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection side, ForgeDirection facing, int colorIndex, boolean active, boolean redstoneLevel) {
-        return new ITexture[0];
+        ITexture[] rTexture;
+        if (side == facing) {
+            if (active) {
+                rTexture = new ITexture[] { casingTexturePages[this.machineTextureBuilder.getMachineCasingPage()][this.machineTextureBuilder.getMachineCasingId()], TextureFactory.builder()
+                    .addIcon(this.machineTextureBuilder.getMachineON())
+                    .extFacing()
+                    .build(),
+                    TextureFactory.builder()
+                        .addIcon(this.machineTextureBuilder.getMachineControl())
+                        .extFacing()
+                        .glow()
+                        .build() };
+            } else {
+                rTexture = new ITexture[] { casingTexturePages[this.machineTextureBuilder.getMachineCasingPage()][this.machineTextureBuilder.getMachineCasingId()], TextureFactory.builder()
+                    .addIcon(this.machineTextureBuilder.getMachineOFF())
+                    .extFacing()
+                    .build(),
+                    TextureFactory.builder()
+                        .addIcon(this.machineTextureBuilder.getMachineOFF())
+                        .extFacing()
+                        .glow()
+                        .build() };
+            }
+        } else {
+            rTexture = new ITexture[] { casingTexturePages[this.machineTextureBuilder.getMachineCasingPage()][this.machineTextureBuilder.getMachineCasingId()] };
+        }
+        return rTexture;
     }
 //施工到这里
 
@@ -788,11 +768,6 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
         return true;
     }
 
-    public String getStructureName() {
-        HyperdimensionalTech.logger.info("httestmsggetStructureName");
-        return STRUCTURE_PIECE_MAIN;
-    }
-
     public GT_Multiblock_Tooltip_Builder getTooltipBuilder() {
         HyperdimensionalTech.logger.info("httestmsggetTooltipBuilder");
         return tooltipBuilder;
@@ -827,33 +802,6 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     public void setDepthOffSet(int depthOffSet) {
         this.depthOffSet = depthOffSet;
-    }
-
-
-    @Override
-    public String toString() {
-        return "HT_LiteMultiMachineBase{" +
-            "mode=" + mode +
-            ", defaultMode=" + defaultMode +
-            ", isWirelessMode=" + isWirelessMode +
-            ", ownerUUID=" + ownerUUID +
-            ", costingWirelessEUTemp=" + costingWirelessEUTemp +
-            ", coefficientMultiplier=" + coefficientMultiplier +
-            ", enableRender=" + enableRender +
-            ", constructor=" + Arrays.toString(constructor) +
-            ", recipeMap=" + recipeMap +
-            ", isRendering=" + isRendering +
-            ", renderBlockOffsetX=" + renderBlockOffsetX +
-            ", renderBlockOffsetY=" + renderBlockOffsetY +
-            ", renderBlockOffsetZ=" + renderBlockOffsetZ +
-            ", renderBlock=" + renderBlock +
-            ", horizontalOffSet=" + horizontalOffSet +
-            ", verticalOffSet=" + verticalOffSet +
-            ", depthOffSet=" + depthOffSet +
-            ", STRUCTURE_PIECE_MAIN='" + STRUCTURE_PIECE_MAIN + '\'' +
-            ", enablePerfectOverclock=" + enablePerfectOverclock +
-            ", tooltipBuilder=" + tooltipBuilder +
-            '}';
     }
 
     public int getCoefficientMultiplier() {
@@ -922,6 +870,11 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     public HT_MultiMachineBuilder<T> setStructureDefinition(IStructureDefinition<T> structureDefinition) {
         this.structureDefinition = structureDefinition;
+        return this;
+    }
+
+    public HT_MultiMachineBuilder<T> setMachineTextureBuilder(HT_MachineTextureBuilder machineTextureBuilder) {
+        this.machineTextureBuilder = machineTextureBuilder;
         return this;
     }
 }

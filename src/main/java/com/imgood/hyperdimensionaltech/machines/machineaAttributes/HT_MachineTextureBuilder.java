@@ -1,5 +1,4 @@
 package com.imgood.hyperdimensionaltech.machines.machineaAttributes;
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.IIconContainer;
 
@@ -7,7 +6,7 @@ import gregtech.api.interfaces.IIconContainer;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_OFF;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_ON;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FUSION1_GLOW;
-@Deprecated
+
 public class HT_MachineTextureBuilder {
     //region 内部属性
     //机器开启时正面材质
@@ -25,17 +24,17 @@ public class HT_MachineTextureBuilder {
 
 
     public HT_MachineTextureBuilder getMachineTextures(String machineName) {
-            HT_MachineTextureBuilder SingularityUnravelingDevice = new HT_MachineTextureBuilder();
-            SingularityUnravelingDevice.setMaachineName("SingularityUnravelingDevice")
+            HT_MachineTextureBuilder StandardHyperdimensionalTech = new HT_MachineTextureBuilder();
+        StandardHyperdimensionalTech.setMachineName("SingularityUnravelingDevice")
             .setMachineON(OVERLAY_DTPF_ON)
             .setMachineOFF(OVERLAY_DTPF_OFF)
-            .setMachineControll(OVERLAY_FUSION1_GLOW)
+            .setMachineControl(OVERLAY_FUSION1_GLOW)
             .setMachineCasing(0, 12);
-        switch (machineName){
-            case "SingularityUnravelingDevice":
-                 return SingularityUnravelingDevice;
-            default: return null;
-        }
+        return switch (machineName) {
+            case "SingularityUnravelingDevice", "singularityunravelingdevice", "UniversalMineralProcessor",
+                 "universalmineralprocessor" -> StandardHyperdimensionalTech;
+            default -> null;
+        };
     }
 
 
@@ -61,14 +60,14 @@ public class HT_MachineTextureBuilder {
 
 
 
-    public HT_MachineTextureBuilder setMachineControll(Textures.BlockIcons machineControll) {
+    public HT_MachineTextureBuilder setMachineControl(Textures.BlockIcons machineControll) {
         this.machineControll = machineControll;
         return this;
     }
 
 
 
-    public HT_MachineTextureBuilder setMaachineName(String maachineName) {
+    public HT_MachineTextureBuilder setMachineName(String maachineName) {
         this.machineName = maachineName;
         return this;
     }
@@ -89,7 +88,7 @@ public class HT_MachineTextureBuilder {
         return machineCasingId;
     }
 
-    public IIconContainer getMachineControll() {
+    public IIconContainer getMachineControl() {
         return machineControll;
     }
 

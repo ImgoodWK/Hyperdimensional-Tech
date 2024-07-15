@@ -14,12 +14,13 @@ import java.util.Objects;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 
-/**
+/**为什么这个类死掉了呢，因为这样写结构预览总有问题
  * @program: Hyperdimensional-Tech
  * @description: 快速生成StructureDefinition
  * @author: Imgood
  * @create: 2024-07-10 13:56
  **/
+@Deprecated
 public class HT_StructureDefinitionBuilder<T> {
     class element {
         String casingName;
@@ -28,6 +29,14 @@ public class HT_StructureDefinitionBuilder<T> {
         public element(String casingName, int meta) {
             this.casingName = casingName;
             this.meta = meta;
+        }
+
+        @Override
+        public String toString() {
+            return "element{" +
+                "casingName='" + casingName + '\'' +
+                ", meta=" + meta +
+                '}';
         }
     }
     char elementChar = 'A';
@@ -40,6 +49,7 @@ public class HT_StructureDefinitionBuilder<T> {
         StructureDefinition.Builder<T> builder= StructureDefinition.<T>builder();
         builder.addShape(this.structureName, transpose(this.shape));
         for (element element : this.elements) {
+            HyperdimensionalTech.logger.info("testmsg716"+ elementChar+element.casingName+element.meta);
             builder.addElement(elementChar++, ofBlock(Objects.requireNonNull(Block.getBlockFromName(element.casingName)), element.meta));
         }
         this.STRUCTURE_DEFINITION = builder.build();
@@ -58,5 +68,18 @@ public class HT_StructureDefinitionBuilder<T> {
         return this;
     }
 
-
+    @Override
+    public String toString() {
+        String test = null;
+        for(element element : this.elements) {
+            test += element.toString();
+        }
+        return "HT_StructureDefinitionBuilder{" +
+            "elementChar=" + elementChar +
+            ", shape=" + shape +
+            ", structureName='" + structureName + '\'' +
+            ", STRUCTURE_DEFINITION=" + STRUCTURE_DEFINITION +
+            ", elements=" + test +
+            '}';
+    }
 }

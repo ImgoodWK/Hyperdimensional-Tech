@@ -1,6 +1,6 @@
 package com.imgood.hyperdimensionaltech.block;
 
-import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHREFeild;
+import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileFeild;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -15,8 +15,8 @@ import java.util.ArrayList;
 
 import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
 
-public class BlockHRERender extends Block{
-    public BlockHRERender() {
+public class BlockRender extends Block{
+    public BlockRender() {
         super(Material.iron);
         this.setResistance(20f);
         this.setHardness(-1.0f);
@@ -53,7 +53,7 @@ public class BlockHRERender extends Block{
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        return new TileHREFeild();
+        return new TileFeild();
     }
 
     @Override
