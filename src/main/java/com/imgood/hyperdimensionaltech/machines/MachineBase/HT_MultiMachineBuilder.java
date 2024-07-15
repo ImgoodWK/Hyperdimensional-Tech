@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
+import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
@@ -139,6 +140,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     private boolean enablePerfectOverclock;
     private GT_Multiblock_Tooltip_Builder tooltipBuilder;
     HT_MachineConstrucs machineConstrucs = new HT_MachineConstrucs();
+    IStructureDefinition<T> structureDefinition;
 
     public HT_MultiMachineBuilder(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -150,7 +152,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     public IStructureDefinition<T> getStructureDefinition() {
-        return null;
+        return this.structureDefinition;
     }
 
     @Override
@@ -377,7 +379,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
      */
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        HyperdimensionalTech.logger.warn("testmsgsurvivalConstructin");
+        HyperdimensionalTech.logger.warn("testmsgsurvivalConstructin"+this.mName+this.horizontalOffSet);
         if (mMachine) {
             return -1;
         }
@@ -416,12 +418,16 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     }
 
     /**
-     * 必须要重写这个方法，返回的内容:该机器类(this.mName)/构造函数
+     * 通过反射创建实例，每次写机器类的时候就不用override这方法了，自动创建MetaTileEntity
      */
     @Override
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        HyperdimensionalTech.logger.warn("testmsgnewMetaEntity");
-        return null;
+        try {
+            // 通过反射创建实例
+            return this.getClass().getConstructor(String.class).newInstance(this.mName);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create new meta tile entity of " + this.getClass().getSimpleName(), e);
+        }
     }
 
     protected boolean isEnablePerfectOverclock(boolean isEnablePerfectOverclock){
@@ -911,6 +917,11 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     public HT_MultiMachineBuilder<T> setDefaultMode(byte defaultMode) {
         this.defaultMode = defaultMode;
+        return this;
+    }
+
+    public HT_MultiMachineBuilder<T> setStructureDefinition(IStructureDefinition<T> structureDefinition) {
+        this.structureDefinition = structureDefinition;
         return this;
     }
 }

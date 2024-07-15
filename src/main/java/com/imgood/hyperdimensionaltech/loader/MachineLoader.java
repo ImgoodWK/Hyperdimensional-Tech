@@ -1,5 +1,7 @@
 package com.imgood.hyperdimensionaltech.loader;
 
+import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
 import com.imgood.hyperdimensionaltech.machines.HT_UniversalMineralProcessor;
@@ -8,6 +10,7 @@ import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineCon
 import com.imgood.hyperdimensionaltech.machines.HT_SingularityUnravelingDevice;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTextureBuilder;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTooltips;
+import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_StructureDefinitionBuilder;
 import com.imgood.hyperdimensionaltech.recipemap.HT_RecipeMap;
 import net.minecraft.item.ItemStack;
 
@@ -44,8 +47,8 @@ public class MachineLoader {
             BasicBlocks.Block_HRERender,
             false,
             31,16,3).getStackForm(1);
-            HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
-            //endregion
+        HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);
+        //endregion
         //region UniversalMineralProcessor 测试完记得改
         UniversalMineralProcessor = new HT_UniversalMineralProcessor(10002,
             "UniversalMineralProcessor",
@@ -53,8 +56,26 @@ public class MachineLoader {
             .setConstructor(HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice)
             .setRecipeMap(HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes)
             .setTooltipBuilder(new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"))
+            .setConstructorOffSet(5,5,5)
+            .setStructureDefinition(new HT_StructureDefinitionBuilder<HT_UniversalMineralProcessor>()
+                .addShape(HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice)
+                .addElement("gregtech:gt.blockcasings",12)
+                .addElement("gregtech:gt.blockcasings",12)
+                .addElement("gregtech:gt.blockcasings",12)
+                .addElement("gregtech:gt.blockcasings",12)
+                .addElement("gregtech:gt.blockcasings",12)
+                .addElement("gregtech:gt.blockcasings",12)
+                .addElement("gregtech:gt.blockcasings",12)
+                .addElement("gregtech:gt.blockcasings",12)
+                .addElement("gregtech:gt.blockcasings",12)
+                .setStructureName("UniversalMineralProcessor")
+                .build())
             .getStackForm(1);
         HT_ItemList.SingularityUnravelingDevice.set(UniversalMineralProcessor);
+        //endregion
+        //region test
+
+
         //endregion
     }
 
