@@ -1,6 +1,7 @@
 package com.imgood.hyperdimensionaltech;
 
-import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer;
+import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_ParticleStream;
+import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_Feild;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 
@@ -11,8 +12,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-        new HT_TileEntityRenderer();
-        new HT_TileEntityRenderer("HyperDimensionalResonanceEvolverField", "feild").setRenderSize(0.9,0.1,0.9);
+        new HT_TileEntityRenderer_Feild();
+        new HT_TileEntityRenderer_ParticleStream();
     }
 
     @Override
