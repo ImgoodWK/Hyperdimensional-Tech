@@ -12,7 +12,6 @@ import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -21,14 +20,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.jetbrains.annotations.NotNull;
 
 
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
 import com.imgood.hyperdimensionaltech.config.HTConfigurations;
 import com.imgood.hyperdimensionaltech.machines.processingLogics.HT_ProcessingLogic;
@@ -444,7 +441,7 @@ public class HT_HyperdimensionalResonanceEvolver
         double zOffset = (double)(10 * this.getExtendedFacing().getRelativeBackInWorld().offsetZ + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetZ);
         double yOffset = (double)(10 * this.getExtendedFacing().getRelativeBackInWorld().offsetY + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetY);
         this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
-        this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), BasicBlocks.Block_HRERender);
+        this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), BasicBlocks.Block_RenderField);
     }
     public void destroyRenderBlock() {
         int x = this.getBaseMetaTileEntity().getXCoord();

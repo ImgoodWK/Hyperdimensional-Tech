@@ -5,6 +5,6 @@ import net.minecraft.block.Block;
 
 public class BasicBlocks {
 
-    public static Block Block_HRERender;
-
+    public static Block Block_RenderField;
+    public static Block Block_RenderParticleStream;
 }

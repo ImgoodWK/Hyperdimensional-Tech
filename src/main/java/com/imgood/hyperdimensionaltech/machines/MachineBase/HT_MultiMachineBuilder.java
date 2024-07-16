@@ -455,11 +455,11 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
                 this.isRendering = true;
                 if (this.enableRender && this.isRendering) {
                     HyperdimensionalTech.logger.info("testmsgend"+(this.enableRender && !this.isRendering)+this.enableRender+this.isRendering);
-                    RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, true, BasicBlocks.Block_HRERender);
+                    RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, true, BasicBlocks.Block_RenderField);
                 }
             }else {
                 this.isRendering = false;
-                RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, false, BasicBlocks.Block_HRERender);;
+                RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, false, BasicBlocks.Block_RenderField);;
             }
             return super.checkProcessing();
         }

@@ -12,6 +12,7 @@ public class ClientProxy extends CommonProxy {
     public void init(FMLInitializationEvent event) {
         super.init(event);
         new HT_TileEntityRenderer();
+        new HT_TileEntityRenderer("HyperDimensionalResonanceEvolverField", "feild").setRenderSize(0.9,0.1,0.9);
     }
 
     @Override

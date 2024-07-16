@@ -16,12 +16,24 @@ import java.util.ArrayList;
 import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
 
 public class BlockRender extends Block{
+    String textureFile;
+    String objFile;
     public BlockRender() {
         super(Material.iron);
         this.setResistance(20f);
         this.setHardness(-1.0f);
         this.setBlockName("ht.hre_render");
         this.setLightLevel(100.0f);
+        GameRegistry.registerBlock(this, getUnlocalizedName());
+    }
+    public BlockRender(String blockRenderId, String textureFile, String objFile) {
+        super(Material.iron);
+        this.setResistance(20f);
+        this.setHardness(-1.0f);
+        this.setBlockName(blockRenderId);
+        this.setLightLevel(100.0f);
+        this.textureFile = textureFile;
+        this.objFile = objFile;
         GameRegistry.registerBlock(this, getUnlocalizedName());
     }
 

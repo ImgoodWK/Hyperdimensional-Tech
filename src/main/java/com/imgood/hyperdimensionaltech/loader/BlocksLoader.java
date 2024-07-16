@@ -7,7 +7,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlocksLoader {
     public static void loadBlocks() {
-        GameRegistry.registerTileEntity(TileFeild.class, "HREFeildRender");
-        BasicBlocks.Block_HRERender = new BlockRender();
+        GameRegistry.registerTileEntity(TileFeild.class, "FeildRender");
+        BasicBlocks.Block_RenderParticleStream = new BlockRender("ht.sud_render",
+            "HyperDimensionalResonanceEvolverField",
+            "feild");
+        BasicBlocks.Block_RenderField = new BlockRender();
+
     }
 }

@@ -1,16 +1,10 @@
 package com.imgood.hyperdimensionaltech.loader;
 
-import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
-import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
 import com.imgood.hyperdimensionaltech.machines.HT_UniversalMineralProcessor;
-import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBase;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.machines.HT_SingularityUnravelingDevice;
-import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTextureBuilder;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTooltips;
-import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_StructureDefinitionBuilder;
 import com.imgood.hyperdimensionaltech.recipemap.HT_RecipeMap;
 import net.minecraft.item.ItemStack;
 
@@ -44,7 +38,7 @@ public class MachineLoader {
             (byte)0,
             new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"),
             5, 5, 5,
-            BasicBlocks.Block_HRERender,
+            BasicBlocks.Block_RenderField,
             false,
             31,16,3).getStackForm(1);
         HT_ItemList.SingularityUnravelingDevice.set(SingularityUnravelingDevice);

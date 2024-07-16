@@ -20,8 +20,8 @@ import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
 public class HT_TileEntityRenderer extends TileEntitySpecialRenderer {
 
     //private static final ResourceLocation FEILDTEXTURE = TexturesGtBlock.HyperDimensionalResonanceEvolverField.getTextureFile();
-    private static final ResourceLocation FEILDTEXTURE = new ResourceLocation(MOD.ID + ":textures/model/HyperDimensionalResonanceEvolverField.png");
-    private static final IModelCustom FEILD = AdvancedModelLoader
+    private static ResourceLocation FEILDTEXTURE = new ResourceLocation(MOD.ID + ":textures/model/HyperDimensionalResonanceEvolverField.png");
+    private static IModelCustom FEILD = AdvancedModelLoader
         .loadModel(new ResourceLocation(MOD.ID + ":model/feild.obj"));
     private double feildSizeX = 0.1;
     private double feildSizeY = 0.9;
@@ -30,12 +30,39 @@ public class HT_TileEntityRenderer extends TileEntitySpecialRenderer {
     private double feildSizeMax = 0.8;
     private double feildSizeMin = 0.7;
     private boolean feildFlag= true;
-    private double feildChangeSspeed = 0.0005;
+    private double feildChangeSpeed = 0.0005;
+    private String blockRenderId;
+    private String textureFile;
+    private String objFile;
 
     public HT_TileEntityRenderer() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileFeild.class, this);
     }
 
+    public HT_TileEntityRenderer(
+                                  String textureFile,
+                                  String objFile) {
+        this.textureFile = textureFile;
+        this.objFile = objFile;
+        this.FEILDTEXTURE = new ResourceLocation(MOD.ID + ":textures/model/"+this.textureFile+".png");
+        this.FEILD = AdvancedModelLoader.loadModel(new ResourceLocation(MOD.ID + ":model/"+this.objFile+".obj"));
+        ClientRegistry.bindTileEntitySpecialRenderer(TileFeild.class, this);
+    }
+
+    public HT_TileEntityRenderer(String textureFile,
+                                 String objFile,
+                                 double feildSizeX,
+                                 double feildSizeY,
+                                 double feildSizeZ,
+                                 double feildChangeSpeed,
+                                 double feildSizeMax,
+                                 double feildSizeMin) {
+        this.textureFile = textureFile;
+        this.objFile = objFile;
+        this.FEILDTEXTURE = new ResourceLocation(MOD.ID + ":textures/model/"+this.textureFile+".png");
+        this.FEILD = AdvancedModelLoader.loadModel(new ResourceLocation(MOD.ID + ":model/"+this.objFile+".obj"));
+        ClientRegistry.bindTileEntitySpecialRenderer(TileFeild.class, this);
+    }
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
         if (!(tile instanceof TileFeild tileFeild)) return;
@@ -47,11 +74,11 @@ public class HT_TileEntityRenderer extends TileEntitySpecialRenderer {
             feildFlag = true;
         }
         if(feildFlag){
-            feildSizeX += feildChangeSspeed;
-            feildSizeZ += feildChangeSspeed;
+            feildSizeX += feildChangeSpeed;
+            feildSizeZ += feildChangeSpeed;
         }else{
-            feildSizeX -= feildChangeSspeed;
-            feildSizeZ -= feildChangeSspeed;
+            feildSizeX -= feildChangeSpeed;
+            feildSizeZ -= feildChangeSpeed;
         }
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
@@ -74,5 +101,23 @@ public class HT_TileEntityRenderer extends TileEntitySpecialRenderer {
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glEnable(GL11.GL_LIGHTING);
+    }
+    public HT_TileEntityRenderer setRenderSize(double sizeX, double sizeY, double sizeZ) {
+        this.feildSizeX = sizeX;
+        this.feildSizeY = sizeY;
+        this.feildSizeZ = sizeZ;
+        return this;
+    }
+    public HT_TileEntityRenderer setChangeSpeed(double changeSpeed) {
+        this.feildChangeSpeed = changeSpeed;
+        return this;
+    }
+    public HT_TileEntityRenderer setMaxSize(double maxSize) {
+        this.feildSizeMax = maxSize;
+        return this;
+    }
+    public HT_TileEntityRenderer setMinSize(double minSize) {
+        this.feildSizeMin = minSize;
+        return this;
     }
 }

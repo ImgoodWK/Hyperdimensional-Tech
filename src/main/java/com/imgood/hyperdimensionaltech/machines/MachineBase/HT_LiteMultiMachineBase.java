@@ -17,8 +17,6 @@ import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
-import com.imgood.hyperdimensionaltech.machines.HT_HyperdimensionalResonanceEvolver;
-import com.imgood.hyperdimensionaltech.machines.HT_SingularityUnravelingDevice;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
 import com.imgood.hyperdimensionaltech.utils.HTTextLocalization;
@@ -469,11 +467,11 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
                 this.isRendering = true;
                 if (this.enableRender && this.isRendering) {
                     HyperdimensionalTech.logger.info("testmsgend"+(this.enableRender && !this.isRendering)+this.enableRender+this.isRendering);
-                    RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, true, BasicBlocks.Block_HRERender);
+                    RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, true, BasicBlocks.Block_RenderField);
                 }
             }else {
                 this.isRendering = false;
-                RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, false, BasicBlocks.Block_HRERender);;
+                RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, false, BasicBlocks.Block_RenderField);;
             }
             return super.checkProcessing();
         }
