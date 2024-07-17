@@ -33,7 +33,7 @@ public class MachineLoader {
             "SingularityUnravelingDevice",
             HTTextLocalization.NameSingularityUnravelingDevice,
             HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice,
-            HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes,
+            HT_RecipeMap.SingularityUnravelingDeviceRecipes,
             false,
             (byte)0,
             new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"),

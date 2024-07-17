@@ -32,29 +32,30 @@ public class HyperdimensionalResonanceEvolverRecipePool implements IRecipePool {
 
             )
             .itemOutputs(
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","eternal_singularity"),1),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,0),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,1),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,2),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,3),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,4),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,5),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,6),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,7),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,8),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,9),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,10),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,11),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,12),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,13),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,14),
-                    new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,15)
+                new ItemStack(GameRegistry.findItem("eternalsingularity","eternal_singularity"),1),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,0),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,1),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,2),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,3),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,4),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,5),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,6),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,7),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,8),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,9),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,10),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,11),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,12),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,13),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,14),
+                new ItemStack(GameRegistry.findItem("eternalsingularity","combined_singularity"),1,15)
             )
             .specialValue(11700)
             .eut(RECIPE_MAX)
             .outputChances(500,100,2000,2000,2000,2000,500,5000,1000,2000,100,100,1000,2000,1000,500)
             .duration(20 * 600)
             .addTo(HRE);
+
 /*
         HT_RecipeBuilder
             .builder()
