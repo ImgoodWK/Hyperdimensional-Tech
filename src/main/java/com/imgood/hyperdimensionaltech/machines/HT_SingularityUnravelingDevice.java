@@ -246,7 +246,7 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
         HyperdimensionalTech.logger.warn("testmsgcheckMachine");
         repairMachine();
-        if (!checkPiece(mName, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet)) {
+        if (!checkPiece(mName, 31,16,3)) {
 
             return false;
         }

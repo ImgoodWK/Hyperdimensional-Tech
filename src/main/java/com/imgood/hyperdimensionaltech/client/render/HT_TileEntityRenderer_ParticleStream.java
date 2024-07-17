@@ -20,17 +20,17 @@ import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
 public class HT_TileEntityRenderer_ParticleStream extends TileEntitySpecialRenderer {
 
     //private static final ResourceLocation FEILDTEXTURE = TexturesGtBlock.HyperDimensionalResonanceEvolverField.getTextureFile();
-    private static ResourceLocation ParticleStreamTexture =  new ResourceLocation(MOD.ID + ":textures/model/HyperDimensionalResonanceEvolverField.png");
+    private static ResourceLocation ParticleStreamTexture =  new ResourceLocation(MOD.ID + ":textures/model/SingularityUnravelingDeviceParticleStream.png");
     private static IModelCustom ParticleStream = AdvancedModelLoader
         .loadModel(new ResourceLocation(MOD.ID + ":model/feild.obj"));
-    private double feildSizeX = 0.9;
+    private double feildSizeX = 3;
     private double feildSizeY = 0.1;
-    private double feildSizeZ = 0.9;
+    private double feildSizeZ = 3;
 
-    private double feildSizeMax = 0.8;
-    private double feildSizeMin = 0.7;
+    private double feildSizeMax = 2.9;
+    private double feildSizeMin = 2.6;
     private boolean feildFlag= true;
-    private double feildChangeSpeed = 0.0005;
+    private double feildChangeSpeed = 0.0001;
     private String blockRenderId;
     private String textureFile;
     private String objFile;
@@ -69,7 +69,14 @@ public class HT_TileEntityRenderer_ParticleStream extends TileEntitySpecialRende
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
         //GL11.glRotated(TILEhrefEILD.Rotation, 1, 1, 1);
-        GL11.glRotated(tileParticleStream.Rotation, 0,10,0);
+        GL11.glRotated(tileParticleStream.Rotation, 0,-100,0);
+        GL11.glRotated(tileParticleStream.Rotation, 0,-100,0);
+        GL11.glRotated(tileParticleStream.Rotation, 0,-100,0);
+        GL11.glRotated(tileParticleStream.Rotation, 0,-100,0);
+        GL11.glRotated(tileParticleStream.Rotation, 0,-100,0);
+        GL11.glRotated(tileParticleStream.Rotation, 0,-100,0);
+        GL11.glRotated(tileParticleStream.Rotation, 0,-100,0);
+        GL11.glRotated(tileParticleStream.Rotation, 0,-100,0);
         renderFeild(feildSizeX, feildSizeY, feildSizeZ);
         GL11.glPopMatrix();
     }
