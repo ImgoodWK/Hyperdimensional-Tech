@@ -33,8 +33,8 @@ public class SingularityUnravelingDeviceRecipePool implements IRecipePool {
 
             )
             .itemOutputs(
-                new ItemStack(GameRegistry.findItem("appliedenergistics2","item.ItemMultiMaterial"),64,47)
-
+                getItemStack("gregtech", "gt.metaitem.03", 32160,32177, 64),
+                getItemStack("eternalsingularity", "combined_singularity", 10,10,1)
             )
             .specialValue(11700)
             .eut(RECIPE_MAX)

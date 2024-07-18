@@ -6,6 +6,9 @@ import net.minecraftforge.fluids.FluidStack;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GT_Recipe;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HT_RecipeBuilder {
 
     public static HT_RecipeBuilder builder() {
@@ -30,6 +33,18 @@ public class HT_RecipeBuilder {
 
     public HT_RecipeBuilder itemOutputs(ItemStack... outputItems) {
         this.outputItems = outputItems;
+        return this;
+    }
+    public HT_RecipeBuilder itemOutputs(ItemStack[]... outputItems) {
+        int buff = 0;
+        List<ItemStack> itemStacks = new ArrayList<>();
+        for (int i = 0; i < outputItems.length; i++) {
+            for (int j = 0; j < outputItems[i].length; j++) {
+                itemStacks.add(outputItems[i][j]);
+                buff++;
+            }
+        }
+        this.outputItems = itemStacks.toArray(new ItemStack[buff]);
         return this;
     }
 

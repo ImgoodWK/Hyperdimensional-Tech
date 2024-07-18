@@ -13,4 +13,11 @@ public class RecipeHelper {
     public static ItemStack getItemStack(String mod,String id,int meta,int amount) {
         return new ItemStack(GameRegistry.findItem(mod,id),amount,meta);
     }
+    public static ItemStack[] getItemStack(String mod,String id,int metaBegin,int metaEnd,int amount) {
+        ItemStack[] itemStacks = new ItemStack[metaEnd-metaBegin];
+        for(int i = 0;i < itemStacks.length;i++) {
+            itemStacks[i] = getItemStack(mod,id,metaBegin+i,amount);
+        }
+        return itemStacks;
+    }
 }
