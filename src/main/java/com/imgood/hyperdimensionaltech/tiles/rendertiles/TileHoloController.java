@@ -1,5 +1,6 @@
 package com.imgood.hyperdimensionaltech.tiles.rendertiles;
 
+import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -10,10 +11,10 @@ import net.minecraft.util.AxisAlignedBB;
  * @author: Imgood
  * @create: 2024-07-17 13:12
  **/
-public class TileParticleStream extends TileEntity {
+public class TileHoloController extends TileEntity {
     public double Rotation = 0;
     public double size = 1;
-
+    ExtendedFacing extendedFacing;
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
@@ -40,5 +41,13 @@ public class TileParticleStream extends TileEntity {
     public void updateEntity() {
         super.updateEntity();
         Rotation = (Rotation + 1.2) % 360d;
+    }
+
+    public void setRotation(ExtendedFacing extendedFacing) {
+        this.extendedFacing = extendedFacing;
+    }
+
+    public ExtendedFacing getExtendedFacing() {
+        return extendedFacing;
     }
 }

@@ -1,9 +1,11 @@
 package com.imgood.hyperdimensionaltech;
 
+import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_HoloController;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_ParticleStream;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_Feild;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import net.minecraft.util.EnumFacing;
 
 public class ClientProxy extends CommonProxy {
 
@@ -14,6 +16,7 @@ public class ClientProxy extends CommonProxy {
         super.init(event);
         new HT_TileEntityRenderer_Feild();
         new HT_TileEntityRenderer_ParticleStream();
+        new HT_TileEntityRenderer_HoloController();
     }
 
     @Override

@@ -877,4 +877,8 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
         this.machineTextureBuilder = machineTextureBuilder;
         return this;
     }
+
+    public void setOwnerUUID(UUID ownerUUID) {
+        this.ownerUUID = ownerUUID;
+    }
 }

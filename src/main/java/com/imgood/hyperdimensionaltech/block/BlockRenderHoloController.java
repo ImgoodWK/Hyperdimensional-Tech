@@ -1,6 +1,6 @@
 package com.imgood.hyperdimensionaltech.block;
 
-import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileParticleStream;
+import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHoloController;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,20 +21,20 @@ import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
  * @author: Imgood
  * @create: 2024-07-17 13:35
  **/
-public class BlockRenderParticleStream extends Block {
+public class BlockRenderHoloController extends Block {
     String textureFile;
     String objFile;
 
-    public BlockRenderParticleStream() {
+    public BlockRenderHoloController() {
         super(Material.iron);
         this.setResistance(20f);
         this.setHardness(-1.0f);
-        this.setBlockName("ht.sud_render");
+        this.setBlockName("ht.holocontroller_render");
         this.setLightLevel(100.0f);
         GameRegistry.registerBlock(this, getUnlocalizedName());
     }
 
-    public BlockRenderParticleStream(String blockRenderId, String textureFile, String objFile) {
+    public BlockRenderHoloController(String blockRenderId, String textureFile, String objFile) {
         super(Material.iron);
         this.setResistance(20f);
         this.setHardness(-1.0f);
@@ -45,7 +45,7 @@ public class BlockRenderParticleStream extends Block {
         GameRegistry.registerBlock(this, getUnlocalizedName());
     }
 
-    public BlockRenderParticleStream(String blockRenderId) {
+    public BlockRenderHoloController(String blockRenderId) {
         super(Material.iron);
         this.setResistance(20f);
         this.setHardness(-1.0f);
@@ -82,7 +82,7 @@ public class BlockRenderParticleStream extends Block {
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        return new TileParticleStream();
+        return new TileHoloController();
     }
 
     @Override

@@ -7,4 +7,5 @@ public class BasicBlocks {
 
     public static Block Block_RenderField;
     public static Block Block_RenderParticleStream;
+    public static Block Block_RenderHoloController;
 }
