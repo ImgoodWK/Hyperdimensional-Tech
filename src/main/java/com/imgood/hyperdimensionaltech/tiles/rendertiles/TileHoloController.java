@@ -1,9 +1,11 @@
 package com.imgood.hyperdimensionaltech.tiles.rendertiles;
 
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @program: Hyperdimensional-Tech
@@ -39,15 +41,46 @@ public class TileHoloController extends TileEntity {
 
     @Override
     public void updateEntity() {
+        HyperdimensionalTech.logger.warn("testmsgupDateEntity"+this.getExtendedFacing());
         super.updateEntity();
+        if (this.getExtendedFacing() != null) {
+            switch(this.getExtendedFacing()) {
+                case WEST_NORMAL_NONE:
+                    this.Rotation = 90;
+                    break;
+                case SOUTH_NORMAL_NONE:
+                    this.Rotation = 180;
+                    break;
+                case EAST_NORMAL_NONE:
+                    this.Rotation = 270;
+                    ;
+                    break;
+                case NORTH_NORMAL_NONE:
+                    this.Rotation = 0;
+                    ;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         Rotation = (Rotation + 1.2) % 360d;
     }
 
-    public void setRotation(ExtendedFacing extendedFacing) {
+    public void setFacing(ExtendedFacing extendedFacing) {
+        HyperdimensionalTech.logger.warn("testmsgTileHolosetFacing"+extendedFacing);
         this.extendedFacing = extendedFacing;
     }
 
     public ExtendedFacing getExtendedFacing() {
-        return extendedFacing;
+        return this.extendedFacing;
+    }
+
+    public double getRotation() {
+        return Rotation;
+    }
+
+    public void setRotation(double rotation) {
+        Rotation = rotation;
     }
 }

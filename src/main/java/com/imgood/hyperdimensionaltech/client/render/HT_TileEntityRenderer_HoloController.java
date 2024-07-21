@@ -2,6 +2,8 @@ package com.imgood.hyperdimensionaltech.client.render;
 
 
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
+import com.gtnewhorizon.structurelib.alignment.enumerable.Rotation;
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHoloController;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -36,6 +38,7 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
     private String textureFile;
     private String objFile;
     private ExtendedFacing facing;
+    public Double rotation = 0.0;
 
     public HT_TileEntityRenderer_HoloController() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileHoloController.class, this);
@@ -53,7 +56,8 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
-        if (!(tile instanceof TileHoloController tileParticleStream)) return;
+        this.rotation = ((TileHoloController) tile).getRotation();
+        if (!(tile instanceof TileHoloController tileHoloController)) return;
         //final double size = TILEhrefEILD.size;
         this.setFacing(((TileHoloController) tile).getExtendedFacing());
         if(feildSizeX >= feildSizeMax) {
@@ -71,21 +75,6 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
         //GL11.glRotated(TILEhrefEILD.Rotation, 1, 1, 1);
-        switch(this.getFacing()) {
-            case WEST_NORMAL_NONE:
-                GL11.glRotated(90, 0, 1, 0);
-                break;
-            case SOUTH_NORMAL_NONE:
-                GL11.glRotated(180, 0, 1, 0);
-                break;
-            case EAST_NORMAL_NONE:
-                GL11.glRotated(270, 0, 1, 0);
-                break;
-            case NORTH_NORMAL_NONE:
-                GL11.glRotated(0, 0, 1, 0);
-                break;
-        }
-
         renderFeild(feildSizeX, feildSizeY, feildSizeZ);
         GL11.glPopMatrix();
     }

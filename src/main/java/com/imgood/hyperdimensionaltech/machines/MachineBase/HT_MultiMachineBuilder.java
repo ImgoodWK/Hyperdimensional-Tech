@@ -274,7 +274,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        HyperdimensionalTech.logger.warn("testmsgonFirstTick");
+        //HyperdimensionalTech.logger.warn("testmsgonFirstTick");
         super.onFirstTick(aBaseMetaTileEntity);
         this.ownerUUID = aBaseMetaTileEntity.getOwnerUuid();
     }

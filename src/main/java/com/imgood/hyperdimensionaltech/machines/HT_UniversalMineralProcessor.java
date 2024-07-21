@@ -84,6 +84,6 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
         this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), BasicBlocks.Block_RenderHoloController);
         TileHoloController tile =
             (TileHoloController) getBaseMetaTileEntity().getWorld().getTileEntity((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset));
-        tile.setRotation(this.getExtendedFacing());
+        tile.setFacing(this.getExtendedFacing());
     }
 }
