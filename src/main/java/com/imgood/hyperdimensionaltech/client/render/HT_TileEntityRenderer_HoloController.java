@@ -3,6 +3,7 @@ package com.imgood.hyperdimensionaltech.client.render;
 
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.alignment.enumerable.Rotation;
+import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHoloController;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -16,6 +17,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Objects;
 
 import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
 
@@ -37,7 +40,7 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
     private String blockRenderId;
     private String textureFile;
     private String objFile;
-    private ExtendedFacing facing;
+    private String facing;
     public Double rotation = 0.0;
 
     public HT_TileEntityRenderer_HoloController() {
@@ -56,25 +59,20 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
-        this.rotation = ((TileHoloController) tile).getRotation();
+        if (Objects.equals(this.facing, ((TileHoloController) tile).Facing)){
+            return;
+        }else {
+
+        }
+        this.facing = ((TileHoloController) tile).Facing;
         if (!(tile instanceof TileHoloController tileHoloController)) return;
         //final double size = TILEhrefEILD.size;
-        this.setFacing(((TileHoloController) tile).getExtendedFacing());
-        if(feildSizeX >= feildSizeMax) {
-            feildFlag = false;
-        }else if(feildSizeX <= feildSizeMin) {
-            feildFlag = true;
-        }
-        if(feildFlag){
-            feildSizeX += feildChangeSpeed;
-            feildSizeZ += feildChangeSpeed;
-        }else{
-            feildSizeX -= feildChangeSpeed;
-            feildSizeZ -= feildChangeSpeed;
-        }
+        //this.setFacing(((TileHoloController) tile).Facing);
+
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
         //GL11.glRotated(TILEhrefEILD.Rotation, 1, 1, 1);
+
         renderFeild(feildSizeX, feildSizeY, feildSizeZ);
         GL11.glPopMatrix();
     }
@@ -112,11 +110,11 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
         return this;
     }
 
-    public ExtendedFacing getFacing() {
-        return facing;
+    public String getFacing() {
+        return this.facing;
     }
 
-    public void setFacing(ExtendedFacing facing) {
+    public void setFacing(String facing) {
         this.facing = facing;
     }
 }

@@ -20,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IIcon;
@@ -85,5 +86,8 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
         TileHoloController tile =
             (TileHoloController) getBaseMetaTileEntity().getWorld().getTileEntity((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset));
         tile.setFacing(this.getExtendedFacing());
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("Facing", this.getExtendedFacing().toString());
+        tile.writeToNBT(nbt);
     }
 }
