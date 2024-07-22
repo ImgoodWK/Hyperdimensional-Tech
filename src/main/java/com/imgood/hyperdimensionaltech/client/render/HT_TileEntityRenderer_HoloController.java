@@ -29,15 +29,9 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
     private static ResourceLocation ParticleStreamTexture =  new ResourceLocation(MOD.ID + ":textures/model/stiched_texture.png");
     private static IModelCustom ParticleStream = AdvancedModelLoader
         .loadModel(new ResourceLocation(MOD.ID + ":model/Hyperdimensional Controller.obj"));
-    private double feildSizeX = 1.5;
-    private double feildSizeY = 1.5;
-    private double feildSizeZ = 1.5;
-
-    private double feildSizeMax = 2.9;
-    private double feildSizeMin = 2.6;
-    private boolean feildFlag= true;
-    private double feildChangeSpeed = 0.0000;
-    private String blockRenderId;
+    private double feildSizeX = 1;
+    private double feildSizeY = 1;
+    private double feildSizeZ = 1;
     private String textureFile;
     private String objFile;
     private String facing;
@@ -59,20 +53,13 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
-        if (Objects.equals(this.facing, ((TileHoloController) tile).Facing)){
-            return;
-        }else {
-
-        }
-        this.facing = ((TileHoloController) tile).Facing;
         if (!(tile instanceof TileHoloController tileHoloController)) return;
         //final double size = TILEhrefEILD.size;
         //this.setFacing(((TileHoloController) tile).Facing);
 
         GL11.glPushMatrix();
+        this.getTileEntityFacing(tileHoloController, x, y, z);
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
-        //GL11.glRotated(TILEhrefEILD.Rotation, 1, 1, 1);
-
         renderFeild(feildSizeX, feildSizeY, feildSizeZ);
         GL11.glPopMatrix();
     }
@@ -97,18 +84,6 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
         this.feildSizeZ = sizeZ;
         return this;
     }
-    public HT_TileEntityRenderer_HoloController setChangeSpeed(double changeSpeed) {
-        this.feildChangeSpeed = changeSpeed;
-        return this;
-    }
-    public HT_TileEntityRenderer_HoloController setMaxSize(double maxSize) {
-        this.feildSizeMax = maxSize;
-        return this;
-    }
-    public HT_TileEntityRenderer_HoloController setMinSize(double minSize) {
-        this.feildSizeMin = minSize;
-        return this;
-    }
 
     public String getFacing() {
         return this.facing;
@@ -116,5 +91,30 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
 
     public void setFacing(String facing) {
         this.facing = facing;
+    }
+
+    private void getTileEntityFacing(TileHoloController tile, double x, double y, double z) {
+        switch (tile.getExtendedFacing()) {
+            case WEST_NORMAL_NONE:
+                HyperdimensionalTech.logger.warn("WEST_NORMAL_NONE");
+                //GL11.glTranslated(x + 0.2, y, z + 0.5);
+                GL11.glRotated(90.0, 0.0, 1.0, 0.0);
+                break;
+            case EAST_NORMAL_NONE:
+                HyperdimensionalTech.logger.warn("EAST_NORMAL_NONE");
+                //GL11.glTranslated(x + 0.8, y, z + 0.5);
+                GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
+                break;
+            case NORTH_NORMAL_NONE:
+                HyperdimensionalTech.logger.warn("NORTH_NORMAL_NONE");
+                //GL11.glTranslated(x + 0.5, y, z + 0.2);
+                GL11.glRotated(0.0, 0.0, 1.0, 0.0);
+                break;
+            case SOUTH_NORMAL_NONE:
+                HyperdimensionalTech.logger.warn("SOUTH_NORMAL_NONE");
+                //GL11.glTranslated(x + 0.5, y, z + 0.8);
+                GL11.glRotated(180.0, 0.0, 1.0, 0.0);
+        }
+
     }
 }

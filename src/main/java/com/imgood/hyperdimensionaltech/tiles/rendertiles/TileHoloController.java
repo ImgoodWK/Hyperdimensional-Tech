@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 public class TileHoloController extends TileEntity {
     public double Rotation = 0;
     public double size = 1;
-    public ExtendedFacing extendedFacing;
+    public ExtendedFacing extendedFacing = ExtendedFacing.EAST_NORMAL_NONE;
     public String Facing;
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -40,13 +40,14 @@ public class TileHoloController extends TileEntity {
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         size = nbt.getDouble("size");
+        this.Facing = nbt.getString("Facing");
     }
 
-    @Override
+    /*@Override
     public void updateEntity() {
         HyperdimensionalTech.logger.warn("testmsgupDateEntity"+this.getExtendedFacing());
         super.updateEntity();
-        if (this.getExtendedFacing() != null) {
+        if (this.Facing != null) {
             switch(this.Facing) {
                 case "WEST_NORMAL_NONE":
                     this.Rotation = 90;
@@ -56,19 +57,16 @@ public class TileHoloController extends TileEntity {
                     break;
                 case "EAST_NORMAL_NONE":
                     this.Rotation = 270;
-                    ;
                     break;
                 case "NORTH_NORMAL_NONE":
                     this.Rotation = 0;
-                    ;
                     break;
                 default:
                     break;
             }
-        }
 
         Rotation = (Rotation + 1.2) % 360d;
-    }
+        }*/
 
     public void setFacing(ExtendedFacing extendedFacing) {
         HyperdimensionalTech.logger.warn("testmsgTileHolosetFacing"+extendedFacing);
