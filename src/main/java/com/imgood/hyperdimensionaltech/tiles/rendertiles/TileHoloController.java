@@ -7,6 +7,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.opengl.GL11;
 
+import static com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing.byName;
+
 /**
  * @program: Hyperdimensional-Tech
  * @description: 全息主机的特效
@@ -16,8 +18,19 @@ import org.lwjgl.opengl.GL11;
 public class TileHoloController extends TileEntity {
     public double Rotation = 0;
     public double size = 1;
-    public ExtendedFacing extendedFacing = ExtendedFacing.EAST_NORMAL_NONE;
-    public String Facing;
+    private int meta = 0;
+
+    public TileHoloController(){
+    }
+
+    public TileHoloController(int meta){
+        this.meta = meta;
+    }
+
+    public int getMeta() {
+        return meta;
+    }
+
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
@@ -31,16 +44,13 @@ public class TileHoloController extends TileEntity {
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        this.Facing = nbt.getString("Facing");
-        HyperdimensionalTech.logger.warn("testmsgFacingnbt"+this.Facing);
-        nbt.setDouble("renderStatus", size);
+        nbt.setDouble("renderStatus",this.size);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         size = nbt.getDouble("size");
-        this.Facing = nbt.getString("Facing");
     }
 
     /*@Override
@@ -68,14 +78,6 @@ public class TileHoloController extends TileEntity {
         Rotation = (Rotation + 1.2) % 360d;
         }*/
 
-    public void setFacing(ExtendedFacing extendedFacing) {
-        HyperdimensionalTech.logger.warn("testmsgTileHolosetFacing"+extendedFacing);
-        this.extendedFacing = extendedFacing;
-    }
-
-    public ExtendedFacing getExtendedFacing() {
-        return this.extendedFacing;
-    }
 
     public double getRotation() {
         return Rotation;
