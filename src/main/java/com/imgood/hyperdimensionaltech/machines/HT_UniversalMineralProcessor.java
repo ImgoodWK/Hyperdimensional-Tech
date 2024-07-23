@@ -1,5 +1,6 @@
 package com.imgood.hyperdimensionaltech.machines;
 
+import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
@@ -78,16 +79,24 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
         int x = this.getBaseMetaTileEntity().getXCoord();
         int y = this.getBaseMetaTileEntity().getYCoord();
         int z = this.getBaseMetaTileEntity().getZCoord();
-        double xOffset = (double)(0 * this.getExtendedFacing().getRelativeBackInWorld().offsetX + -1 * this.getExtendedFacing().getRelativeUpInWorld().offsetX + 0 * this.getExtendedFacing().getRelativeLeftInWorld().offsetX);
-        double zOffset = (double)(0 * this.getExtendedFacing().getRelativeBackInWorld().offsetZ + -1 * this.getExtendedFacing().getRelativeUpInWorld().offsetZ + 0 * this.getExtendedFacing().getRelativeLeftInWorld().offsetZ);
-        double yOffset = (double)(0 * this.getExtendedFacing().getRelativeBackInWorld().offsetY + -1 * this.getExtendedFacing().getRelativeUpInWorld().offsetY + 0 * this.getExtendedFacing().getRelativeLeftInWorld().offsetY);
-        this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
-        this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), BasicBlocks.Block_RenderHoloController);
-        TileHoloController tile =
-            (TileHoloController) getBaseMetaTileEntity().getWorld().getTileEntity((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset));
-        tile.setFacing(this.getExtendedFacing());
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("Facing", this.getExtendedFacing().toString());
-        tile.writeToNBT(nbt);
+        this.getBaseMetaTileEntity().getWorld().setTileEntity(x,y - 1,z,new TileHoloController(set(getExtendedFacing())));
+        /*switch (getExtendedFacing()){
+          case WEST_NORMAL_NONE->  this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 0, 3);
+            case NORTH_NORMAL_NONE-> this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 2, 3);
+          case SOUTH_NORMAL_NONE-> this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 3, 3);
+            default ->  this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 1, 3);
+        }*/
+
+    }
+
+    private static int set(ExtendedFacing extendedFacing){
+        switch (extendedFacing){
+            case WEST_NORMAL_NONE-> {
+                return  0;
+            }
+            case NORTH_NORMAL_NONE-> {return  2;}
+            case SOUTH_NORMAL_NONE-> {return  3;}
+            default ->  {return  1;}
+        }
     }
 }

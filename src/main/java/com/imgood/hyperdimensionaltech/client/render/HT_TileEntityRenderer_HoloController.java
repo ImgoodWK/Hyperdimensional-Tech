@@ -5,19 +5,24 @@ import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.alignment.enumerable.Rotation;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.machines.HT_UniversalMineralProcessor;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHoloController;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.metatileentity.BaseMetaTileEntity;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
+import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
+import java.lang.reflect.Field;
 import java.util.Objects;
 
 import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
@@ -34,11 +39,10 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
     private double feildSizeZ = 1;
     private String textureFile;
     private String objFile;
-    private String facing;
     public Double rotation = 0.0;
 
     public HT_TileEntityRenderer_HoloController() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileHoloController.class, this);
+        ClientRegistry.bindTileEntitySpecialRenderer(BaseMetaTileEntity.class, this);
     }
 
     public HT_TileEntityRenderer_HoloController(
@@ -48,34 +52,38 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
         this.objFile = objFile;
         this.ParticleStreamTexture = new ResourceLocation(MOD.ID + ":textures/model/"+this.textureFile+".png");
         this.ParticleStream = AdvancedModelLoader.loadModel(new ResourceLocation(MOD.ID + ":model/"+this.objFile+".obj"));
-        ClientRegistry.bindTileEntitySpecialRenderer(TileHoloController.class, this);
+        ClientRegistry.bindTileEntitySpecialRenderer(BaseMetaTileEntity.class, this);
     }
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
-        if (!(tile instanceof TileHoloController tileHoloController)) return;
+        if (tile instanceof BaseMetaTileEntity){
+            if (((BaseMetaTileEntity)tile).getMetaTileID() == 10002 ){
+                GL11.glPushMatrix();
+                GL11.glTranslated(x + 0.5, y + 1.5, z + 0.5);
+                    this.getTileEntityFacing(tile, x, y, z);
+                renderFeild(feildSizeX, feildSizeY, feildSizeZ);
+                GL11.glPopMatrix();
+            }
+        }return;
+        /*if (!(tile instanceof TileHoloController tileHoloController)) return;
         //final double size = TILEhrefEILD.size;
         //this.setFacing(((TileHoloController) tile).Facing);
-
         GL11.glPushMatrix();
-        this.getTileEntityFacing(tileHoloController, x, y, z);
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+        this.getTileEntityFacing(tileHoloController,x,y,z);
         renderFeild(feildSizeX, feildSizeY, feildSizeZ);
-        GL11.glPopMatrix();
+        GL11.glPopMatrix();*/
     }
 
     private void renderFeild(double sizeX, double sizeY, double sizeZ) {
         GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.bindTexture(ParticleStreamTexture);
         GL11.glScaled(sizeX, sizeY, sizeZ);
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
         ParticleStream.renderAll();
         GL11.glDisable(GL11.GL_BLEND);
-        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
     public HT_TileEntityRenderer_HoloController setRenderSize(double sizeX, double sizeY, double sizeZ) {
@@ -85,36 +93,31 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
         return this;
     }
 
-    public String getFacing() {
-        return this.facing;
-    }
 
-    public void setFacing(String facing) {
-        this.facing = facing;
-    }
-
-    private void getTileEntityFacing(TileHoloController tile, double x, double y, double z) {
-        switch (tile.getExtendedFacing()) {
-            case WEST_NORMAL_NONE:
+    private void getTileEntityFacing(TileEntity tile,double x, double y, double z)  {
+        NBTTagCompound nbt = new NBTTagCompound();
+        tile.writeToNBT(nbt);
+        switch (ForgeDirection.getOrientation(nbt.getShort("mFacing"))) {
+            case WEST -> {
                 HyperdimensionalTech.logger.warn("WEST_NORMAL_NONE");
                 //GL11.glTranslated(x + 0.2, y, z + 0.5);
                 GL11.glRotated(90.0, 0.0, 1.0, 0.0);
-                break;
-            case EAST_NORMAL_NONE:
-                HyperdimensionalTech.logger.warn("EAST_NORMAL_NONE");
-                //GL11.glTranslated(x + 0.8, y, z + 0.5);
-                GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
-                break;
-            case NORTH_NORMAL_NONE:
+            }
+            case NORTH -> {
                 HyperdimensionalTech.logger.warn("NORTH_NORMAL_NONE");
                 //GL11.glTranslated(x + 0.5, y, z + 0.2);
                 GL11.glRotated(0.0, 0.0, 1.0, 0.0);
-                break;
-            case SOUTH_NORMAL_NONE:
+            }
+            case SOUTH -> {
                 HyperdimensionalTech.logger.warn("SOUTH_NORMAL_NONE");
                 //GL11.glTranslated(x + 0.5, y, z + 0.8);
                 GL11.glRotated(180.0, 0.0, 1.0, 0.0);
+            }
+            default -> {
+                HyperdimensionalTech.logger.warn("EAST_NORMAL_NONE");
+                //GL11.glTranslated(x + 0.8, y, z + 0.5);
+                GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
+            }
         }
-
     }
 }
