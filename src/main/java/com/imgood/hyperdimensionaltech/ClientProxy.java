@@ -1,11 +1,16 @@
 package com.imgood.hyperdimensionaltech;
 
+import com.imgood.hyperdimensionaltech.client.render.HT_ItemRenderer_HoloController;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_HoloController;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_ParticleStream;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_Feild;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import net.minecraft.util.EnumFacing;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 public class ClientProxy extends CommonProxy {
 
@@ -17,7 +22,10 @@ public class ClientProxy extends CommonProxy {
         new HT_TileEntityRenderer_Feild();
         new HT_TileEntityRenderer_ParticleStream();
         new HT_TileEntityRenderer_HoloController();
+        Block block = GameRegistry.findBlock("gregtech", "gt.blockmachines");
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(block), new HT_ItemRenderer_HoloController());
     }
+
 
     @Override
     public void postInit(FMLPostInitializationEvent event) {

@@ -2,6 +2,7 @@ package com.imgood.hyperdimensionaltech.machines;
 
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
@@ -9,9 +10,11 @@ import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBuild
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTooltips;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHoloController;
+import com.imgood.hyperdimensionaltech.utils.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.GT_HatchElement;
+import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -22,6 +25,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -36,9 +40,13 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 
 public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_UniversalMineralProcessor> {
+    private final int horizontalOffSet = 27;
+    private final int verticalOffSet = 37;
+    private final int depthOffSet = 10;
 
     public HT_UniversalMineralProcessor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
+        this.setConstructorOffSet(27, 37, 10);
     }
 
     public HT_UniversalMineralProcessor(String aName) {
@@ -68,7 +76,7 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
                 .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.time_acceleration_field_generator")),8))
                 .addElement('J', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")),6))
                 .addElement('K', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")),0))
-                .addElement('L', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")),10000))
+                .addElement('L', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")),10002))
                 .build();
         }
         return STRUCTURE_DEFINITION;
@@ -105,5 +113,37 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
     @Override
     public ITexture[] getTexture(IGregTechTileEntity baseMetaTileEntity, ForgeDirection side, ForgeDirection facing, int colorIndex, boolean active, boolean redstoneLevel) {
         return null;
+    }
+
+    @Override
+    public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
+        HyperdimensionalTech.logger.warn("testmsgonFirstTickin725"+this.horizontalOffSet);
+        repairMachine();
+        if (!checkPiece(mName, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet)) {
+            HyperdimensionalTech.logger.info("httestmsgcheckmachine725" + this.horizontalOffSet);
+            return false;
+        }
+        this.setCoefficientMultiplier(1 + getExtraCoefficientMultiplierByVoltageTier());
+        ItemStack controllerSlot = getControllerSlot();
+        this.setIsWirelessMode(controllerSlot != null && controllerSlot.stackSize > 0
+            && Utils.metaItemEqual(controllerSlot, ItemList.EnergisedTesseract.get(1)));
+        HyperdimensionalTech.logger.info("httestmsgcheckmachine" + true);
+        return true;
+    }
+
+    @Override
+    public void construct(ItemStack stackSize, boolean hintsOnly) {
+        HyperdimensionalTech.logger.warn("testmsgconstructin725"+this.horizontalOffSet);
+        buildPiece(mName, stackSize, hintsOnly, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet);
+    }
+
+    @Override
+    public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
+        HyperdimensionalTech.logger.warn("testmsgsurvivalConstructin725"+this.mName+this.horizontalOffSet);
+        if (mMachine) {
+            return -1;
+        }
+        int result = survivialBuildPiece(mName, stackSize,this.horizontalOffSet,this.verticalOffSet,this.depthOffSet, elementBudget, env, false, true);
+        return result;
     }
 }

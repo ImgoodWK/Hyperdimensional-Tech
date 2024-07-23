@@ -58,20 +58,23 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
         if (tile instanceof BaseMetaTileEntity){
-            if (((BaseMetaTileEntity)tile).getMetaTileID() == 10002 ){
-                GL11.glPushMatrix();
-                GL11.glTranslated(x + 0.5, y + -0.5, z + 0.5);
+            if (!((BaseMetaTileEntity) tile).getOwnerName().contains("BlockRender")) {
+                HyperdimensionalTech.logger.warn("testmsguuid725notplayer"+((BaseMetaTileEntity) tile).getOwnerName());
+                if (((BaseMetaTileEntity)tile).getMetaTileID() == 10002 ){
+                    GL11.glPushMatrix();
+                    GL11.glTranslated(x + 0.5, y + -0.3, z + 0.5);
                     this.getTileEntityFacing(tile, x, y, z);
-                renderNoGlow(feildSizeX, feildSizeY, feildSizeZ);
-                GL11.glPopMatrix();
+                    renderNoGlow(feildSizeX, feildSizeY, feildSizeZ);
+                    GL11.glPopMatrix();
 
-                GL11.glPushMatrix();
-                GL11.glTranslated(x + 0.5, y + -0.5, z + 0.5);
-                this.getTileEntityFacing(tile, x, y, z);
-                renderGlow(feildSizeX, feildSizeY, feildSizeZ);
-                GL11.glPopMatrix();
-
+                    GL11.glPushMatrix();
+                    GL11.glTranslated(x + 0.5, y + -0.3, z + 0.5);
+                    this.getTileEntityFacing(tile, x, y, z);
+                    renderGlow(feildSizeX, feildSizeY, feildSizeZ);
+                    GL11.glPopMatrix();
+                }
             }
+
         }return;
         /*if (!(tile instanceof TileHoloController tileHoloController)) return;
         //final double size = TILEhrefEILD.size;
@@ -83,7 +86,7 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
         GL11.glPopMatrix();*/
     }
 
-    private void renderNoGlow(double sizeX, double sizeY, double sizeZ) {
+    public void renderNoGlow(double sizeX, double sizeY, double sizeZ) {
 
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
@@ -94,7 +97,7 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
-    private void renderGlow(double sizeX, double sizeY, double sizeZ) {
+    public void renderGlow(double sizeX, double sizeY, double sizeZ) {
         GlStateManager.disableLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -103,6 +106,17 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
         this.bindTexture(ParticleStreamTexture);
         GL11.glScaled(sizeX, sizeY, sizeZ);
         ParticleStream.renderOnly("cubeholoscreen", "cubefrontline");
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
+    }
+    public void renderInventory() {
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        this.bindTexture(ParticleStreamTexture);
+        GL11.glScaled(0.7, 0.7, 0.7);
+        GL11.glRotated(180.0, 0.0, 1.0, 0.0);
+        ParticleStream.renderAllExcept("cubeholoscreen");
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
     }

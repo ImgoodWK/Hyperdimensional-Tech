@@ -319,16 +319,16 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
      */
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        HyperdimensionalTech.logger.warn("testmsgonFirstTickin");
+        HyperdimensionalTech.logger.warn("testmsgonFirstTickin725"+this.horizontalOffSet);
         repairMachine();
         if (!checkPiece(mName, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet)) {
-            HyperdimensionalTech.logger.info("httestmsgcheckmachine" + false);
+            HyperdimensionalTech.logger.info("httestmsgcheckmachine725" + this.horizontalOffSet);
             return false;
         }
         this.setCoefficientMultiplier(1 + getExtraCoefficientMultiplierByVoltageTier());
         ItemStack controllerSlot = getControllerSlot();
-        isWirelessMode = controllerSlot != null && controllerSlot.stackSize > 0
-            && Utils.metaItemEqual(controllerSlot, ItemList.EnergisedTesseract.get(1));
+        this.setIsWirelessMode(controllerSlot != null && controllerSlot.stackSize > 0
+            && Utils.metaItemEqual(controllerSlot, ItemList.EnergisedTesseract.get(1)));
         HyperdimensionalTech.logger.info("httestmsgcheckmachine" + true);
         return true;
     }
@@ -344,7 +344,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
      */
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        HyperdimensionalTech.logger.warn("testmsgconstructin");
+        HyperdimensionalTech.logger.warn("testmsgconstructin725"+this.horizontalOffSet);
         buildPiece(mName, stackSize, hintsOnly, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet);
     }
 
@@ -359,7 +359,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
      */
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        HyperdimensionalTech.logger.warn("testmsgsurvivalConstructin"+this.mName+this.horizontalOffSet);
+        HyperdimensionalTech.logger.warn("testmsgsurvivalConstructin725"+this.mName+this.horizontalOffSet);
         if (mMachine) {
             return -1;
         }
@@ -773,40 +773,6 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
         return tooltipBuilder;
     }
 
-    public int getHorizontalOffSet() {
-        HyperdimensionalTech.logger.info("httestmsgHorizontal"+this.horizontalOffSet);
-        return this.horizontalOffSet;
-    }
-
-    public int getVerticalOffSet() {
-        HyperdimensionalTech.logger.info("httestmsgverticalOffSet"+this.verticalOffSet);
-        return this.verticalOffSet;
-    }
-
-    public int getDepthOffSet() {
-        HyperdimensionalTech.logger.info("httestmsgdepthOffSet"+this.depthOffSet);
-        return this.depthOffSet;
-    }
-
-    public void setMode(byte mode) {
-        this.mode = mode;
-    }
-
-    public void setHorizontalOffSet(int horizontalOffSet) {
-        this.horizontalOffSet = horizontalOffSet;
-    }
-
-    public void setVerticalOffSet(int verticalOffSet) {
-        this.verticalOffSet = verticalOffSet;
-    }
-
-    public void setDepthOffSet(int depthOffSet) {
-        this.depthOffSet = depthOffSet;
-    }
-
-    public int getCoefficientMultiplier() {
-        return coefficientMultiplier;
-    }
 
     public void setCoefficientMultiplier(int coefficientMultiplier) {
         HyperdimensionalTech.logger.warn("httestmsgsetCoefficientMultiplier"+this.coefficientMultiplier);
@@ -848,9 +814,11 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
         return this;
     }
     public HT_MultiMachineBuilder<T> setConstructorOffSet(int horizontalOffSet, int verticalOffSet, int depthOffSet) {
+
         this.horizontalOffSet = horizontalOffSet;
         this.verticalOffSet = verticalOffSet;
         this.depthOffSet = depthOffSet;
+        HyperdimensionalTech.logger.warn("httestmsgsetConstructorOffSet725"+this.horizontalOffSet+this.verticalOffSet+this.depthOffSet);
         return this;
     }
     public HT_MultiMachineBuilder<T> setTooltipBuilder(GT_Multiblock_Tooltip_Builder tooltipBuilder) {

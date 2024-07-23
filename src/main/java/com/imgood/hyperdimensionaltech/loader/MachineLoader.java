@@ -50,7 +50,7 @@ public class MachineLoader {
             .setConstructor(HT_MachineConstrucs.CONSTRUCTOR_SingularrityUnravelingDevice)
             .setRecipeMap(HT_RecipeMap.HyperdimensionalResonanceEvolverRecipes)
             .setTooltipBuilder(new HT_MachineTooltips().getTooltip("SingularityUnravelingDevice"))
-            .setConstructorOffSet(5,5,5)
+            .setConstructorOffSet(27,37,10)
             .getStackForm(1);
         HT_ItemList.SingularityUnravelingDevice.set(UniversalMineralProcessor);
         //endregion
