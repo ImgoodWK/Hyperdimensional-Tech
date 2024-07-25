@@ -1,13 +1,10 @@
 package com.imgood.hyperdimensionaltech.client.render;
 
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
-import net.minecraft.client.renderer.ItemRenderer;
 
-public class HT_ItemRenderer_HoloController implements IItemRenderer {
+public class HT_ItemRenderer implements IItemRenderer {
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -28,8 +25,6 @@ public class HT_ItemRenderer_HoloController implements IItemRenderer {
         String itemName = item.getItem().getUnlocalizedName();
         int meta = item.getItemDamage();
         if ("gt.blockmachines".equals(itemName) && meta == 10002) {
-            // 自定义渲染逻辑
-            HyperdimensionalTech.logger.warn("testmsgrenderitem725" + itemName + meta);
             new HT_TileEntityRenderer_HoloController().renderInventory();
         }
     }
