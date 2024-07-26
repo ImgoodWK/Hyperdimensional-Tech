@@ -195,7 +195,6 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     public void loadNBTData(NBTTagCompound aNBT) {
-        HyperdimensionalTech.logger.warn("testmsgloadNBTData");
         super.loadNBTData(aNBT);
         mode = aNBT.getByte("mode");
         coefficientMultiplier = aNBT.getInteger("coefficientMultiplier");
@@ -205,7 +204,6 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     public void saveNBTData(NBTTagCompound aNBT) {
-        HyperdimensionalTech.logger.warn("testmsgaveNBTData");
         super.saveNBTData(aNBT);
         mode = aNBT.getByte("mode");
         coefficientMultiplier = aNBT.getInteger("coefficientMultiplier");
@@ -215,13 +213,12 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     public RecipeMap<?> getRecipeMap() {
-        HyperdimensionalTech.logger.warn("testmsggetRecipeMap");
         return this.recipeMap;
     }
 
     @Override
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer aPlayer, float aX, float aY, float aZ) {
-        HyperdimensionalTech.logger.warn("testmsgonScrewdriverRightClick");
+        //HyperdimensionalTech.logger.warn("testmsgonScrewdriverRightClick");
         if (getBaseMetaTileEntity().isServerSide()) {
             this.mode = (byte) ((this.mode + 1) % 2);
             GT_Utility.sendChatToPlayer(
@@ -232,7 +229,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     protected void setProcessingLogicPower(ProcessingLogic logic) {
-        HyperdimensionalTech.logger.warn("testmsgsetProcessingLogicPower");
+        //HyperdimensionalTech.logger.warn("testmsgsetProcessingLogicPower");
         if (isWirelessMode) {
             // wireless mode ignore voltage limit
             logic.setAvailableVoltage(0);
@@ -252,7 +249,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
      * @param renderBlock 渲染器直接放这里就行，支持现有的渲染器，如果你想用TST或者GTNH里其他的渲染器你可以找到代码把渲染器传进去
      */
     public void RenderBlock(int offsetX, int offsetY, int offsetZ, boolean isRendering, Block renderBlock) {
-        HyperdimensionalTech.logger.warn("testmsgRenderBlock");
+        //HyperdimensionalTech.logger.warn("testmsgRenderBlock");
         int x = this.getBaseMetaTileEntity().getXCoord();
         int y = this.getBaseMetaTileEntity().getYCoord();
         int z = this.getBaseMetaTileEntity().getZCoord();
@@ -268,7 +265,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     }
     @Override
     public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        HyperdimensionalTech.logger.warn("testmsgaddToMachineList");
+        //HyperdimensionalTech.logger.warn("testmsgaddToMachineList");
         return super.addToMachineList(aTileEntity, aBaseCasingIndex) || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }
 
@@ -319,21 +316,21 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
      */
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        HyperdimensionalTech.logger.warn("testmsgonFirstTickin725"+this.horizontalOffSet);
+        //HyperdimensionalTech.logger.warn("testmsgonFirstTickin725"+this.horizontalOffSet);
         repairMachine();
         if (!checkPiece(mName, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet)) {
-            HyperdimensionalTech.logger.info("httestmsgcheckmachine725" + this.horizontalOffSet);
+            //HyperdimensionalTech.logger.info("httestmsgcheckmachine725" + this.horizontalOffSet);
             return false;
         }
         this.setCoefficientMultiplier(1 + getExtraCoefficientMultiplierByVoltageTier());
         ItemStack controllerSlot = getControllerSlot();
         this.setIsWirelessMode(controllerSlot != null && controllerSlot.stackSize > 0
             && Utils.metaItemEqual(controllerSlot, ItemList.EnergisedTesseract.get(1)));
-        HyperdimensionalTech.logger.info("httestmsgcheckmachine" + true);
+        //HyperdimensionalTech.logger.info("httestmsgcheckmachine" + true);
         return true;
     }
     public int getExtraCoefficientMultiplierByVoltageTier() {
-        HyperdimensionalTech.logger.warn("testmsgetExtraCoefficientMultiplierByVoltageTier");
+        //HyperdimensionalTech.logger.warn("testmsgetExtraCoefficientMultiplierByVoltageTier");
         return (int) Utils.calculatePowerTier(getMaxInputEu());
     }
 
@@ -344,7 +341,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
      */
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        HyperdimensionalTech.logger.warn("testmsgconstructin725"+this.horizontalOffSet);
+        //HyperdimensionalTech.logger.warn("testmsgconstructin725"+this.horizontalOffSet);
         buildPiece(mName, stackSize, hintsOnly, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet);
     }
 
@@ -359,7 +356,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
      */
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        HyperdimensionalTech.logger.warn("testmsgsurvivalConstructin725"+this.mName+this.horizontalOffSet);
+        //HyperdimensionalTech.logger.warn("testmsgsurvivalConstructin725"+this.mName+this.horizontalOffSet);
         if (mMachine) {
             return -1;
         }
@@ -368,7 +365,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     }
 
     public void repairMachine() {
-        HyperdimensionalTech.logger.warn("testmsgrepairMachine");
+        //HyperdimensionalTech.logger.warn("testmsgrepairMachine");
         this.mHardHammer = true;
         this.mSoftHammer = true;
         this.mScrewdriver = true;
@@ -384,7 +381,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     @OverrideOnly
     @Override
     protected ProcessingLogic createProcessingLogic() {
-        HyperdimensionalTech.logger.warn("testmsgcreateProcessingLogic");
+        //HyperdimensionalTech.logger.warn("testmsgcreateProcessingLogic");
         return (ProcessingLogic) (new HT_ProcessingLogic() {
 
             @Override
@@ -411,50 +408,50 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     }
 
     protected boolean isEnablePerfectOverclock(boolean isEnablePerfectOverclock){
-        HyperdimensionalTech.logger.warn("testmsgisEnablePerfectOverclock");
+        //HyperdimensionalTech.logger.warn("testmsgisEnablePerfectOverclock");
         return isEnablePerfectOverclock;
     }
 
     protected float getEuModifier() {
-        HyperdimensionalTech.logger.warn("testmsggetEuModifier");
+        //HyperdimensionalTech.logger.warn("testmsggetEuModifier");
         return mode == 0 ? 1 : 1F / coefficientMultiplier;
     }
 
     protected float getSpeedBonus() {
 
-        HyperdimensionalTech.logger.warn("testmsggetSpeedBonus");
+        //HyperdimensionalTech.logger.warn("testmsggetSpeedBonus");
         return mode == 1 ? 1 : 0.5F / coefficientMultiplier;
     }
 
     protected  int getMaxParallelRecipes() {
-        HyperdimensionalTech.logger.warn("testmsggetMaxParallelRecipes1");
+        //HyperdimensionalTech.logger.warn("testmsggetMaxParallelRecipes1");
         if (isWirelessMode) {
-            HyperdimensionalTech.logger.warn("testmsggetMaxParallelRecipes2");
+            //HyperdimensionalTech.logger.warn("testmsggetMaxParallelRecipes2");
             return Integer.MAX_VALUE;
         }
         int test = mode == 1 ? ValueEnum.Parallel_HighParallelMode_HyperdimensionalResonanceEvolver
             : ValueEnum.Parallel_HighSpeedMode_HyperdimensionalResonanceEvolver;
-        HyperdimensionalTech.logger.warn("testmsggetMaxParallelRecipes3"+test);
+        //HyperdimensionalTech.logger.warn("testmsggetMaxParallelRecipes3"+test);
         return mode == 1 ? ValueEnum.Parallel_HighParallelMode_HyperdimensionalResonanceEvolver
             : ValueEnum.Parallel_HighSpeedMode_HyperdimensionalResonanceEvolver;
     }
 
     protected int getLimitedMaxParallel() {
-        HyperdimensionalTech.logger.warn("testmsggetLimitedMaxParallel");
+        //HyperdimensionalTech.logger.warn("testmsggetLimitedMaxParallel");
         return this.getMaxParallelRecipes();
     }
 
     @Override
     @Nonnull
     public CheckRecipeResult checkProcessing() {
-        HyperdimensionalTech.logger.warn("testmsgcheckProcessing");
+        //HyperdimensionalTech.logger.warn("testmsgcheckProcessing");
         boolean flag = false;
 
         if (!isWirelessMode) {
             if (this.getBaseMetaTileEntity().isActive()) {
                 this.isRendering = true;
                 if (this.enableRender && this.isRendering) {
-                    HyperdimensionalTech.logger.info("testmsgend"+(this.enableRender && !this.isRendering)+this.enableRender+this.isRendering);
+                    //HyperdimensionalTech.logger.info("testmsgend"+(this.enableRender && !this.isRendering)+this.enableRender+this.isRendering);
                     RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, true, BasicBlocks.Block_RenderField);
                 }
             }else {
@@ -507,7 +504,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     }
 
     public ArrayList<ItemStack> getStoredInputsWithoutDualInputHatch() {
-        HyperdimensionalTech.logger.warn("testmsggetStoredInputsWithoutDualInputHatch");
+        //HyperdimensionalTech.logger.warn("testmsggetStoredInputsWithoutDualInputHatch");
         ArrayList<ItemStack> rList = new ArrayList();
         Iterator var2 = ((ArrayList) Utils.filterValidMTEs(this.mInputBusses)).iterator();
 
@@ -534,7 +531,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     }
 
     public ArrayList<ItemStack> getStoredInputsNoSeparation() {
-        HyperdimensionalTech.logger.warn("testmsggetStoredInputsNoSeparation");
+        //HyperdimensionalTech.logger.warn("testmsggetStoredInputsNoSeparation");
         ArrayList<ItemStack> rList = new ArrayList();
         if (this.supportsCraftingMEBuffer()) {
             Iterator var2 = this.mDualInputHatches.iterator();
@@ -599,7 +596,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     }
     @Override
     public String[] getInfoData() {
-        HyperdimensionalTech.logger.warn("testmsggetInfoData");
+        //HyperdimensionalTech.logger.warn("testmsggetInfoData");
         String[] origin = super.getInfoData();
         String[] ret = new String[origin.length + 1];
         System.arraycopy(origin, 0, ret, 0, origin.length);
@@ -614,7 +611,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     public boolean addEnergyHatchOrExoticEnergyHatchToMachineList(IGregTechTileEntity aTileEntity,
                                                                   int aBaseCasingIndex) {
-        HyperdimensionalTech.logger.warn("testmsgaddEnergyHatchOrExoticEnergyHatchToMachineList");
+        //HyperdimensionalTech.logger.warn("testmsgaddEnergyHatchOrExoticEnergyHatchToMachineList");
         return this.addEnergyInputToMachineList(aTileEntity, aBaseCasingIndex)
             || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }
@@ -651,7 +648,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     public boolean addEnergyOutput(long aEU) {
-        HyperdimensionalTech.logger.warn("testmsgaddEnergyOutput");
+        //HyperdimensionalTech.logger.warn("testmsgaddEnergyOutput");
         if (aEU <= 0L) {
             return true;
         } else {
@@ -661,7 +658,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     public boolean addEnergyOutputMultipleDynamos(long aEU, boolean aAllowMixedVoltageDynamos) {
-        HyperdimensionalTech.logger.warn("testmsgaddEnergyOutputMultipleDynamos");
+        //HyperdimensionalTech.logger.warn("testmsgaddEnergyOutputMultipleDynamos");
         int injected = 0;
         long totalOutput = 0L;
         long aFirstVoltageFound = -1L;
@@ -716,31 +713,31 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
 
     @Override
     public boolean isCorrectMachinePart(ItemStack aStack) {
-        HyperdimensionalTech.logger.warn("testmsgisCorrectMachinePart");
+        //HyperdimensionalTech.logger.warn("testmsgisCorrectMachinePart");
         return true;
     }
 
     @Override
     public boolean doRandomMaintenanceDamage() {
-        HyperdimensionalTech.logger.warn("testmsgdoRandomMaintenanceDamage");
+        //HyperdimensionalTech.logger.warn("testmsgdoRandomMaintenanceDamage");
         return true;
     }
 
     @Override
     public int getMaxEfficiency(ItemStack aStack) {
-        HyperdimensionalTech.logger.warn("testmsggetMaxEfficiency");
+        //HyperdimensionalTech.logger.warn("testmsggetMaxEfficiency");
         return 10000;
     }
 
     @Override
     public int getDamageToComponent(ItemStack aStack) {
-        HyperdimensionalTech.logger.warn("testmsggetDamageToComponent");
+        //HyperdimensionalTech.logger.warn("testmsggetDamageToComponent");
         return 0;
     }
 
     @Override
     public boolean explodesOnComponentBreak(ItemStack aStack) {
-        HyperdimensionalTech.logger.warn("testmsgexplodesOnComponentBreak");
+        //HyperdimensionalTech.logger.warn("testmsgexplodesOnComponentBreak");
         return false;
     }
 
@@ -769,13 +766,13 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     }
 
     public GT_Multiblock_Tooltip_Builder getTooltipBuilder() {
-        HyperdimensionalTech.logger.info("httestmsggetTooltipBuilder");
+        //HyperdimensionalTech.logger.info("httestmsggetTooltipBuilder");
         return tooltipBuilder;
     }
 
 
     public void setCoefficientMultiplier(int coefficientMultiplier) {
-        HyperdimensionalTech.logger.warn("httestmsgsetCoefficientMultiplier"+this.coefficientMultiplier);
+        //HyperdimensionalTech.logger.warn("httestmsgsetCoefficientMultiplier"+this.coefficientMultiplier);
         this.coefficientMultiplier = coefficientMultiplier;
     }
 
@@ -784,7 +781,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     }
 
     public void setIsWirelessMode(boolean wirelessMode) {
-        HyperdimensionalTech.logger.warn("httestmsgsetIsWirelessMode"+this.isWirelessMode);
+        //HyperdimensionalTech.logger.warn("httestmsgsetIsWirelessMode"+this.isWirelessMode);
         isWirelessMode = wirelessMode;
     }
 
@@ -818,7 +815,7 @@ public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
         this.horizontalOffSet = horizontalOffSet;
         this.verticalOffSet = verticalOffSet;
         this.depthOffSet = depthOffSet;
-        HyperdimensionalTech.logger.warn("httestmsgsetConstructorOffSet725"+this.horizontalOffSet+this.verticalOffSet+this.depthOffSet);
+        //HyperdimensionalTech.logger.warn("httestmsgsetConstructorOffSet725"+this.horizontalOffSet+this.verticalOffSet+this.depthOffSet);
         return this;
     }
     public HT_MultiMachineBuilder<T> setTooltipBuilder(GT_Multiblock_Tooltip_Builder tooltipBuilder) {

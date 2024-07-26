@@ -97,32 +97,10 @@ public class HTTextHandler {
             if (LangMapNeedToWrite.isEmpty()) {
                 return;
             }
-            // if (LangMap.equals(LangMapBackUp)) {
-            // TwistSpaceTechnology.LOG.info(TwistSpaceTechnology.MODID + ": No new text need to handle.");
-            // /* If you need to see what the fuck in the LangMap and LangMapBackUp, remove the comment markers. */
-            //
-            // // for(String key : LangMapBackUp.keySet()){
-            // // gtnhcommunitymod.LOG.info("Get LanMapBackUp at serializeLangMap() : " + key + " --- " +
-            // // LangMapBackUp.get(key));
-            // // }
-            // // for (String key : LangMap.keySet()){
-            // // gtnhcommunitymod.LOG.info("Get LanMap at serializeLangMap() : " + key + " --- " + LangMap.get(key));
-            // // }
-            //
-            // return;
-            // }
-
-            // /* New a Map with new texts need to write. */
-            // Map<String, String> LangMapNeedWrite = new HashMap<String, String>(LangMap);
-            //
-            // /* Remove texts not need to write. */
-            // for (String tx : LangMapBackUp.keySet()) {
-            // LangMapNeedWrite.remove(tx);
-            // }
 
             /* Prepare the files. */
-            File en_US_lang = new File(HyperdimensionalTech.DevResource + "\\assets\\gtnhcommunitymod\\lang\\en_US.lang");
-            File zh_CN_lang = new File(HyperdimensionalTech.DevResource + "\\assets\\gtnhcommunitymod\\lang\\zh_CN.lang");
+            File en_US_lang = new File(HyperdimensionalTech.DevResource + "\\assets\\hyperdimensionaltech\\lang\\en_US.lang");
+            File zh_CN_lang = new File(HyperdimensionalTech.DevResource + "\\assets\\hyperdimensionaltech\\lang\\zh_CN.lang");
             HyperdimensionalTech.LOG.info("File finder with en_US.lang catch a file absolutePath: " + en_US_lang.getAbsolutePath());
             HyperdimensionalTech.LOG.info("File finder with en_US.lang catch a file named: " + en_US_lang.getName());
 

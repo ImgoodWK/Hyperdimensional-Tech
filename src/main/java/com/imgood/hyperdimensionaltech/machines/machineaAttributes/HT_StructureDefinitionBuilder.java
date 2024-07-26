@@ -49,7 +49,6 @@ public class HT_StructureDefinitionBuilder<T> {
         StructureDefinition.Builder<T> builder= StructureDefinition.<T>builder();
         builder.addShape(this.structureName, transpose(this.shape));
         for (element element : this.elements) {
-            HyperdimensionalTech.logger.info("testmsg716"+ elementChar+element.casingName+element.meta);
             builder.addElement(elementChar++, ofBlock(Objects.requireNonNull(Block.getBlockFromName(element.casingName)), element.meta));
         }
         this.STRUCTURE_DEFINITION = builder.build();

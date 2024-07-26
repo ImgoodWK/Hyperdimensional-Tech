@@ -142,7 +142,6 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
     }*/
     @Override
     public IStructureDefinition<HT_SingularityUnravelingDevice> getStructureDefinition() {
-        HyperdimensionalTech.logger.info("httestmsggetconstructor"+getConstructor());
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition
                 .<HT_SingularityUnravelingDevice>builder()
@@ -232,7 +231,6 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
     }
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        HyperdimensionalTech.logger.warn("testmsgsurvivalConstruct");
         if (mMachine) {
             return -1;
         }
@@ -244,7 +242,6 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
     }
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        HyperdimensionalTech.logger.warn("testmsgcheckMachine");
         repairMachine();
         if (!checkPiece(mName, 31,16,3)) {
 

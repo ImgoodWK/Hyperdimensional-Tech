@@ -83,13 +83,12 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
     }
     @Override
     public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        HyperdimensionalTech.logger.warn("testmsgonFirstTick"+this.getExtendedFacing());
         super.onFirstTick(aBaseMetaTileEntity);
         this.setOwnerUUID(aBaseMetaTileEntity.getOwnerUuid());
         int x = this.getBaseMetaTileEntity().getXCoord();
         int y = this.getBaseMetaTileEntity().getYCoord();
         int z = this.getBaseMetaTileEntity().getZCoord();
-        this.getBaseMetaTileEntity().getWorld().setTileEntity(x,y - 1,z,new TileHoloController(set(getExtendedFacing())));
+        //this.getBaseMetaTileEntity().getWorld().setTileEntity(x,y - 1,z,new TileHoloController(set(getExtendedFacing())));
         /*switch (getExtendedFacing()){
           case WEST_NORMAL_NONE->  this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 0, 3);
             case NORTH_NORMAL_NONE-> this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 2, 3);
@@ -117,29 +116,24 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
 
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
-        HyperdimensionalTech.logger.warn("testmsgonFirstTickin725"+this.horizontalOffSet);
         repairMachine();
         if (!checkPiece(mName, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet)) {
-            HyperdimensionalTech.logger.info("httestmsgcheckmachine725" + this.horizontalOffSet);
             return false;
         }
         this.setCoefficientMultiplier(1 + getExtraCoefficientMultiplierByVoltageTier());
         ItemStack controllerSlot = getControllerSlot();
         this.setIsWirelessMode(controllerSlot != null && controllerSlot.stackSize > 0
             && Utils.metaItemEqual(controllerSlot, ItemList.EnergisedTesseract.get(1)));
-        HyperdimensionalTech.logger.info("httestmsgcheckmachine" + true);
         return true;
     }
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        HyperdimensionalTech.logger.warn("testmsgconstructin725"+this.horizontalOffSet);
         buildPiece(mName, stackSize, hintsOnly, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet);
     }
 
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        HyperdimensionalTech.logger.warn("testmsgsurvivalConstructin725"+this.mName+this.horizontalOffSet);
         if (mMachine) {
             return -1;
         }

@@ -87,10 +87,8 @@ public final class HT_MachineConstrucs {
     public int[] getOffset(String machineName){
         switch (machineName){
             case "singularityunravelingdevice":
-                HyperdimensionalTech.logger.info("testmsggetOffset:small SingularityUnravelingDevice");
                 return OFFSET_SingularrityUnravelingDevice;
             case "SingularityUnravelingDevice":
-                HyperdimensionalTech.logger.info("testmsggetOffset:big SingularityUnravelingDevice");
                 return OFFSET_SingularrityUnravelingDevice;
             default:
                 return null;
