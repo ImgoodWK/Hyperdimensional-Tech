@@ -5,44 +5,30 @@ import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import com.imgood.hyperdimensionaltech.block.BasicBlocks;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBuilder;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
-import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineTooltips;
-import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHoloController;
 import com.imgood.hyperdimensionaltech.utils.Utils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.GT_HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
-import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GT_HatchElementBuilder;
-import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Objects;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_HoloController;
 
 public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_UniversalMineralProcessor> {
     private final int horizontalOffSet = 27;
     private final int verticalOffSet = 37;
     private final int depthOffSet = 10;
+    private HT_TileEntityRenderer_HoloController renderer = new HT_TileEntityRenderer_HoloController();
 
     public HT_UniversalMineralProcessor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -139,5 +125,15 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
         }
         int result = survivialBuildPiece(mName, stackSize,this.horizontalOffSet,this.verticalOffSet,this.depthOffSet, elementBudget, env, false, true);
         return result;
+    }
+
+    @Override
+    public void render() {
+        HyperdimensionalTech.logger.warn("testmsg729render");
+        renderer.renderHoloController(this,
+            (TileEntity)this.getBaseMetaTileEntity(),
+            this.getBaseMetaTileEntity().getXCoord(),
+            this.getBaseMetaTileEntity().getYCoord(),
+            this.getBaseMetaTileEntity().getZCoord());
     }
 }

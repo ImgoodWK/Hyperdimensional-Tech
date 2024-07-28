@@ -74,9 +74,11 @@ import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap
 /**
  * 为了更快速便捷开发机器诞生的快速Base类，只需要传入一堆属性或者别的对象就能正常运作，如有特殊机器请用另一个机器的Base类
  */
-public class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
+public abstract class HT_MultiMachineBuilder<T extends HT_MultiMachineBuilder<T>>
     extends GT_MetaTileEntity_ExtendedPowerMultiBlockBase<T> implements IConstructable, ISurvivalConstructable {
 
+    public abstract void render();
+    //public abstract void render(TileEntity tile, double x, double y, double z, float timeSinceLastTick);
     /**
      * 机器内部属性，用于模式相关功能
      */
