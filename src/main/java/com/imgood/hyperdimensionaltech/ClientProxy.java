@@ -1,5 +1,6 @@
 package com.imgood.hyperdimensionaltech;
 
+import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityHolographicDisplay;
 import com.imgood.hyperdimensionaltech.client.render.HT_ItemRenderer;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_HoloController;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_ParticleStream;
@@ -21,6 +22,7 @@ public class ClientProxy extends CommonProxy {
         new HT_TileEntityRenderer_Feild();
         new HT_TileEntityRenderer_ParticleStream();
         new HT_TileEntityRenderer_HoloController();
+        new HT_TileEntityHolographicDisplay();
         Block block = GameRegistry.findBlock("gregtech", "gt.blockmachines");
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(block), new HT_ItemRenderer());
     }
