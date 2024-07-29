@@ -12,6 +12,7 @@ import gregtech.api.enums.GT_HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.util.GT_HatchElementBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -28,11 +29,12 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
     private final int horizontalOffSet = 27;
     private final int verticalOffSet = 37;
     private final int depthOffSet = 10;
-    private HT_TileEntityRenderer_HoloController renderer = new HT_TileEntityRenderer_HoloController();
+    private HT_TileEntityRenderer_HoloController renderer;
 
     public HT_UniversalMineralProcessor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
         this.setConstructorOffSet(27, 37, 10);
+        this.renderer = new HT_TileEntityRenderer_HoloController();
     }
 
     public HT_UniversalMineralProcessor(String aName) {
@@ -66,33 +68,6 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
                 .build();
         }
         return STRUCTURE_DEFINITION;
-    }
-    @Override
-    public void onFirstTick(IGregTechTileEntity aBaseMetaTileEntity) {
-        super.onFirstTick(aBaseMetaTileEntity);
-        this.setOwnerUUID(aBaseMetaTileEntity.getOwnerUuid());
-        int x = this.getBaseMetaTileEntity().getXCoord();
-        int y = this.getBaseMetaTileEntity().getYCoord();
-        int z = this.getBaseMetaTileEntity().getZCoord();
-        //this.getBaseMetaTileEntity().getWorld().setTileEntity(x,y - 1,z,new TileHoloController(set(getExtendedFacing())));
-        /*switch (getExtendedFacing()){
-          case WEST_NORMAL_NONE->  this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 0, 3);
-            case NORTH_NORMAL_NONE-> this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 2, 3);
-          case SOUTH_NORMAL_NONE-> this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 3, 3);
-            default ->  this.getBaseMetaTileEntity().getWorld().setBlock(x, y - 1, z, BasicBlocks.Block_RenderHoloController, 1, 3);
-        }*/
-
-    }
-
-    private static int set(ExtendedFacing extendedFacing){
-        switch (extendedFacing){
-            case WEST_NORMAL_NONE-> {
-                return  0;
-            }
-            case NORTH_NORMAL_NONE-> {return  2;}
-            case SOUTH_NORMAL_NONE-> {return  3;}
-            default ->  {return  1;}
-        }
     }
 
     @Override
@@ -128,12 +103,32 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
     }
 
     @Override
-    public void render() {
-        HyperdimensionalTech.logger.warn("testmsg729render");
-        renderer.renderHoloController(this,
-            (TileEntity)this.getBaseMetaTileEntity(),
-            this.getBaseMetaTileEntity().getXCoord(),
-            this.getBaseMetaTileEntity().getYCoord(),
-            this.getBaseMetaTileEntity().getZCoord());
+    public void render(double x, double y, double z,double feildSizeX, double feildSizeY, double feildSizeZ, TileEntity tile) {
+        if (this.renderer == null) {
+            this.renderer = new HT_TileEntityRenderer_HoloController();
+        }
+        String ownerName = this.getBaseMetaTileEntity().getOwnerName();
+        int progress = this.getBaseMetaTileEntity().getProgress();
+        String name = this.getBaseMetaTileEntity().getInventoryName();
+        if (ownerName.contains("BlockRender")) {
+            //通过主机所有者名判断是NEI就够预览渲染就渲染所有主机部件并且发光
+            this.renderer.renderNoGlowExpect(feildSizeX, feildSizeY, feildSizeZ, x, y, z, tile, "cubeholoscreen", "cubefrontline");
+            this.renderer.renderGlow(feildSizeX, feildSizeY, feildSizeZ, x, y, z, tile, "cubeholoscreen", "cubefrontline");
+        } else {
+            //所有者不是NEI预览渲染就按照主机渲染逻辑渲染
+            if (progress != 0) {
+                //判断主机meta和progress如果meta正确且在工作状态就渲染所有主机部件并且特定部位发光，同时显示主机文字
+                this.renderer.renderNoGlowExpect(feildSizeX, feildSizeY, feildSizeZ, x, y, z, tile, "cubeholoscreen", "cubefrontline");
+                this.renderer.renderGlow(feildSizeX, feildSizeY, feildSizeZ, x, y, z, tile, "cubeholoscreen", "cubefrontline");
+                this.renderer.drawCenteredString(tile, "进度:" + progress, x, 1.80 + y, z, 0x00ffff);
+                this.renderer.drawCenteredString(tile, "所有:" + ownerName, x, 2.00 + y, z, 0x00ffff);
+                this.renderer.drawCenteredString(tile, "名称:" + name, x, 2.20 + y, z, 0x00ffff);
+                this.renderer.drawCenteredString(tile, "Hyperdimensional Tech", x, 2.40 + y, z, 0x00ffff);
+            } else {
+                //判断主机meta和progress如果meta正确且未在工作状态就渲染所有主机部件并且特定部位不发光，全息屏及全息字不显示
+                this.renderer.renderNoGlowExpect(feildSizeX, feildSizeY, feildSizeZ, x, y, z, tile, "cubeholoscreen", "cubefrontline");
+                this.renderer.renderGlow(feildSizeX, feildSizeY, feildSizeZ, x, y, z, tile, "cubefrontline");
+            }
+        }
     }
 }
