@@ -2,6 +2,7 @@ package com.imgood.hyperdimensionaltech;
 
 
 import com.imgood.hyperdimensionaltech.loader.BlocksLoader;
+import com.imgood.hyperdimensionaltech.loader.GuiLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +37,8 @@ public class HyperdimensionalTech {
     public static final boolean isInDevMode = false;
     @SidedProxy(clientSide = "com.imgood.hyperdimensionaltech.ClientProxy", serverSide = "com.imgood.hyperdimensionaltech.CommonProxy")
     public static CommonProxy proxy;
+    @Mod.Instance(HyperdimensionalTech.MODID)
+    public static HyperdimensionalTech instance;
 
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items, etc, and register them with the
@@ -59,6 +62,7 @@ public class HyperdimensionalTech {
         logger.info(
             "Loading Textrues" + TexturesGtBlock.HyperDimensionalResonanceEvolverField.getTextureFile()
                 .getResourcePath());
+
     }
 
     @Mod.EventHandler
@@ -68,6 +72,7 @@ public class HyperdimensionalTech {
         MachineLoader.loadMachinePostInit();
         HTTextHandler.serializeLangMap(isInDevMode);
         HyperdimensionalTechFeatures.init();
+        GuiLoader.loadGui(this);
         proxy.postInit(event);
     }
 
@@ -80,6 +85,7 @@ public class HyperdimensionalTech {
     public void onLoadCompleteEvent(FMLLoadCompleteEvent event) {
         // Your post-load initialization code here
         RecipeLoader.loadRecipes();
+
     }
 
 

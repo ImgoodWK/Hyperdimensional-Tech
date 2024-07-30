@@ -25,12 +25,12 @@ import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
  * @create: 2024-07-30 13:24
  **/
 public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
-    private static ResourceLocation ParticleStreamTexture = new ResourceLocation(MOD.ID + ":textures/model/stiched_texture.png");
+    private static ResourceLocation ParticleStreamTexture = new ResourceLocation(MOD.ID + ":textures/model/HolographicDisplay.png");
     private static IModelCustom ParticleStream = AdvancedModelLoader
-        .loadModel(new ResourceLocation(MOD.ID + ":model/Hyperdimensional Controller.obj"));
-    private double feildSizeX = 0.1;
-    private double feildSizeY = 0.1;
-    private double feildSizeZ = 0.1;
+        .loadModel(new ResourceLocation(MOD.ID + ":model/HolographicDisplay.obj"));
+    private double feildSizeX = 4;
+    private double feildSizeY = 4;
+    private double feildSizeZ = 4;
     private String textureFile;
     private String objFile;
     private Field mMetaTileEntityField;
@@ -52,10 +52,16 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
-        drawCenteredString(tile, "1234", x, 1.80 + y, z, 0x00ffff);
-        drawCenteredString(tile, "GTNH" , x, 2.00 + y, z, 0x00ffff);
-        drawCenteredString(tile, "测试浮空字" , x, 2.20 + y, z, 0x00ffff);
-        drawCenteredString(tile, "⚙Hyperdimensional Tech", x, 2.40 + y, z, 0x00ffff);
+        double textYOffset = 0.5;
+        String text = ((TileHolographicDisplay)tile).getText();
+
+        renderNoGlowExpect(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y+0.5, z, tile, "screen", "botmidlight");
+        renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y+0.5, z, tile, "screen", "botmidlight");
+        drawCenteredString(tile, "1234", x, textYOffset+0.80 + y, z, 0x00ffff);
+        drawCenteredString(tile, "GTNH" , x, textYOffset+1.00 + y, z, 0x00ffff);
+        drawCenteredString(tile, text , x, textYOffset+1.20 + y, z, 0x00ffff);
+        drawCenteredString(tile, "⚙Hyperdimensional Tech", x, textYOffset+1.40 + y, z, 0x00ffff);
+
     }
 
 
@@ -195,11 +201,12 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         this.getTileEntityFacing(tile, x, y, z, 0.2, 0, 0.8);
 
         // 缩放文本，使其大小适合
-        float scale = 0.016666668F * 1.0F;
+        float scale = 0.016666668F * 1.3F;
         GL11.glScalef(-scale, -scale, scale);
         mc.fontRenderer.drawString(text, 0, 0, color);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
     }
+
 }

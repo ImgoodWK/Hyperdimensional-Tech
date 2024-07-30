@@ -22,6 +22,7 @@ public class TileHolographicDisplay extends TileEntity {
 
     public void setText(String text) {
         this.text = text;
+        markDirty();
     }
 
     public TileHolographicDisplay(){
@@ -49,12 +50,14 @@ public class TileHolographicDisplay extends TileEntity {
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         nbt.setDouble("renderStatus",this.size);
+        nbt.setString("Text1",getText());
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         size = nbt.getDouble("size");
+        this.text = nbt.getString("Text1");
     }
 
     public double getRotation() {
