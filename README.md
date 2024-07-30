@@ -40,19 +40,31 @@ https://github.com/ImgoodWK/Hyperdimensional-Tech/assets/62410956/f022336f-ba32-
 3、添加某些带有CTM的方块的变种方块，用以支持在斜坡的伪CTM。  
 4、矿石工厂：代替复杂矿物处理产线的机器，输入原料直接输出产物和副产物（会有增产机制）。  
 
-Mod Name: HyperdimensionalTech (超维科技)  
+注：目前本模组正在缓慢开发中，机器等合成配方尚未添加。 模组预览：
+Mod Name: HyperdimensionalTech  
 Author: Imgood  
-Module Description: This mod is designed around the theme of hyperdimensional technology. The backstory is set in a universe of multiple dimensions, where a series of machines use multidimensional tech to extract and process resources.  
 
-In one of these dimensions live silicon-based native beings with extremely advanced technology. They have achieved true mechanical ascension, with all the natives merging into a collective consciousness. As their civilization continued to develop, they constantly replicated themselves. They possess technologies such as space compression, antimatter production, zero-point energy generation, and mass annihilation power. They successfully avoided the universe’s eventual fate—the heat death. Supported by space compression technology, all space within their dimension is compressed and filled with mechanical bodies at singularity-level density. The GTNH world, where the player exists, has developed a machine (the Hyperdimensional Resonance Evolver) that can mine materials from multiple dimensions. For example, the mechanical dimension can yield mechanical singularities. These singularities can be decompressed (another machine: the Hyperdimensional Matter Decompressor) into mechanical components, chips, processors, AE storage elements, etc., at any stage according to the GTNH world view.  
+Module Description:  
+HyperdimensionalTech is a module themed around hyperdimensional technology. Set in a multidimensional universe, it utilizes hyperdimensional technology to acquire and process resources.  
 
-Objective: The synthesis process of late-stage materials is complex, often involving dozens, if not hundreds or thousands, of steps for a single AE order. This module aims to reduce these processes to a few steps, minimizing performance consumption on servers or clients. Additionally, the machines are specially designed to be huge with a cool sci-fi aesthetic, catering to building aesthetic needs. It might incorporate Mixin to modify vanilla content of GTNH and add additional building blocks for machine structures. Planned additions include various block variants to support pseudo-CTM for slopes.  
+Sources of Various Ultimate Technologies in the Module:  
+In a certain dimension, there exist silicon-based indigenous beings with extremely high technological levels. They have achieved true mechanical ascension, merging all inhabitants into a unified consciousness. Throughout their civilization’s development, they continuously replicated themselves, mastering technologies such as space compression, antimatter production, zero-point energy generation, and mass annihilation power generation. They successfully avoided the universe’s ultimate fate—the heat death—and used space compression technology to compress all the dimension’s space into singularity-level density, filling it within mechanical bodies.
 
-Author’s Note: I’m delighted that everyone is adding new content to my module. I developed this module by learning from others’ code (TST, Chisel, etc.). Please ensure that your structures align with the module’s initial design before adding your content. If your machine structures do not conform to the module’s aesthetic design, they will certainly not be permitted. I can help redesign the structure for you.  
+What Players Need to Do:  
+In the GTNH world, players need to develop machines to extract materials from multiple dimensions. For example, in the Mechanical Dimension, players can excavate mechanical singularities and decompress them to obtain mechanical components, chips, processors, AE storage elements, etc., for any stage of the GTNH world.  
 
+The module not only includes the Mechanical Dimension but also envisions many other fantastical dimensions, such as:  
 
-Planned Development Content:  
-Singularity Decompressor: A power generation device used to decompress singularities produced by the Hyperdimensional Resonance Evolver.  
-Hyperdimensional Resonance Evolver: A machine that mines singularities from multiple dimensions.  
-Adding variants of blocks with CTM support for pseudo-CTM on slopes.  
-Ore Factory: A machine to replace complex ore processing lines, inputting raw materials directly outputting products and by-products (with a yield increase mechanism).  
+Gourmet Dimension: This dimension is filled with various food resources that players can gather.  
+
+Plant Dimension: A dimension filled with giant exotic plants, where players can collect rare life resources. The plants in this dimension have self-repair and reproduction abilities, allowing players to obtain infinite biological resources.  
+
+Mechanical Dimension: A dimension entirely composed of high-tech buildings and devices, where players can find advanced technological resources and components. These resources can be used to enhance the efficiency of existing machines or to create entirely new high-tech equipment.  
+
+Hyperdimensional Space: The boundary area between all dimensions, a truly accessible world constructed in a square fractal structure. Specific machines can only operate in this dimension.  
+
+Objective:  
+The module aims to simplify the complex synthesis processes of late-game materials. Typically, an AE order might involve dozens or even hundreds of steps; this module hopes to reduce these steps to a few, thereby decreasing server or client performance usage. Additionally, the machines in the module are uniquely designed, usually large with a cool sci-fi appearance, meeting architectural aesthetic needs. The module may make changes to GTNH vanilla content via Mixin, adding extra building blocks for machine structures and planning to introduce various block variants to support slope CTM (pseudo).  
+
+Author’s Note:  
+I am delighted for everyone to add new content to my module. I also learned from the codes of other modules (such as TST, Chisel) while developing this one. Before adding your content, please ensure your design aligns with the module’s original intent. If your machine structure does not match the aesthetic design of this module, it will not be allowed. I can redesign the structure for you.  
