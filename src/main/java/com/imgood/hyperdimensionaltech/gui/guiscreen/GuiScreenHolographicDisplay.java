@@ -16,7 +16,13 @@ import org.lwjgl.input.Keyboard;
  **/
 public class GuiScreenHolographicDisplay extends GuiScreen {
     private final TileHolographicDisplay tileHolographicDisplay;
-    private GuiTextField textField;
+    private GuiTextField textFieldLine1;
+    private GuiTextField textFieldLine2;
+    private GuiTextField textFieldLine3;
+    private GuiTextField textFieldLine4;
+    private GuiTextField textFieldColorR;
+    private GuiTextField textFieldColorG;
+    private GuiTextField textFieldColorB;
     private EntityPlayer player;
     private World world;
     private int xSize;
@@ -33,16 +39,44 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
         Keyboard.enableRepeatEvents(true);
         this.buttonList.clear();
 
-        int k = (this.width - this.xSize) / 2;
-        int l = (this.height - this.ySize) / 2;
+        int k = 0;
+        int l = 0;
 
-        this.textField = new GuiTextField(this.fontRendererObj, k + 10, l + 20, 150, 20);
-        this.textField.setMaxStringLength(100);
-        this.textField.setFocused(true);
-        this.textField.setText(this.tileHolographicDisplay.getText());
+        this.textFieldLine1 = new GuiTextField(this.fontRendererObj,
+            k + 10,
+            l + 60,
+            150,
+            20);
+        this.textFieldLine2 = new GuiTextField(this.fontRendererObj,
+            k + 10,
+            l + 40,
+            150,
+            20);
+        this.textFieldLine3 = new GuiTextField(this.fontRendererObj,
+            k + 10,
+            l + 20,
+            150,
+            20);
+        this.textFieldLine4 = new GuiTextField(this.fontRendererObj,
+            k + 10,
+            l + 0,
+            150,
+            20);
+        this.textFieldLine1.setMaxStringLength(100);
+        this.textFieldLine1.setFocused(true);
+        this.textFieldLine1.setText(this.tileHolographicDisplay.getText(0));
+        this.textFieldLine2.setMaxStringLength(100);
+        this.textFieldLine2.setFocused(true);
+        this.textFieldLine2.setText(this.tileHolographicDisplay.getText(1));
+        this.textFieldLine3.setMaxStringLength(100);
+        this.textFieldLine3.setFocused(true);
+        this.textFieldLine3.setText(this.tileHolographicDisplay.getText(2));
+        this.textFieldLine4.setMaxStringLength(100);
+        this.textFieldLine4.setFocused(true);
+        this.textFieldLine4.setText(this.tileHolographicDisplay.getText(3));
 
-        this.buttonList.add(new GuiButton(0, k + 10, l + 50, 70, 20, "Save"));
-        this.buttonList.add(new GuiButton(1, k + 90, l + 50, 70, 20, "Cancel"));
+        this.buttonList.add(new GuiButton(0, k + 10, l + 100, 70, 20, "Save"));
+        this.buttonList.add(new GuiButton(1, k + 90, l + 100, 70, 20, "Cancel"));
     }
 
     @Override
@@ -52,19 +86,24 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == 0) { // Save button
-            this.tileHolographicDisplay.setText(this.textField.getText());
+        if (button.id == 0) {
+            this.tileHolographicDisplay.setText(0, this.textFieldLine1.getText());
+            this.tileHolographicDisplay.setText(1, this.textFieldLine2.getText());
+            this.tileHolographicDisplay.setText(2, this.textFieldLine3.getText());
+            this.tileHolographicDisplay.setText(3, this.textFieldLine4.getText());
             this.world.markBlockForUpdate(this.tileHolographicDisplay.xCoord, this.tileHolographicDisplay.yCoord, this.tileHolographicDisplay.zCoord);
             this.mc.displayGuiScreen(null);
-        } else if (button.id == 1) { // Cancel button
+        } else if (button.id == 1) {
             this.mc.displayGuiScreen(null);
         }
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) {
-        if (this.textField.textboxKeyTyped(typedChar, keyCode)) {
-            // Handle text input
+        if (!this.textFieldLine1.textboxKeyTyped(typedChar, keyCode) &&
+            !this.textFieldLine2.textboxKeyTyped(typedChar, keyCode) &&
+            !this.textFieldLine3.textboxKeyTyped(typedChar, keyCode) &&
+            !this.textFieldLine4.textboxKeyTyped(typedChar, keyCode)) {
         } else {
             super.keyTyped(typedChar, keyCode);
         }
@@ -73,19 +112,28 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        this.textField.mouseClicked(mouseX, mouseY, mouseButton);
+        this.textFieldLine1.mouseClicked(mouseX, mouseY, mouseButton);
+        this.textFieldLine2.mouseClicked(mouseX, mouseY, mouseButton);
+        this.textFieldLine3.mouseClicked(mouseX, mouseY, mouseButton);
+        this.textFieldLine4.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public void updateScreen() {
-        this.textField.updateCursorCounter();
+        this.textFieldLine1.updateCursorCounter();
+        this.textFieldLine2.updateCursorCounter();
+        this.textFieldLine3.updateCursorCounter();
+        this.textFieldLine4.updateCursorCounter();
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         this.drawCenteredString(this.fontRendererObj, "Floating Text Editor", this.width / 2, 10, 16777215);
-        this.textField.drawTextBox();
+        this.textFieldLine1.drawTextBox();
+        this.textFieldLine2.drawTextBox();
+        this.textFieldLine3.drawTextBox();
+        this.textFieldLine4.drawTextBox();
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

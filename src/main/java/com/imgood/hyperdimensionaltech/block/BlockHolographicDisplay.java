@@ -8,9 +8,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class BlockHolographicDisplay extends Block {
         this.setBlockName(blockRenderId);
         this.setLightLevel(100.0f);
         setBlockName("HolographicDisplay");
-        setBlockBounds(0, 0, 0, 1, 1, 1);
+        setBlockBounds(-1, 0, 0, 2, 0.5f, 1);
         setLightOpacity(0);
         GameRegistry.registerBlock(this, getUnlocalizedName());
     }
@@ -84,5 +86,15 @@ public class BlockHolographicDisplay extends Block {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float what, float these, float are) {
         player.openGui(HyperdimensionalTech.instance, 0, world, x, y, z);
         return true;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase placer, ItemStack itemIn) {
+            //int direction = MathHelper.floor_double((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        int direction = MathHelper.floor_double((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+            TileEntity tileEntity = world.getTileEntity(x, y, z);
+            if (tileEntity instanceof TileHolographicDisplay) {
+                ((TileHolographicDisplay) tileEntity).rotation = direction;
+        }
     }
 }
