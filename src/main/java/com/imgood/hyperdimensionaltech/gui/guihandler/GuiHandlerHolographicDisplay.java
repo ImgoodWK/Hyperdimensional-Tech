@@ -1,5 +1,6 @@
 package com.imgood.hyperdimensionaltech.gui.guihandler;
 
+import com.imgood.hyperdimensionaltech.gui.cotainer.ContainerHolographicDisplay;
 import com.imgood.hyperdimensionaltech.gui.guiscreen.GuiScreenHolographicDisplay;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -11,7 +12,12 @@ public class GuiHandlerHolographicDisplay implements IGuiHandler {
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        // No server GUI needed for this example
+        /*TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileHolographicDisplay) {
+            if (ID == 0) {
+                return new ContainerHolographicDisplay(player.inventory, world, x, y, z);
+            }
+        }*/
         return null;
     }
 

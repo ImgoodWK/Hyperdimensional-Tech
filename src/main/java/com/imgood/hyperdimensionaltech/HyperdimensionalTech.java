@@ -3,6 +3,11 @@ package com.imgood.hyperdimensionaltech;
 
 import com.imgood.hyperdimensionaltech.loader.BlocksLoader;
 import com.imgood.hyperdimensionaltech.loader.GuiLoader;
+import com.imgood.hyperdimensionaltech.network.PacketUpdateHandlerHolographicDisplay;
+import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,6 +44,7 @@ public class HyperdimensionalTech {
     public static CommonProxy proxy;
     @Mod.Instance(HyperdimensionalTech.MODID)
     public static HyperdimensionalTech instance;
+    public static SimpleNetworkWrapper network;
 
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items, etc, and register them with the
@@ -58,6 +64,8 @@ public class HyperdimensionalTech {
         MachineLoader.loadMachines();
         // RecipeLoader.loadRecipes();
         NEIHandler.IMCSender();
+        network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+        network.registerMessage(PacketUpdateHandlerHolographicDisplay.class, PacketUpdateHolographicDisplay.class, 0, Side.SERVER);
         proxy.init(event);
         logger.info(
             "Loading Textrues" + TexturesGtBlock.HyperDimensionalResonanceEvolverField.getTextureFile()

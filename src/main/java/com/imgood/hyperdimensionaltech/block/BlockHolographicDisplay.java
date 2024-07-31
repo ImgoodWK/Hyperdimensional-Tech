@@ -36,7 +36,7 @@ public class BlockHolographicDisplay extends Block {
         this.setBlockName(blockRenderId);
         this.setLightLevel(100.0f);
         setBlockName("HolographicDisplay");
-        setBlockBounds(-1, 0, 0, 2, 0.5f, 1);
+        setBlockBounds(0, 0, 0, 1, 0.5f, 1);
         setLightOpacity(0);
         GameRegistry.registerBlock(this, getUnlocalizedName());
     }
@@ -91,7 +91,7 @@ public class BlockHolographicDisplay extends Block {
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase placer, ItemStack itemIn) {
             //int direction = MathHelper.floor_double((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-        int direction = MathHelper.floor_double((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        int direction = MathHelper.floor_double((double)((placer.rotationYaw+180) * 4.0F / 360.0F) + 0.5D) & 3;
             TileEntity tileEntity = world.getTileEntity(x, y, z);
             if (tileEntity instanceof TileHolographicDisplay) {
                 ((TileHolographicDisplay) tileEntity).rotation = direction;
