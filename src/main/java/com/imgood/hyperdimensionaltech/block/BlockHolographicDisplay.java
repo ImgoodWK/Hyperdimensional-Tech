@@ -94,7 +94,7 @@ public class BlockHolographicDisplay extends Block {
         int direction = MathHelper.floor_double((double)((placer.rotationYaw+180) * 4.0F / 360.0F) + 0.5D) & 3;
             TileEntity tileEntity = world.getTileEntity(x, y, z);
             if (tileEntity instanceof TileHolographicDisplay) {
-                ((TileHolographicDisplay) tileEntity).rotation = direction;
+                ((TileHolographicDisplay) tileEntity).facing = direction;
         }
     }
 }

@@ -76,7 +76,7 @@ public class HT_ItemRenderer implements IItemRenderer {
                 case "gt.blockmachines" -> {
                     switch (meta) {
                         case 10002 -> {
-                            new HT_TileEntityHolographicDisplay().renderInventory();
+                            new HT_TileEntityRenderer_HoloController().renderInventory();
                         }
                         default -> {
 

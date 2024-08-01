@@ -67,9 +67,6 @@ public class HyperdimensionalTech {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         network.registerMessage(PacketUpdateHandlerHolographicDisplay.class, PacketUpdateHolographicDisplay.class, 0, Side.SERVER);
         proxy.init(event);
-        logger.info(
-            "Loading Textrues" + TexturesGtBlock.HyperDimensionalResonanceEvolverField.getTextureFile()
-                .getResourcePath());
 
     }
 

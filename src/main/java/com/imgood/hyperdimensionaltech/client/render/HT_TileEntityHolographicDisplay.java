@@ -1,25 +1,29 @@
 package com.imgood.hyperdimensionaltech.client.render;
 
 import com.gtnewhorizons.modularui.api.GlStateManager;
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import com.imgood.hyperdimensionaltech.gui.guiscreen.GuiScreenHolographicDisplay;
-import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHoloController;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
-import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
 
@@ -36,8 +40,9 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
     private double feildSizeX = 4;
     private double feildSizeY = 4;
     private double feildSizeZ = 4;
-    private int rotation;
+    private int facing;
     private TileHolographicDisplay tileHolographicDisplay;
+    private static Map<String, ResourceLocation> imageCache = new HashMap<>();
 
     public HT_TileEntityHolographicDisplay() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileHolographicDisplay.class, this);
@@ -49,30 +54,39 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         World world = Minecraft.getMinecraft().theWorld;
         TileHolographicDisplay tileEntity = (TileHolographicDisplay) world.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord);
         double textYOffset = 1;
-        this.rotation = tileEntity.rotation;
-        String textContents[] = tileEntity.textContents;
-        renderNoGlowExpect(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y+0.5, z, tile, "screen", "botmidlight");
-        renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y+0.5, z, tile, "screen", "botmidlight");
-        drawCenteredString(tile, textContents[3], x, textYOffset+0.80 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
-        drawCenteredString(tile, textContents[2] , x, textYOffset+1.00 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
-        drawCenteredString(tile, textContents[1] , x, textYOffset+1.20 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
-        drawCenteredString(tile, textContents[0], x, textYOffset+1.40 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
+        if (tileEntity != null) {
+            this.facing = tileEntity.facing;
+            String textContents[] = tileEntity.textContents;
+            renderNoGlowExpect(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y+0.4, z, tile, "screen", "botmidlight");
+            renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y+0.4, z, tile, "screen", "botmidlight");
+            drawCenteredString(tile, textContents[3], x, textYOffset+0.80 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
+            drawCenteredString(tile, textContents[2] , x, textYOffset+1.00 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
+            drawCenteredString(tile, textContents[1] , x, textYOffset+1.20 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
+            drawCenteredString(tile, textContents[0], x, textYOffset+1.40 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
+            if (!tileEntity.getImgURL().isEmpty()) {
+                renderImage(tile,
+                    tileEntity.getImgURL(),
+                    x+translateOffset("x", tileEntity.getImgStartX()),
+                    y+tileEntity.getImgStartY(),
+                    z+translateOffset("z", tileEntity.getImgStartX()),
+                    tileEntity.getImgScaledX(),
+                    tileEntity.getImgScaledY());
+            }
+        }
     }
 
 
     public void renderNoGlowExpect(double sizeX, double sizeY, double sizeZ, double x, double y, double z, TileEntity tile, String... elementsExcept) {
-
         GL11.glPushMatrix();
-        GL11.glTranslated( 0.5, -0.3,  0.5);
-        this.getTileEntityFacing(tile, x, y, z,0.2);
-        //GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glTranslated(0.5, -0.3, 0.5);
+        this.getTileEntityFacing(tile, x, y, z, 0.2);
+        GL11.glEnable(GL11.GL_LIGHTING);  // 启用光照
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.bindTexture(ParticleStreamTexture);
         GL11.glScaled(sizeX, sizeY, sizeZ);
         ParticleStream.renderAllExcept(elementsExcept);
         GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
     }
 
@@ -94,9 +108,8 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
 
     public void renderGlow(double sizeX, double sizeY, double sizeZ, double x, double y, double z, TileEntity tile, String... elements) {
         GL11.glPushMatrix();
-        GL11.glTranslated( 0.5, -0.3, 0.5);
-        this.getTileEntityFacing(tile, x, y, z,0.2);
-        //this.getRotationMatrix(tile, x, y, z);
+        GL11.glTranslated(0.5, -0.3, 0.5);
+        this.getTileEntityFacing(tile, x, y, z, 0.2);
         GlStateManager.disableLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -105,6 +118,8 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         this.bindTexture(ParticleStreamTexture);
         GL11.glScaled(sizeX, sizeY, sizeZ);
         ParticleStream.renderOnly(elements);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
     }
 
@@ -134,7 +149,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
     }
 
     private void getTileEntityFacing(TileEntity tile, double x, double y, double z) {
-        int rotation = ((TileHolographicDisplay)tile).rotation;
+        int rotation = ((TileHolographicDisplay)tile).facing;
         switch (rotation) {
             case 1 -> {
                 //HyperdimensionalTech.logger.warn("WEST_NORMAL_NONE");
@@ -159,7 +174,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         }
     }
     private void getTextFacing(TileEntity tile, double x, double y, double z) {
-        int rotation = ((TileHolographicDisplay)tile).rotation;
+        int rotation = ((TileHolographicDisplay)tile).facing;
         switch (rotation) {
             case 1 -> {
                 //HyperdimensionalTech.logger.warn("WEST_NORMAL_NONE");
@@ -184,9 +199,36 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         }
     }
 
+    private void getTextFacingOpsite(TileEntity tile, double x, double y, double z) {
+        int rotation = ((TileHolographicDisplay)tile).facing;
+        switch (rotation) {
+            case 1 -> {
+                //HyperdimensionalTech.logger.warn("WEST_NORMAL_NONE");
+                GL11.glTranslated(x+1.2 , y, z);
+                GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
+            }
+            case 2 -> {
+                //HyperdimensionalTech.logger.warn("NORTH_NORMAL_NONE");
+                GL11.glTranslated(x+1 , y, z+1.2);
+                GL11.glRotated(180.0, 0.0, 1.0, 0.0);
+            }
+            case 0 -> {
+                //HyperdimensionalTech.logger.warn("SOUTH_NORMAL_NONE");
+
+                GL11.glTranslated(x , y, z-0.2);
+                GL11.glRotated(0.0, 0.0, 1.0, 0.0);
+            }
+            default -> {
+                //HyperdimensionalTech.logger.warn("EAST_NORMAL_NONE");
+
+                GL11.glTranslated(x-0.2 , y, z+1);
+                GL11.glRotated(90.0, 0.0, 1.0, 0.0);
+            }
+        }
+    }
 
     private void getTileEntityFacing(TileEntity tile, double x, double y, double z, double offset) {
-        int rotation = ((TileHolographicDisplay)tile).rotation;
+        int rotation = ((TileHolographicDisplay)tile).facing;
         //0.5 0.2 0.8
 
         switch (rotation) {
@@ -209,24 +251,123 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         }
     }
 
+    private ResourceLocation getImageFromURL(String url) {
+        if (imageCache.containsKey(url)) {
+            return imageCache.get(url);
+        }
+
+        try {
+            BufferedImage image = ImageIO.read(new URL(url));
+            String textureName = "url_texture_" + url.hashCode();
+            ResourceLocation resourceLocation = new ResourceLocation(MOD.ID, textureName);
+
+            Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(image));
+
+            imageCache.put(url, resourceLocation);
+            return resourceLocation;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public void renderImage(TileEntity tile, String imageUrl, double x, double y, double z, double width, double height) {
+        ResourceLocation texture = getImageFromURL(imageUrl);
+        if (texture == null) return;
+
+        GL11.glPushMatrix();
+        this.getTextFacing(tile, x, y, z);
+        GL11.glTranslated(0.5, 0.0, 0.5);
+
+        GlStateManager.disableLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(-width / 2, height / 2, 0.01, 1, 0);
+        tessellator.addVertexWithUV(width / 2, height / 2, 0.01, 0, 0);
+        tessellator.addVertexWithUV(width / 2, -height / 2, 0.01, 0, 1);
+        tessellator.addVertexWithUV(-width / 2, -height / 2, 0.01, 1, 1);
+        tessellator.draw();
+        GL11.glPopMatrix();
+
+        GL11.glPushMatrix();
+        this.getTextFacingOpsite(tile, x, y, z);
+        GL11.glTranslated(0.5, 0.0, 0.5);
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(-width / 2, height / 2, 0.01, 1, 0);
+        tessellator.addVertexWithUV(width / 2, height / 2, 0.01, 0, 0);
+        tessellator.addVertexWithUV(width / 2, -height / 2, 0.01, 0, 1);
+        tessellator.addVertexWithUV(-width / 2, -height / 2, 0.01, 1, 1);
+        tessellator.draw();
+
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glPopMatrix();
+
+    }
+
+    public double translateOffset(String direction, double offset) {
+        if (direction.equals("x")) {
+            switch (this.facing) {
+                case 1, 3 -> {
+                    return 0;
+                }
+                case 2 -> {
+                    return -offset;
+                }
+                case 0 -> {
+                    return offset;
+                }
+            }
+        } else if (direction.equals("z")) {
+            switch (this.facing) {
+                case 1 -> {
+                    return offset;
+                }
+                case 2, 0 -> {
+                    return 0;
+                }
+                case 3 -> {
+                    return -offset;
+                }
+            }
+        }
+        return 0;
+    }
+
 
     public void drawCenteredString(TileEntity tile, String text, double x, double y, double z, int color) {
         Minecraft mc = Minecraft.getMinecraft();
 
-        // 准备渲染
         GL11.glPushMatrix();
         this.getTextFacing(tile, x, y, z);
-        //this.getRotationMatrix(tile, x, y, z);
-        // 缩放文本，使其大小适合
         GL11.glTranslated(0.5, 0.0, 0.5);
         float scale = 0.016666668F * 1.3F;
         GlStateManager.disableLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glScalef(-scale, -scale, scale);
-        mc.fontRenderer.drawString(text,  -(mc.fontRenderer.getStringWidth(text)/2), 0, color);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_LIGHTING);
+        mc.fontRenderer.drawString(text, -(mc.fontRenderer.getStringWidth(text) / 2), 0, color);
+        GL11.glDisable(GL11.GL_BLEND);  // 禁用混合模式
+        GL11.glEnable(GL11.GL_LIGHTING); // 启用光照
+        GL11.glPopMatrix();
+
+        GL11.glPushMatrix();
+        this.getTextFacingOpsite(tile, x, y, z);
+        GL11.glTranslated(0.5, 0.0, 0.5);
+        GlStateManager.disableLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glScalef(-scale, -scale, scale);
+        mc.fontRenderer.drawString(text, -(mc.fontRenderer.getStringWidth(text) / 2), 0, color);
+        GL11.glDisable(GL11.GL_BLEND);  // 禁用混合模式
+        GL11.glEnable(GL11.GL_LIGHTING); // 启用光照
         GL11.glPopMatrix();
     }
 

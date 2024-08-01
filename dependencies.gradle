@@ -47,4 +47,5 @@ dependencies {
     implementation('com.github.GTNewHorizons:Avaritiaddons:1.7.1-GTNH:dev')
     implementation('com.github.GTNewHorizons:Eternal-Singularity:1.2.1:dev')
     implementation('com.github.GTNewHorizons:Universal-Singularities:8.7.0:dev')
+    implementation('com.github.GTNewHorizons:Angelica:1.0.0-beta2:dev')
 }

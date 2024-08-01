@@ -8,6 +8,9 @@ import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBuilder;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.utils.Utils;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.GT_HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
@@ -29,12 +32,15 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
     private final int horizontalOffSet = 27;
     private final int verticalOffSet = 37;
     private final int depthOffSet = 10;
+    @SideOnly(Side.CLIENT)
     private HT_TileEntityRenderer_HoloController renderer;
 
     public HT_UniversalMineralProcessor(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
         this.setConstructorOffSet(27, 37, 10);
-        this.renderer = new HT_TileEntityRenderer_HoloController();
+        if (FMLCommonHandler.instance().getSide().isClient()) {
+            this.renderer = new HT_TileEntityRenderer_HoloController();
+        }
     }
 
     public HT_UniversalMineralProcessor(String aName) {
@@ -102,6 +108,7 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
         return result;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void render(double x, double y, double z,double feildSizeX, double feildSizeY, double feildSizeZ, TileEntity tile) {
         if (this.renderer == null) {
