@@ -8,15 +8,12 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
-
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -37,12 +34,12 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
     private static ResourceLocation ParticleStreamTexture = new ResourceLocation(MOD.ID + ":textures/model/HolographicDisplay.png");
     private static IModelCustom ParticleStream = AdvancedModelLoader
         .loadModel(new ResourceLocation(MOD.ID + ":model/HolographicDisplay.obj"));
+    private static Map<String, ResourceLocation> imageCache = new HashMap<>();
     private double feildSizeX = 4;
     private double feildSizeY = 4;
     private double feildSizeZ = 4;
     private int facing;
     private TileHolographicDisplay tileHolographicDisplay;
-    private static Map<String, ResourceLocation> imageCache = new HashMap<>();
 
     public HT_TileEntityHolographicDisplay() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileHolographicDisplay.class, this);
@@ -54,25 +51,50 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         World world = Minecraft.getMinecraft().theWorld;
         TileHolographicDisplay tileEntity = (TileHolographicDisplay) world.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord);
         double textYOffset = 1;
-        if (tileEntity != null) {
-            this.facing = tileEntity.facing;
-            String textContents[] = tileEntity.textContents;
-            renderNoGlowExpect(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y+0.4, z, tile, "screen", "botmidlight");
-            renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y+0.4, z, tile, "screen", "botmidlight");
-            drawCenteredString(tile, textContents[3], x, textYOffset+0.80 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
-            drawCenteredString(tile, textContents[2] , x, textYOffset+1.00 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
-            drawCenteredString(tile, textContents[1] , x, textYOffset+1.20 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
-            drawCenteredString(tile, textContents[0], x, textYOffset+1.40 + y, z, Integer.parseInt(tileEntity.RGBColor, 16));
-            if (!tileEntity.getImgURL().isEmpty()) {
-                renderImage(tile,
-                    tileEntity.getImgURL(),
-                    x+translateOffset("x", tileEntity.getImgStartX()),
-                    y+tileEntity.getImgStartY(),
-                    z+translateOffset("z", tileEntity.getImgStartX()),
-                    tileEntity.getImgScaledX(),
-                    tileEntity.getImgScaledY());
+        boolean isIntest = false;
+        if (tileEntity != null && !isIntest) {
+            if (tileEntity.isVisableBody()) {
+                renderNoGlowExpect(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "screen", "botmidlight");
+                renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "botmidlight");
+            }
+            if (tileEntity.isVisableScreen()) {
+                renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "screen");
+            }
+            for (int i = 0; i < tileEntity.getDisplayDataSize(); i++) {
+                this.facing = tileEntity.facing;
+                String textContents[] = tileEntity.getContents(i);
+                drawCenteredString(tile, textContents[3], x, textYOffset + 0.80 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                drawCenteredString(tile, textContents[2], x, textYOffset + 1.00 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                drawCenteredString(tile, textContents[1], x, textYOffset + 1.20 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                drawCenteredString(tile, textContents[0], x, textYOffset + 1.40 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                if (!tileEntity.getImgURL(i).isEmpty()) {
+                    renderImage(tile,
+                        tileEntity.getImgURL(i),
+                        x + translateOffset("x", tileEntity.getImgStartX(i)),
+                        y + tileEntity.getImgStartY(i),
+                        z + translateOffset("z", tileEntity.getImgStartX(i)),
+                        tileEntity.getImgScaledX(i),
+                        tileEntity.getImgScaledY(i));
+                    renderImageBack(tile,
+                        tileEntity.getImgURL(i),
+                        x - translateOffset("x", tileEntity.getImgStartX(i)),
+                        y + tileEntity.getImgStartY(i),
+                        z - translateOffset("z", tileEntity.getImgStartX(i)),
+                        tileEntity.getImgScaledX(i),
+                        tileEntity.getImgScaledY(i));
+
+                }
+            }
+        } else {
+            if (tileEntity.isVisableBody()) {
+                renderNoGlowExpect(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "screen", "botmidlight");
+                renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "botmidlight");
+            }
+            if (tileEntity.isVisableScreen()) {
+                renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "screen");
             }
         }
+
     }
 
 
@@ -93,7 +115,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
     public void renderNoGlow(double sizeX, double sizeY, double sizeZ, double x, double y, double z, TileEntity tile, String... elementsExcept) {
 
         GL11.glPushMatrix();
-        GL11.glTranslated(0.5, -0.3,  0.5);
+        GL11.glTranslated(0.5, -0.3, 0.5);
         //this.getRotationMatrix(tile, x, y, z);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
@@ -123,25 +145,26 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    public void renderInventory(double scaleX, double scaleY, double scaleZ, double x, double y, double z, double rotation){
+    public void renderInventory(double scaleX, double scaleY, double scaleZ, double x, double y, double z, double rotation) {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.bindTexture(ParticleStreamTexture);
         GL11.glScaled(scaleX, scaleY, scaleZ);
-        GL11.glTranslated(x,y,z);
+        GL11.glTranslated(x, y, z);
         GL11.glRotated(rotation, 0.0, 1.0, 0.0);
         ParticleStream.renderAllExcept("cubeholoscreen");
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
-    public void renderInventory(){
+
+    public void renderInventory() {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.bindTexture(ParticleStreamTexture);
         GL11.glScaled(0.7, 0.7, 0.7);
-        GL11.glTranslated(0,-0.5,0);
+        GL11.glTranslated(0, -0.5, 0);
         GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
         ParticleStream.renderAllExcept("cubeholoscreen");
         GL11.glDisable(GL11.GL_BLEND);
@@ -149,86 +172,87 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
     }
 
     private void getTileEntityFacing(TileEntity tile, double x, double y, double z) {
-        int rotation = ((TileHolographicDisplay)tile).facing;
+        int rotation = ((TileHolographicDisplay) tile).facing;
         switch (rotation) {
             case 1 -> {
                 //HyperdimensionalTech.logger.warn("WEST_NORMAL_NONE");
-                GL11.glTranslated(x , y, z);
+                GL11.glTranslated(x, y, z);
                 GL11.glRotated(90.0, 0.0, 1.0, 0.0);
             }
             case 2 -> {
                 //HyperdimensionalTech.logger.warn("NORTH_NORMAL_NONE");
-                GL11.glTranslated(x , y, z);
+                GL11.glTranslated(x, y, z);
                 GL11.glRotated(0.0, 0.0, 1.0, 0.0);
             }
             case 0 -> {
                 //HyperdimensionalTech.logger.warn("SOUTH_NORMAL_NONE");
-                GL11.glTranslated(x , y, z);
+                GL11.glTranslated(x, y, z);
                 GL11.glRotated(180.0, 0.0, 1.0, 0.0);
             }
             default -> {
                 //HyperdimensionalTech.logger.warn("EAST_NORMAL_NONE");
-                GL11.glTranslated(x , y, z);
+                GL11.glTranslated(x, y, z);
                 GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
             }
         }
     }
+
     private void getTextFacing(TileEntity tile, double x, double y, double z) {
-        int rotation = ((TileHolographicDisplay)tile).facing;
+        int rotation = ((TileHolographicDisplay) tile).facing;
         switch (rotation) {
             case 1 -> {
                 //HyperdimensionalTech.logger.warn("WEST_NORMAL_NONE");
-                GL11.glTranslated(x , y, z+1);
+                GL11.glTranslated(x, y, z + 1);
                 GL11.glRotated(90.0, 0.0, 1.0, 0.0);
             }
             case 2 -> {
                 //HyperdimensionalTech.logger.warn("NORTH_NORMAL_NONE");
-                GL11.glTranslated(x , y, z);
+                GL11.glTranslated(x, y, z);
                 GL11.glRotated(0.0, 0.0, 1.0, 0.0);
             }
             case 0 -> {
                 //HyperdimensionalTech.logger.warn("SOUTH_NORMAL_NONE");
-                GL11.glTranslated(x+1 , y, z+1);
+                GL11.glTranslated(x + 1, y, z + 1);
                 GL11.glRotated(180.0, 0.0, 1.0, 0.0);
             }
             default -> {
                 //HyperdimensionalTech.logger.warn("EAST_NORMAL_NONE");
-                GL11.glTranslated(x+1 , y, z);
+                GL11.glTranslated(x + 1, y, z);
                 GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
             }
         }
     }
 
-    private void getTextFacingOpsite(TileEntity tile, double x, double y, double z) {
-        int rotation = ((TileHolographicDisplay)tile).facing;
+    private void getTextFacingBack(TileEntity tile, double x, double y, double z) {
+        int rotation = ((TileHolographicDisplay) tile).facing;
         switch (rotation) {
             case 1 -> {
                 //HyperdimensionalTech.logger.warn("WEST_NORMAL_NONE");
-                GL11.glTranslated(x+1.2 , y, z);
+                GL11.glTranslated(x + 1.2, y, z);
                 GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
             }
             case 2 -> {
                 //HyperdimensionalTech.logger.warn("NORTH_NORMAL_NONE");
-                GL11.glTranslated(x+1 , y, z+1.2);
+                GL11.glTranslated(x + 1, y, z + 1.2);
                 GL11.glRotated(180.0, 0.0, 1.0, 0.0);
             }
             case 0 -> {
                 //HyperdimensionalTech.logger.warn("SOUTH_NORMAL_NONE");
 
-                GL11.glTranslated(x , y, z-0.2);
+                GL11.glTranslated(x, y, z - 0.2);
                 GL11.glRotated(0.0, 0.0, 1.0, 0.0);
             }
             default -> {
                 //HyperdimensionalTech.logger.warn("EAST_NORMAL_NONE");
 
-                GL11.glTranslated(x-0.2 , y, z+1);
+                GL11.glTranslated(x - 0.2, y, z + 1);
                 GL11.glRotated(90.0, 0.0, 1.0, 0.0);
             }
         }
     }
 
     private void getTileEntityFacing(TileEntity tile, double x, double y, double z, double offset) {
-        int rotation = ((TileHolographicDisplay)tile).facing;
+        int rotation = ((TileHolographicDisplay) tile).facing;
         //0.5 0.2 0.8
 
         switch (rotation) {
@@ -241,11 +265,11 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                 GL11.glRotated(0.0, 0.0, 1.0, 0.0);
             }
             case 0 -> {
-                GL11.glTranslated(x, y, z -offset);
+                GL11.glTranslated(x, y, z - offset);
                 GL11.glRotated(180.0, 0.0, 1.0, 0.0);
             }
             default -> {
-                GL11.glTranslated(x -offset, y, z);
+                GL11.glTranslated(x - offset, y, z);
                 GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
             }
         }
@@ -270,6 +294,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
             return null;
         }
     }
+
     public void renderImage(TileEntity tile, String imageUrl, double x, double y, double z, double width, double height) {
         ResourceLocation texture = getImageFromURL(imageUrl);
         if (texture == null) return;
@@ -277,13 +302,11 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         GL11.glPushMatrix();
         this.getTextFacing(tile, x, y, z);
         GL11.glTranslated(0.5, 0.0, 0.5);
-
         GlStateManager.disableLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 
         Tessellator tessellator = Tessellator.instance;
@@ -295,8 +318,23 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         tessellator.draw();
         GL11.glPopMatrix();
 
+
+    }
+
+    public void renderImageBack(TileEntity tile, String imageUrl, double x, double y, double z, double width, double height) {
+        ResourceLocation texture = getImageFromURL(imageUrl);
+        if (texture == null) return;
+
         GL11.glPushMatrix();
-        this.getTextFacingOpsite(tile, x, y, z);
+        GlStateManager.disableLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+
+        Tessellator tessellator = Tessellator.instance;
+        this.getTextFacingBack(tile, x, y, z);
         GL11.glTranslated(0.5, 0.0, 0.5);
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
         tessellator.startDrawingQuads();
@@ -305,9 +343,6 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         tessellator.addVertexWithUV(width / 2, -height / 2, 0.01, 0, 1);
         tessellator.addVertexWithUV(-width / 2, -height / 2, 0.01, 1, 1);
         tessellator.draw();
-
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
 
     }
@@ -359,7 +394,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();
-        this.getTextFacingOpsite(tile, x, y, z);
+        this.getTextFacingBack(tile, x, y, z);
         GL11.glTranslated(0.5, 0.0, 0.5);
         GlStateManager.disableLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);

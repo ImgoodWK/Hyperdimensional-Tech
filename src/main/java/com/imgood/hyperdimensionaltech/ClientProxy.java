@@ -5,6 +5,8 @@ import com.imgood.hyperdimensionaltech.client.render.HT_ItemRenderer;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_HoloController;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_ParticleStream;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_Feild;
+import com.imgood.hyperdimensionaltech.loader.ItemRendererLoader;
+import com.imgood.hyperdimensionaltech.loader.RendererLoader;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -22,14 +24,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-        new HT_TileEntityRenderer_Feild();
-        new HT_TileEntityRenderer_ParticleStream();
-        new HT_TileEntityRenderer_HoloController();
-        new HT_TileEntityHolographicDisplay();
-        Block holoController = GameRegistry.findBlock("gregtech", "gt.blockmachines");
-        Block holoGraphicDisplay = GameRegistry.findBlock("hyperdimensionaltech", "tile.HolographicDisplay");
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(holoGraphicDisplay), new HT_ItemRenderer());
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(holoController), new HT_ItemRenderer());
+        RendererLoader.loadRenderers();
+        ItemRendererLoader.loadItemRenderers();
     }
 
 

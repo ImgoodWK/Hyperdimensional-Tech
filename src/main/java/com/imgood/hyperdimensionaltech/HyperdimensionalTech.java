@@ -3,6 +3,7 @@ package com.imgood.hyperdimensionaltech;
 
 import com.imgood.hyperdimensionaltech.loader.BlocksLoader;
 import com.imgood.hyperdimensionaltech.loader.GuiLoader;
+import com.imgood.hyperdimensionaltech.loader.TileEntityLoader;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHandlerHolographicDisplay;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -11,7 +12,6 @@ import cpw.mods.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.imgood.hyperdimensionaltech.block.textures.TexturesGtBlock;
 import com.imgood.hyperdimensionaltech.loader.MachineLoader;
 import com.imgood.hyperdimensionaltech.loader.RecipeLoader;
 import com.imgood.hyperdimensionaltech.nei.NEIHandler;
@@ -54,6 +54,7 @@ public class HyperdimensionalTech {
         HyperdimensionalTechFeatures.preInit();
         HTTextHandler.initLangMap(isInDevMode);
         BlocksLoader.loadBlocks();
+        TileEntityLoader.loadTileEntities();
         proxy.preInit(event);
     }
 
@@ -77,7 +78,7 @@ public class HyperdimensionalTech {
         MachineLoader.loadMachinePostInit();
         HTTextHandler.serializeLangMap(isInDevMode);
         HyperdimensionalTechFeatures.init();
-        GuiLoader.loadGui(this);
+        GuiLoader.loadGuis(this);
         proxy.postInit(event);
     }
 

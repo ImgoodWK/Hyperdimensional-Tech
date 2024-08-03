@@ -9,94 +9,140 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-/**
- * @program: Hyperdimensional-Tech
- * @description: 全息显示的tile
- * @author: Imgood
- * @create: 2024-07-30 14:00
- **/
+import java.util.HashMap;
+import java.util.Map;
+
 public class TileHolographicDisplay extends TileEntity {
     public int facing = 0;
     private int meta = 0;
-    public String[] textContents = {"","","",""};
-    public String RGBColor = "00FFFF";
-    public String imgURL = "https://pic.imgdb.cn/item/6571a358c458853aef8a6b19.png";
-    public double imgScaledX = 1;
-    public double imgScaledY = 1;
-    public double imgStartX = 0;
-    public double imgStartY = 1;
+    private Map<Integer, NBTTagCompound> displayDataMap;
+    private boolean visableScreen = true;
+    private boolean visableBody = true;
 
-    public double getImgScaledX() {
-        return imgScaledX;
+    public TileHolographicDisplay() {
+        this.displayDataMap = new HashMap<>();
+        this.setDisplayData(0,null);
     }
 
-    public void setImgScaledX(double imgScaledX) {
-        this.imgScaledX = imgScaledX;
+    public TileHolographicDisplay(int meta) {
+        this();
+        this.meta = meta;
+    }
+
+    public int getMeta() {
+        return meta;
+    }
+
+    public int getDisplayDataSize() {
+        return displayDataMap.size();
+    }
+
+    public boolean isVisableScreen() {
+        return visableScreen;
+    }
+
+    public void setVisableScreen(boolean visableScreen) {
+        this.visableScreen = visableScreen;
         markDirty();
         sendUpdatePacket();
     }
 
-    public double getImgScaledY() {
-        return imgScaledY;
+    public boolean isVisableBody() {
+        return visableBody;
     }
 
-    public void setImgScaledY(double imgScaledY) {
-        this.imgScaledY = imgScaledY;
+    public void setVisableBody(boolean visableBody) {
+        this.visableBody = visableBody;
         markDirty();
         sendUpdatePacket();
     }
 
-    public double getImgStartX() {
-        return imgStartX;
-    }
+    public void setDisplayData(int index, NBTTagCompound displayData) {
+        // 创建一个包含默认值的NBTTagCompound
+        NBTTagCompound defaultData = new NBTTagCompound();
 
-    public void setImgStartX(double imgStartX) {
-        this.imgStartX = imgStartX;
-        markDirty();
-        sendUpdatePacket();
-    }
+        // 设置默认值
+        defaultData.setString("RGBColor", "00FFFF");
+        defaultData.setString("ImgURL", "");
+        defaultData.setDouble("ImgScaledX", 1);
+        defaultData.setDouble("ImgScaledY", 1);
+        defaultData.setDouble("ImgStartX", 0);
+        defaultData.setDouble("ImgStartY", 1);
 
-    public double getImgStartY() {
-        return imgStartY;
-    }
-
-    public void setImgStartY(double imgStartY) {
-        this.imgStartY = imgStartY;
-        markDirty();
-        sendUpdatePacket();
-    }
-
-    public String getImgURL() {
-        return imgURL;
-    }
-
-    public void setImgURL(String imgURL) {
-        this.imgURL = imgURL;
-        markDirty();
-        sendUpdatePacket();
-    }
-
-    public String getText(int line) {
-        if (textContents[line] != null) {
-            return this.textContents[line];
+        for (int i = 1; i <= 4; i++) {
+            defaultData.setString("Text" + i, "");
         }
-        return "";
+
+        // 如果传入的displayData为null,使用默认值
+        if (displayData == null) {
+            displayData = defaultData;
+        } else {
+            // 对于每个默认字段,如果传入的displayData中没有,就使用默认值
+            for (String key : defaultData.func_150296_c()) {
+                if (!displayData.hasKey(key)) {
+                    if (defaultData.getTag(key) instanceof NBTTagCompound) {
+                        displayData.setTag(key, defaultData.getCompoundTag(key));
+                    } else {
+                        displayData.setTag(key, defaultData.getTag(key));
+                    }
+                }
+            }
+        }
+
+        // 保存更新后的displayData
+        displayDataMap.put(index, displayData);
+        markDirty();
+        sendUpdatePacket();
     }
 
-    public void setText(String... text) {
-        this.textContents = text;
-        markDirty();
-        sendUpdatePacket();
+    public NBTTagCompound getDisplayData(int index) {
+        return displayDataMap.getOrDefault(index, new NBTTagCompound());
     }
-    public void setText(int line, String text) {
-        this.textContents[line] = text;
-        markDirty();
-        sendUpdatePacket();
+
+    public String getText(int index, int line) {
+        line += 1;
+        return getDisplayData(index).getString("Text"+line);
     }
-    public void setRGBColor(String color) {
-        this.RGBColor = color;
-        markDirty();
-        sendUpdatePacket();
+
+    public String[] getContents(int index) {
+        String[] contents = new String[4];
+        NBTTagCompound displayData = getDisplayData(index);
+        for (int i = 1; i <= 4; i++) {
+            contents[i-1] = displayData.getString("Text" + i);
+        }
+        return contents;
+    }
+
+    public void setText(int index, String... text) {
+        NBTTagCompound displayData = getDisplayData(index);
+        NBTTagCompound textData = new NBTTagCompound();
+        for (int i = 0; i < text.length && i < 4; i++) {
+            textData.setString("Text" + (i + 1), text[i]);
+        }
+        displayData.setTag("TextContent", textData);
+        setDisplayData(index, displayData);
+    }
+
+    public void setText(int index, int line, String text) {
+        NBTTagCompound displayData = getDisplayData(index);
+        NBTTagCompound textData = displayData.getCompoundTag("TextContent");
+        textData.setString("Text" + line, text);
+        displayData.setTag("TextContent", textData);
+        setDisplayData(index, displayData);
+    }
+
+    public String getRGBColor(int index) {
+        return getDisplayData(index).getString("RGBColor");
+    }
+
+    public void setRGBColor(int index, String color) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setString("RGBColor", color);
+        setDisplayData(index, displayData);
+    }
+
+    public int getFacing() {
+        return facing;
     }
 
     public void setFacing(int facing) {
@@ -105,15 +151,54 @@ public class TileHolographicDisplay extends TileEntity {
         sendUpdatePacket();
     }
 
-    public TileHolographicDisplay(){
+    public String getImgURL(int index) {
+        return getDisplayData(index).getString("ImgURL");
     }
 
-    public TileHolographicDisplay(int meta){
-        this.meta = meta;
+    public void setImgURL(int index, String imgURL) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setString("ImgURL", imgURL);
+        setDisplayData(index, displayData);
     }
 
-    public int getMeta() {
-        return meta;
+    public double getImgScaledX(int index) {
+        return getDisplayData(index).getDouble("ImgScaledX");
+    }
+
+    public void setImgScaledX(int index, double imgScaledX) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setDouble("ImgScaledX", imgScaledX);
+        setDisplayData(index, displayData);
+    }
+
+    public double getImgScaledY(int index) {
+        return getDisplayData(index).getDouble("ImgScaledY");
+    }
+
+    public void setImgScaledY(int index, double imgScaledY) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setDouble("ImgScaledY", imgScaledY);
+        setDisplayData(index, displayData);
+    }
+
+    public double getImgStartX(int index) {
+        return getDisplayData(index).getDouble("ImgStartX");
+    }
+
+    public void setImgStartX(int index, double imgStartX) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setDouble("ImgStartX", imgStartX);
+        setDisplayData(index, displayData);
+    }
+
+    public double getImgStartY(int index) {
+        return getDisplayData(index).getDouble("ImgStartY");
+    }
+
+    public void setImgStartY(int index, double imgStartY) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setDouble("ImgStartY", imgStartY);
+        setDisplayData(index, displayData);
     }
 
     @Override
@@ -129,49 +214,51 @@ public class TileHolographicDisplay extends TileEntity {
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setString("Text1",this.textContents[0]);
-        nbt.setString("Text2",this.textContents[1]);
-        nbt.setString("Text3",this.textContents[2]);
-        nbt.setString("Text4",this.textContents[3]);
-        nbt.setInteger("Rotation", this.facing);
-        nbt.setString("RGBColor",this.RGBColor);
-        nbt.setString("imgURL", this.imgURL);
-        nbt.setDouble("imgScaledX", this.imgScaledX);
-        nbt.setDouble("imgScaledY", this.imgScaledY);
-        nbt.setDouble("imgStartX", this.imgStartX);
-        nbt.setDouble("imgStartY", this.imgStartY);
-        //HyperdimensionalTech.network.sendToServer(new PacketUpdateHolographicDisplay(xCoord, yCoord, zCoord, nbt));
+        NBTTagCompound displayDataNBT = new NBTTagCompound();
+        for (Map.Entry<Integer, NBTTagCompound> entry : displayDataMap.entrySet()) {
+            displayDataNBT.setTag("DisplayData" + entry.getKey(), entry.getValue());
+        }
+        nbt.setTag("DisplayDataMap", displayDataNBT);
+        nbt.setInteger("Facing", facing);
+        nbt.setBoolean("visableBody", visableBody);
+        nbt.setBoolean("visableScreen", visableScreen);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-
-        this.textContents[0] = nbt.getString("Text1");
-        this.textContents[1] = nbt.getString("Text2");
-        this.textContents[2] = nbt.getString("Text3");
-        this.textContents[3] = nbt.getString("Text4");
-        this.facing = nbt.getInteger("Rotation");
-        this.RGBColor = nbt.getString("RGBColor");
-        this.imgURL = nbt.getString("imgURL");
-        this.imgScaledX = nbt.getDouble("imgScaledX");
-        this.imgScaledY = nbt.getDouble("imgScaledY");
-        this.imgStartX = nbt.getDouble("imgStartX");
-        this.imgStartY = nbt.getDouble("imgStartY");
+        displayDataMap.clear();
+        if (nbt.hasKey("DisplayDataMap")) {
+            NBTTagCompound displayDataNBT = nbt.getCompoundTag("DisplayDataMap");
+            for (Object key : displayDataNBT.func_150296_c()) {
+                String keyStr = (String) key;
+                if (keyStr.startsWith("DisplayData")) {
+                    int index = Integer.parseInt(keyStr.substring(11));
+                    displayDataMap.put(index, displayDataNBT.getCompoundTag(keyStr));
+                }
+            }
+        }
+        if (displayDataMap.isEmpty()) {
+            setDisplayData(this.getDisplayDataSize(), null);
+        }
+        this.facing = nbt.getInteger("Facing");
+        this.visableBody = nbt.getBoolean("visableBody");
+        this.visableScreen = nbt.getBoolean("visableScreen");
     }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        NBTTagCompound nbt = pkt.func_148857_g();
-        readFromNBT(nbt);
+        readFromNBT(pkt.func_148857_g());
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
+
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound nbtTag = new NBTTagCompound();
         writeToNBT(nbtTag);
         return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbtTag);
     }
+
     private void sendUpdatePacket() {
         NBTTagCompound nbt = new NBTTagCompound();
         writeToNBT(nbt);

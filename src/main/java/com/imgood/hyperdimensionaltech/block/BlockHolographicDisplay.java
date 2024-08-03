@@ -34,7 +34,7 @@ public class BlockHolographicDisplay extends Block {
         this.setResistance(20f);
         this.setHardness(1.0f);
         this.setBlockName(blockRenderId);
-        this.setLightLevel(100.0f);
+        this.setLightLevel(0f);
         setBlockName("HolographicDisplay");
         setBlockBounds(0, 0, 0, 1, 0.5f, 1);
         setLightOpacity(0);
