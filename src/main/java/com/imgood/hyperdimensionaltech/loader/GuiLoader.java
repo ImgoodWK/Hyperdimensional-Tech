@@ -14,6 +14,5 @@ public class GuiLoader {
     public static void loadGuis(HyperdimensionalTech hyperdimensionalTech)
     {
         NetworkRegistry.INSTANCE.registerGuiHandler(hyperdimensionalTech, new GuiHandlerHolographicDisplay());
-        NetworkRegistry.INSTANCE.registerGuiHandler(hyperdimensionalTech, new GuiHandlerHolographicDisplay());
     }
 }

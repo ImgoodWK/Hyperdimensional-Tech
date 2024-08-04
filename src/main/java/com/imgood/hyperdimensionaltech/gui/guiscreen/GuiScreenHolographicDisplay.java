@@ -309,12 +309,12 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
 //                this.tileHolographicDisplay.setImgURL(this.index, this.textFieldImgUrl.getText());
                 this.tileHolographicDisplay.setDisplayData(this.index,nbt);
                 this.tileHolographicDisplay.writeToNBT(nbt);
-                isInitialized = false; // 重置初始化状态
-                this.mc.displayGuiScreen(null);
+                isInitialized = false;
+                //this.mc.displayGuiScreen(null);
                 this.mc.displayGuiScreen(new GuiScreenHolographicDisplay_Main(this.player, this.world, this.tileHolographicDisplay));
             }
             case 1 -> {
-                this.mc.displayGuiScreen(null);
+                //this.mc.displayGuiScreen(null);
                 this.mc.displayGuiScreen(new GuiScreenHolographicDisplay_Main(this.player, this.world, this.tileHolographicDisplay));
             }
             default -> {
@@ -365,7 +365,7 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
         String[] text2 = {"§lImgUrl", "§lWidth", "§lHeight", "§lStartX", "§lStartY"};
         autoText(text2, 0, 22, this.offsetX+150, this.offsetY, this.textColor);
 
-        this.drawCenteredString(this.fontRendererObj, "§lData Config Of§n "+this.index, this.offsetX+192, this.offsetY-20, this.textColor);
+        this.drawCenteredString(this.fontRendererObj, "§lData Config Of §n"+(this.index+1), this.offsetX+192, this.offsetY-20, this.textColor);
 
         hoveredTextField = null;
         for (GuiTextField textField : textFieldsLeft) {

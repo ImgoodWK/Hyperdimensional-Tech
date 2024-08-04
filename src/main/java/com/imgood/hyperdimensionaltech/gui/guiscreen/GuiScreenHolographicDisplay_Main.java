@@ -22,6 +22,7 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
     private List<GuiTextField> textFieldsLeft = new ArrayList<>();
     private List<GuiTextField> textFieldsRight = new ArrayList<>();
     private List<NBTTagCompound> dataList = new ArrayList<>();
+    private List<String> tooltipLines = new ArrayList<>();
     private GuiTextField hoveredTextField;
 
     private int facing;
@@ -29,7 +30,6 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
 
     private int offsetX = 100;
     private int offsetY = 100;
-    //private int interval = 30;
     private int textColor = 0x00FFFF;
     private int displayDataSize;
 
@@ -96,7 +96,7 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
         this.buttonList.add(new GuiButton(104,
             this.offsetX + 70,
             this.offsetY + 110,
-            40, 20, "Hide"));
+            37, 20, "Hide"));
 
         this.buttonList.add(new GuiButton(106,
             this.offsetX + 105,
@@ -104,10 +104,9 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
             40, 20, "Hide"));
 
         // Add buttons for existing data
-        for (int i = 0; i < this.displayDataSize; i++) {
-            this.buttonList.add(new GuiButton(i, 20 * i,
-                0, 20, 20, String.valueOf(i + 1)));
-        }
+        addButtonsForExistingData(this.displayDataSize,
+            20, 20, 8,
+            this.offsetX, this.offsetY);
         refreshButtons();
     }
 
@@ -138,32 +137,42 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
                 refreshButtons();
             }
             case 103 -> {
-
                 this.tileHolographicDisplay.setFacing(0);
                 this.currentFacing = "South";
                 refreshButtons();
             }
             case 105 -> {
-                openSubMenu();
+                if (this.displayDataSize <= 31) {
+                    openSubMenu();
+                } else {
+                    mc.displayGuiScreen(new GuiScreenMessage(this.player, this.world, GuiScreenMessage.MessageType.WARNING, "Maximum number of data reached.", this));
+                }
             }
-
             case 104 -> {
                 boolean visableBody = button.displayString.equals("Show");
                 this.tileHolographicDisplay.setVisableBody(visableBody);
                 refreshButtons();
             }
-
             case 106 -> {
                 boolean visableScreen = button.displayString.equals("Show");
                 this.tileHolographicDisplay.setVisableScreen(visableScreen);
                 refreshButtons();
             }
             default -> {
-                openSubMenu(button.id);
+                if (button.id <= 32) {
+                    openSubMenu(button.id);
+                }
             }
         }
     }
 
+    public void addButtonsForExistingData(int displayDataSize, int buttonWidth, int buttonHeight, int maxButtonsPerRow, int offsetX, int offsetY) {
+        for (int i = 0; i < displayDataSize; i++) {
+            int x = offsetX + (i % maxButtonsPerRow) * buttonWidth;
+            int y = offsetY + (i / maxButtonsPerRow) * buttonHeight;
+            this.buttonList.add(new GuiButton(i, x, y, buttonWidth, buttonHeight, String.valueOf(i + 1)));
+        }
+    }
     private void openSubMenu() {
         mc.displayGuiScreen(new GuiScreenHolographicDisplay(this.player, this.world, this.tileHolographicDisplay, this.displayDataSize));
     }
@@ -226,11 +235,40 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
         this.tileHolographicDisplay.readFromNBT(nbt);
     }
 
+    private List<String> getTooltipForButton(int buttonId) {
+        List<String> tooltip = new ArrayList<>();
+        NBTTagCompound data = this.tileHolographicDisplay.getDisplayDataToShow(buttonId);
+        if (data != null) {
+            String title = data.getString("Title");
+            String value = data.getString("Value");
+            tooltip.add("Title: " + title);
+            tooltip.add("Value: " + value);
+            // 根据需要添加更多数据
+        } else {
+            tooltip.add("No data available");
+        }
+        return tooltip;
+    }
+
+    private boolean isMouseOverButton(GuiButton button, int mouseX, int mouseY) {
+        return mouseX >= button.xPosition && mouseX < button.xPosition + button.width &&
+            mouseY >= button.yPosition && mouseY < button.yPosition + button.height;
+    }
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.fontRendererObj, "Main Menu", this.width / 2, 6, 0xFFFFFF);
+
+        for (Object buttonObj : this.buttonList) {
+            GuiButton button = (GuiButton) buttonObj;
+            if (button.id < this.displayDataSize && isMouseOverButton(button, mouseX, mouseY)) {
+                tooltipLines = getTooltipForButton(button.id);
+                drawHoveringText(tooltipLines, mouseX, mouseY, fontRendererObj);
+                break;
+            }
+        }
     }
 
     @Override

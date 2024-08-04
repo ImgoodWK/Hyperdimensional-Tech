@@ -13,6 +13,7 @@ public class GuiHandlerHolographicDisplay implements IGuiHandler {
 
     public static final int GUI_HolographicDisplay_Main_0 = 0;
     public static final int GUI_HolographicDisplay_Sub_0 = 1;
+    public static final int GUI_HolographicDisplay_Message_0 = 2;
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         /*TileEntity tileEntity = world.getTileEntity(x, y, z);

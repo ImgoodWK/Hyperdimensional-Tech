@@ -57,6 +57,24 @@ public class TileHolographicDisplay extends TileEntity {
         sendUpdatePacket();
     }
 
+    public NBTTagCompound getDisplayDataToShow(int index) {
+        NBTTagCompound displayData = displayDataMap.get(index);
+        if (displayData == null) {
+            // 如果指定索引的数据不存在，返回一个包含默认值的 NBTTagCompound
+            displayData = new NBTTagCompound();
+            displayData.setString("RGBColor", "00FFFF");
+            displayData.setString("ImgURL", "");
+            displayData.setDouble("ImgScaledX", 1);
+            displayData.setDouble("ImgScaledY", 1);
+            displayData.setDouble("ImgStartX", 0);
+            displayData.setDouble("ImgStartY", 1);
+            for (int i = 1; i <= 4; i++) {
+                displayData.setString("Text" + i, "");
+            }
+        }
+        return displayData;
+    }
+
     public void setDisplayData(int index, NBTTagCompound displayData) {
         // 创建一个包含默认值的NBTTagCompound
         NBTTagCompound defaultData = new NBTTagCompound();
