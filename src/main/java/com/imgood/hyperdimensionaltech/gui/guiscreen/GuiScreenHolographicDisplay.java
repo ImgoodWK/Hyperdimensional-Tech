@@ -339,6 +339,7 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
 //                this.tileHolographicDisplay.setText(2, this.textFieldLine3.getText());
 //                this.tileHolographicDisplay.setText(3, this.textFieldLine4.getText());
 //                this.tileHolographicDisplay.setImgURL(this.index, this.textFieldImgUrl.getText());
+                this.tileHolographicDisplay.loadImageAsync(this.index, this.textFieldImgUrl.getText());
                 this.tileHolographicDisplay.setDisplayData(this.index,nbt);
                 this.tileHolographicDisplay.writeToNBT(nbt);
                 isInitialized = false;

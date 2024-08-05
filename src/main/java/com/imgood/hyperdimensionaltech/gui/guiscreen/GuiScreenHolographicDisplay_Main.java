@@ -2,17 +2,35 @@ package com.imgood.hyperdimensionaltech.gui.guiscreen;
 
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 public class GuiScreenHolographicDisplay_Main extends GuiScreen {
 
@@ -35,8 +53,119 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
     private int offsetY = 100;
     private int textColor = 0x00FFFF;
     private int displayDataSize;
-
     private boolean isInitialized = false;
+
+    private static String IMAGE_URL = "";
+    private static final int MAX_DISPLAY_SIZE = 100; // 最大显示尺寸
+
+    private ResourceLocation textureResourceLocation;
+    private boolean isLoading = false;
+    private BufferedImage loadedImage;
+    private boolean needsTextureUpdate = false;
+    private int imageWidth, imageHeight;
+    private int displayWidth, displayHeight;
+    int buffButtonId = -1;
+    private static final String CACHE_DIR = "cache/holographic_images/";
+    private String currentImageHash;
+
+    private void loadImageAsync() {
+        if (IMAGE_URL == null || IMAGE_URL.isEmpty()) {
+            return;
+        }
+
+        isLoading = true;
+        new Thread(() -> {
+            try {
+                File cacheDir = new File(Minecraft.getMinecraft().mcDataDir, CACHE_DIR);
+
+                if (!cacheDir.exists()) {
+                    cacheDir.mkdirs();
+                }
+
+                String imageHash = calculateImageHash(IMAGE_URL);
+                File cachedFile = new File(cacheDir, imageHash + ".png");
+                HyperdimensionalTech.logger.warn("testmsg86 "+imageHash+" "+cacheDir.getPath());
+                if (!cachedFile.exists()) {
+                    // 下载并保存图片
+                    downloadAndSaveImage(IMAGE_URL, cachedFile);
+                }
+
+                // 加载并显示图片
+                loadAndDisplayImage(cachedFile);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                isLoading = false;
+            }
+        }).start();
+    }
+
+    private String calculateImageHash(String imageUrl) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hashBytes = md.digest(imageUrl.getBytes());
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashBytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    private void downloadAndSaveImage(String imageUrl, File outputFile) throws IOException {
+        URL url = new URL(imageUrl);
+        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        FileOutputStream fos = new FileOutputStream(outputFile);
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        fos.close();
+        rbc.close();
+    }
+
+    private void loadAndDisplayImage(File imageFile) {
+        try {
+            BufferedImage image = ImageIO.read(imageFile);
+            DynamicTexture texture = new DynamicTexture(image);
+            textureResourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("holographic_image", texture);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void calculateDisplaySize() {
+        if (imageWidth <= MAX_DISPLAY_SIZE && imageHeight <= MAX_DISPLAY_SIZE) {
+            displayWidth = imageWidth;
+            displayHeight = imageHeight;
+        } else {
+            float aspectRatio = (float) imageWidth / imageHeight;
+            if (imageWidth > imageHeight) {
+                displayWidth = MAX_DISPLAY_SIZE;
+                displayHeight = (int) (MAX_DISPLAY_SIZE / aspectRatio);
+            } else {
+                displayHeight = MAX_DISPLAY_SIZE;
+                displayWidth = (int) (MAX_DISPLAY_SIZE * aspectRatio);
+            }
+        }
+    }
+
+
+    private int[] calculateDimensions(int imgWidth, int imgHeight, int maxWidth, int maxHeight) {
+        float aspectRatio = (float) imgWidth / imgHeight;
+        int drawWidth = imgWidth;
+        int drawHeight = imgHeight;
+
+        if (drawWidth > maxWidth) {
+            drawWidth = maxWidth;
+            drawHeight = (int) (drawWidth / aspectRatio);
+        }
+
+        if (drawHeight > maxHeight) {
+            drawHeight = maxHeight;
+            drawWidth = (int) (drawHeight * aspectRatio);
+        }
+
+        return new int[]{drawWidth, drawHeight};
+    }
+
+
 
     public GuiScreenHolographicDisplay_Main(EntityPlayer player, World world, TileHolographicDisplay tileEntity) {
         this.player = player;
@@ -45,6 +174,21 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
         this.facing = tileEntity.facing;
         this.displayDataSize = tileHolographicDisplay.getDisplayDataSize();
         this.loadDataFromTileEntity();
+        FMLCommonHandler.instance().bus().register(this);
+        //loadImageAsync();
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && needsTextureUpdate && loadedImage != null) {
+            if (textureResourceLocation != null) {
+                Minecraft.getMinecraft().getTextureManager().deleteTexture(textureResourceLocation);
+            }
+            DynamicTexture dynamicTexture = new DynamicTexture(loadedImage);
+            textureResourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("dynamic_image", dynamicTexture);
+            needsTextureUpdate = false;
+            loadedImage = null; // 清理内存
+        }
     }
 
     @Override
@@ -280,14 +424,45 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.drawCenteredString(this.fontRendererObj, "§lHolographic Display"+(this.index+1), this.offsetX+192, this.offsetY-20, this.textColor);
 
+        int x = this.offsetX+200;
+        int y = this.offsetY+80;
+
         for (Object buttonObj : this.buttonList) {
             GuiButton button = (GuiButton) buttonObj;
-            if (button.id < this.displayDataSize && isMouseOverButton(button, mouseX, mouseY)) {
-                List<String> tooltipData = this.tileHolographicDisplay.getDisplayDataToShow(button.id);
-                drawColoredHoveringText(tooltipData, mouseX, mouseY, button.id);
+                if (textureResourceLocation != null) {
+                    Minecraft.getMinecraft().getTextureManager().deleteTexture(textureResourceLocation);
+                }
+                if (button.id < this.displayDataSize && isMouseOverButton(button, mouseX, mouseY)) {
+                    List<String> tooltipData = this.tileHolographicDisplay.getDisplayDataToShow(button.id);
+                    drawColoredHoveringText(tooltipData, mouseX, mouseY, button.id);
+                    this.IMAGE_URL = this.tileHolographicDisplay.getImgURL(button.id);
+                    if (textureResourceLocation != null && !isLoading) {
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(textureResourceLocation);
+
+
+                        GL11.glPushMatrix();
+                        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                        GL11.glEnable(GL11.GL_BLEND);
+                        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+                        Tessellator tessellator = Tessellator.instance;
+                        tessellator.startDrawingQuads();
+                        tessellator.addVertexWithUV(x, y + displayHeight, 0, 0, 1);
+                        tessellator.addVertexWithUV(x + displayWidth, y + displayHeight, 0, 1, 1);
+                        tessellator.addVertexWithUV(x + displayWidth, y, 0, 1, 0);
+                        tessellator.addVertexWithUV(x, y, 0, 0, 0);
+                        tessellator.draw();
+
+                        GL11.glDisable(GL11.GL_BLEND);
+                        GL11.glPopMatrix();
+                    } else if (isLoading) {
+                        drawCenteredString(Minecraft.getMinecraft().fontRenderer, "Loading...", x, y+20, 0xFFFFFF);
+                    }
+
                 break;
             }
         }
+
     }
 
     private void drawColoredHoveringText(List<String> textLines, int x, int y, int buttonId) {
@@ -364,5 +539,14 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
     @Override
     public boolean doesGuiPauseGame() {
         return false;
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        FMLCommonHandler.instance().bus().unregister(this);
+        if (textureResourceLocation != null) {
+            Minecraft.getMinecraft().getTextureManager().deleteTexture(textureResourceLocation);
+        }
     }
 }

@@ -2,6 +2,10 @@ package com.imgood.hyperdimensionaltech.tiles.rendertiles;
 
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -9,6 +13,14 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +32,80 @@ public class TileHolographicDisplay extends TileEntity {
     private Map<Integer, NBTTagCompound> displayDataMap;
     private boolean visableScreen = true;
     private boolean visableBody = true;
+
+    private static final String CACHE_DIR = "cache/holographic_images/";
+    private String currentImageHash;
+    private boolean isLoading = false;
+    private static boolean needsUpdate = false;
+    private static int updateIndex;
+    private static String updateImagePath;
+
+    public void loadImageAsync(final int index, String imageUrl) {
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            return;
+        }
+        isLoading = true;
+        new Thread(() -> {
+            try {
+                File cacheDir = new File(Minecraft.getMinecraft().mcDataDir, CACHE_DIR);
+                if (!cacheDir.exists()) {
+                    cacheDir.mkdirs();
+                }
+
+                String imageHash = calculateImageHash(imageUrl);
+                File cachedFile = new File(cacheDir, imageHash + ".png");
+                final String finalImagePath = cachedFile.getAbsolutePath();
+
+                if (!cachedFile.exists()) {
+                    // 下载并保存图片
+                    downloadAndSaveImage(imageUrl, cachedFile);
+                }
+
+                // 设置更新标志和数据
+                needsUpdate = true;
+                updateIndex = index;
+                updateImagePath = finalImagePath;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                isLoading = false;
+            }
+        }).start();
+    }
+
+    @SubscribeEvent
+    public void onServerTick(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && needsUpdate) {
+            setImgPath(updateIndex, updateImagePath);
+            needsUpdate = false;
+        }
+    }
+
+    private String calculateImageHash(String imageUrl) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hashBytes = md.digest(imageUrl.getBytes());
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashBytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    private void downloadAndSaveImage(String imageUrl, File outputFile) throws IOException {
+        URL url = new URL(imageUrl);
+        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        FileOutputStream fos = new FileOutputStream(outputFile);
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        fos.close();
+        rbc.close();
+    }
+
+
     public TileHolographicDisplay() {
         this.displayDataMap = new HashMap<>();
         this.setDisplayData(0,null);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public TileHolographicDisplay(int meta) {
@@ -33,6 +116,8 @@ public class TileHolographicDisplay extends TileEntity {
     public int getMeta() {
         return meta;
     }
+
+
 
     public int getDisplayDataSize() {
         return displayDataMap.size();
@@ -64,12 +149,13 @@ public class TileHolographicDisplay extends TileEntity {
         for (int i = 1; i <= 4; i++) {
             dataList.add("Text" + i + ":" + displayData.getString("Text" + i));
         }
-            dataList.add("Color:" + displayData.getString("RGBColor"));
-            dataList.add("ImgURL:" + displayData.getString("ImgURL"));
-            dataList.add("ImgScaledX:" + displayData.getDouble("Width"));
-            dataList.add("ImgScaledY:" + displayData.getDouble("Height"));
-            dataList.add("ImgStartX:" + displayData.getDouble("ImgStartX"));
-            dataList.add("ImgStartY:" + displayData.getDouble("ImgStartY"));
+        dataList.add("Color:" + displayData.getString("RGBColor"));
+        dataList.add("ImgURL:" + displayData.getString("ImgURL"));
+        dataList.add("ImgScaledX:" + displayData.getDouble("Width"));
+        dataList.add("ImgScaledY:" + displayData.getDouble("Height"));
+        dataList.add("ImgStartX:" + displayData.getDouble("ImgStartX"));
+        dataList.add("ImgStartY:" + displayData.getDouble("ImgStartY"));
+        //dataList.add("ImgPath:" + displayData.getString("ImgPath"));
         return dataList;
     }
 
@@ -84,7 +170,7 @@ public class TileHolographicDisplay extends TileEntity {
         defaultData.setDouble("ImgScaledY", 1);
         defaultData.setDouble("ImgStartX", 0);
         defaultData.setDouble("ImgStartY", 1);
-
+        defaultData.setString("ImgPath","");
         for (int i = 1; i <= 4; i++) {
             defaultData.setString("Text" + i, "");
         }
@@ -157,6 +243,16 @@ public class TileHolographicDisplay extends TileEntity {
         setDisplayData(index, displayData);
     }
 
+    public String getImgPath(int index) {
+        return getDisplayData(index).getString("ImgPath");
+    }
+
+    public void setImgPath(int index, String imagePath) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setString("ImgPath", imagePath);
+        setDisplayData(index, displayData);
+    }
+
     public int getFacing() {
         return facing;
     }
@@ -175,6 +271,7 @@ public class TileHolographicDisplay extends TileEntity {
         NBTTagCompound displayData = getDisplayData(index);
         displayData.setString("ImgURL", imgURL);
         setDisplayData(index, displayData);
+
     }
 
     public double getImgScaledX(int index) {
