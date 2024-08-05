@@ -1,14 +1,17 @@
 package com.imgood.hyperdimensionaltech.gui.guiscreen;
 
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GuiScreenHolographicDisplay_Main extends GuiScreen {
@@ -69,19 +72,19 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
             20,
             "North"));
         this.buttonList.add(new GuiButton(101,
-            this.offsetX + 35,
+            this.offsetX + 40,
             this.offsetY + 130,
             40,
             20,
             "East"));
         this.buttonList.add(new GuiButton(102,
-            this.offsetX + 70,
+            this.offsetX + 80,
             this.offsetY + 130,
             40,
             20,
             "West"));
         this.buttonList.add(new GuiButton(103,
-            this.offsetX + 105,
+            this.offsetX + 120,
             this.offsetY + 130,
             40,
             20,
@@ -91,15 +94,15 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
         this.buttonList.add(new GuiButton(105,
             this.offsetX + 0,
             this.offsetY + 110,
-            75, 20, "Add"));
+            80, 20, "Add"));
 
         this.buttonList.add(new GuiButton(104,
-            this.offsetX + 70,
+            this.offsetX + 80,
             this.offsetY + 110,
-            37, 20, "Hide"));
+            40, 20, "Hide"));
 
         this.buttonList.add(new GuiButton(106,
-            this.offsetX + 105,
+            this.offsetX + 120,
             this.offsetY + 110,
             40, 20, "Hide"));
 
@@ -235,39 +238,126 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
         this.tileHolographicDisplay.readFromNBT(nbt);
     }
 
-    private List<String> getTooltipForButton(int buttonId) {
-        List<String> tooltip = new ArrayList<>();
-        NBTTagCompound data = this.tileHolographicDisplay.getDisplayDataToShow(buttonId);
-        if (data != null) {
-            String title = data.getString("Title");
-            String value = data.getString("Value");
-            tooltip.add("Title: " + title);
-            tooltip.add("Value: " + value);
-            // 根据需要添加更多数据
-        } else {
-            tooltip.add("No data available");
-        }
-        return tooltip;
-    }
-
     private boolean isMouseOverButton(GuiButton button, int mouseX, int mouseY) {
         return mouseX >= button.xPosition && mouseX < button.xPosition + button.width &&
             mouseY >= button.yPosition && mouseY < button.yPosition + button.height;
+    }
+
+    private void drawTooltipBackground(int x, int y, int width, int height) {
+        int borderSize = 0;
+
+        // 绑定背景材质（可选）
+         //this.mc.getTextureManager().bindTexture(new ResourceLocation("modid", "textures/gui/tooltipsBackground.png"));
+        // 绘制背景（使用 OpenGL 绘制一个纯色或半透明矩形）
+        drawRect(x, y, x + width, y + height, 0xaf00aaaa); // 半透明黑色背景
+
+        // 绑定边框材质
+        //this.mc.getTextureManager().bindTexture(new ResourceLocation("modid", "textures/gui/tooltipsRect.png"));
+
+        // 左上角
+        drawTexturedModalRect(x - borderSize, y - borderSize, 0, 0, borderSize, borderSize);
+        // 右上角
+        drawTexturedModalRect(x + width, y - borderSize, 16 - borderSize, 0, borderSize, borderSize);
+        // 左下角
+        drawTexturedModalRect(x - borderSize, y + height, 0, 16 - borderSize, borderSize, borderSize);
+        // 右下角
+        drawTexturedModalRect(x + width, y + height, 16 - borderSize, 16 - borderSize, borderSize, borderSize);
+
+        /*
+        // 上边框
+        drawTexturedModalRect(x, y - borderSize, borderSize, 0, width, borderSize);
+        // 下边框
+        drawTexturedModalRect(x, y + height, borderSize, 16 - borderSize, width, borderSize);
+        // 左边框
+        drawTexturedModalRect(x - borderSize, y, 0, borderSize, borderSize, height);
+        // 右边框
+        drawTexturedModalRect(x + width, y, 16 - borderSize, borderSize, borderSize, height);*/
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, "Main Menu", this.width / 2, 6, 0xFFFFFF);
+        this.drawCenteredString(this.fontRendererObj, "§lHolographic Display"+(this.index+1), this.offsetX+192, this.offsetY-20, this.textColor);
 
         for (Object buttonObj : this.buttonList) {
             GuiButton button = (GuiButton) buttonObj;
             if (button.id < this.displayDataSize && isMouseOverButton(button, mouseX, mouseY)) {
-                tooltipLines = getTooltipForButton(button.id);
-                drawHoveringText(tooltipLines, mouseX, mouseY, fontRendererObj);
+                List<String> tooltipData = this.tileHolographicDisplay.getDisplayDataToShow(button.id);
+                drawColoredHoveringText(tooltipData, mouseX, mouseY, button.id);
                 break;
             }
+        }
+    }
+
+    private void drawColoredHoveringText(List<String> textLines, int x, int y, int buttonId) {
+        if (!textLines.isEmpty()) {
+            int tooltipTextWidth = 0;
+            for (String line : textLines) {
+                int lineWidth = this.fontRendererObj.getStringWidth(line);
+                if (lineWidth > tooltipTextWidth) {
+                    tooltipTextWidth = lineWidth;
+                }
+            }
+            tooltipTextWidth += 10;
+            int tooltipX = x + 12;
+            int tooltipY = y - 12;
+            int tooltipHeight = 8;
+
+            if (textLines.size() > 1) {
+                tooltipHeight += 2 + (textLines.size() - 1) * 10;
+            }
+
+            if (tooltipX + tooltipTextWidth > this.width) {
+                tooltipX -= 28 + tooltipTextWidth;
+            }
+
+            if (tooltipY + tooltipHeight + 6 > this.height) {
+                tooltipY = this.height - tooltipHeight - 6;
+            }
+
+            tooltipX += 10;
+            tooltipY += 10;
+
+            //region 绘制背景
+            // 绘制背景和边框
+            this.zLevel = 0F;
+            drawTooltipBackground(tooltipX, tooltipY, tooltipTextWidth, tooltipHeight);
+            //end region
+
+
+            for (int lineNumber = 0; lineNumber < textLines.size(); ++lineNumber) {
+                String line = textLines.get(lineNumber);
+                int colonIndex = line.indexOf(':');
+                String[] buff;
+                if (colonIndex != -1) {
+                    buff = new String[]{
+                        line.substring(0, colonIndex),
+                        colonIndex < line.length() - 1 ? line.substring(colonIndex + 1).trim() : ""
+                    };
+                } else {
+                    buff = new String[]{line, ""};
+                }
+                if (line.contains("Color:") || line.contains("Text1:") || line.contains("Text2:") || line.contains("Text3:") || line.contains("Text4:")) {
+                    this.fontRendererObj.drawStringWithShadow(buff[0] + ": ", tooltipX, tooltipY, Integer.parseInt("00ffff", 16));
+                    if (!buff[1].isEmpty()) {
+                        this.fontRendererObj.drawStringWithShadow(buff[1], tooltipX + this.fontRendererObj.getStringWidth(buff[0] + ": "), tooltipY, Integer.parseInt(this.tileHolographicDisplay.getRGBColor(buttonId), 16));
+                    }
+                } else {
+                    this.fontRendererObj.drawStringWithShadow( buff[0] + ": ", tooltipX, tooltipY, Integer.parseInt("00ffff", 16));
+                    if (!buff[1].isEmpty()) {
+                        this.fontRendererObj.drawStringWithShadow(buff[1], tooltipX + this.fontRendererObj.getStringWidth(buff[0] + ": "), tooltipY, Integer.parseInt("00ffff", 16));
+                    }
+                }
+
+                if (lineNumber == 0) {
+                    tooltipY += 2;
+                }
+
+                tooltipY += 10;
+            }
+
+            this.zLevel = 0.0F;
         }
     }
 

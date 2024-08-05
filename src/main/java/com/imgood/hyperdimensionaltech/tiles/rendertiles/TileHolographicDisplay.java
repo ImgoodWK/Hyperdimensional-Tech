@@ -9,7 +9,9 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TileHolographicDisplay extends TileEntity {
@@ -18,7 +20,6 @@ public class TileHolographicDisplay extends TileEntity {
     private Map<Integer, NBTTagCompound> displayDataMap;
     private boolean visableScreen = true;
     private boolean visableBody = true;
-
     public TileHolographicDisplay() {
         this.displayDataMap = new HashMap<>();
         this.setDisplayData(0,null);
@@ -57,22 +58,19 @@ public class TileHolographicDisplay extends TileEntity {
         sendUpdatePacket();
     }
 
-    public NBTTagCompound getDisplayDataToShow(int index) {
+    public List<String> getDisplayDataToShow(int index) {
         NBTTagCompound displayData = displayDataMap.get(index);
-        if (displayData == null) {
-            // 如果指定索引的数据不存在，返回一个包含默认值的 NBTTagCompound
-            displayData = new NBTTagCompound();
-            displayData.setString("RGBColor", "00FFFF");
-            displayData.setString("ImgURL", "");
-            displayData.setDouble("ImgScaledX", 1);
-            displayData.setDouble("ImgScaledY", 1);
-            displayData.setDouble("ImgStartX", 0);
-            displayData.setDouble("ImgStartY", 1);
-            for (int i = 1; i <= 4; i++) {
-                displayData.setString("Text" + i, "");
-            }
+        List<String> dataList = new ArrayList<>();
+        for (int i = 1; i <= 4; i++) {
+            dataList.add("Text" + i + ":" + displayData.getString("Text" + i));
         }
-        return displayData;
+            dataList.add("Color:" + displayData.getString("RGBColor"));
+            dataList.add("ImgURL:" + displayData.getString("ImgURL"));
+            dataList.add("ImgScaledX:" + displayData.getDouble("Width"));
+            dataList.add("ImgScaledY:" + displayData.getDouble("Height"));
+            dataList.add("ImgStartX:" + displayData.getDouble("ImgStartX"));
+            dataList.add("ImgStartY:" + displayData.getDouble("ImgStartY"));
+        return dataList;
     }
 
     public void setDisplayData(int index, NBTTagCompound displayData) {
