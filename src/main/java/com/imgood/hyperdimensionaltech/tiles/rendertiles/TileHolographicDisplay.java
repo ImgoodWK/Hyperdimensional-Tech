@@ -53,9 +53,9 @@ public class TileHolographicDisplay extends TileEntity {
                 }
 
                 String imageHash = calculateImageHash(imageUrl);
-                File cachedFile = new File(cacheDir, imageHash + ".png");
+                File cachedFile = new File(cacheDir,imageHash + ".png");
                 final String finalImagePath = cachedFile.getAbsolutePath();
-
+                this.setImgPath(index, imageHash);
                 if (!cachedFile.exists()) {
                     // 下载并保存图片
                     downloadAndSaveImage(imageUrl, cachedFile);
@@ -64,7 +64,7 @@ public class TileHolographicDisplay extends TileEntity {
                 // 设置更新标志和数据
                 needsUpdate = true;
                 updateIndex = index;
-                updateImagePath = finalImagePath;
+                updateImagePath = imageHash;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -74,13 +74,6 @@ public class TileHolographicDisplay extends TileEntity {
         }).start();
     }
 
-    @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && needsUpdate) {
-            setImgPath(updateIndex, updateImagePath);
-            needsUpdate = false;
-        }
-    }
 
     private String calculateImageHash(String imageUrl) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");

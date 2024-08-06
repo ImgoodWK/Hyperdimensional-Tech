@@ -1,6 +1,7 @@
 package com.imgood.hyperdimensionaltech;
 
 
+import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityHolographicDisplay;
 import com.imgood.hyperdimensionaltech.loader.BlocksLoader;
 import com.imgood.hyperdimensionaltech.loader.GuiLoader;
 import com.imgood.hyperdimensionaltech.loader.TileEntityLoader;
@@ -9,6 +10,7 @@ import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,6 +69,7 @@ public class HyperdimensionalTech {
         NEIHandler.IMCSender();
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         network.registerMessage(PacketUpdateHandlerHolographicDisplay.class, PacketUpdateHolographicDisplay.class, 0, Side.SERVER);
+        MinecraftForge.EVENT_BUS.register(new HT_TileEntityHolographicDisplay());
         proxy.init(event);
 
     }

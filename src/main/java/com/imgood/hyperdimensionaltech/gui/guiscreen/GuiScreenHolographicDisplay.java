@@ -148,6 +148,12 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
             70,
             20,
             "Cancel"));
+        this.buttonList.add(new GuiButton(7,
+            this.offsetX + 140,
+            this.offsetY + 110,
+            70,
+            20,
+            "Download"));
 
         this.buttonList.add(new GuiButton(2,
             this.offsetX + 0,
@@ -350,6 +356,9 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
                 //this.mc.displayGuiScreen(null);
                 this.mc.displayGuiScreen(new GuiScreenHolographicDisplay_Main(this.player, this.world, this.tileHolographicDisplay));
             }
+            case 7 -> {
+                this.tileHolographicDisplay.loadImageAsync(this.index, this.textFieldImgUrl.getText());
+             }
             default -> {
                 // 处理其他按钮的行为
             }

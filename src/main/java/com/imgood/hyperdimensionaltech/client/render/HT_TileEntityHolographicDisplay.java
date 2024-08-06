@@ -3,6 +3,8 @@ package com.imgood.hyperdimensionaltech.client.render;
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -17,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -45,6 +48,18 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         ClientRegistry.bindTileEntitySpecialRenderer(TileHolographicDisplay.class, this);
     }
 
+    private int tickCount = 0;
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            tickCount++;
+
+            if (tickCount >=21) {
+                tickCount = 0;
+            }
+        }
+    }
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
@@ -52,7 +67,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         TileHolographicDisplay tileEntity = (TileHolographicDisplay) world.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord);
         double textYOffset = 1;
         boolean isIntest = false;
-        if (tileEntity != null && !isIntest) {
+        if (tileEntity != null && !isIntest &&this.tickCount == 0) {
             if (tileEntity.isVisableBody()) {
                 renderNoGlowExpect(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "screen", "botmidlight");
                 renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "botmidlight");
@@ -68,7 +83,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                 drawCenteredString(tile, textContents[1], x, textYOffset + 1.20 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
                 drawCenteredString(tile, textContents[0], x, textYOffset + 1.40 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
                 if (!tileEntity.getImgURL(i).isEmpty()) {
-                    renderImage(tile,
+                    /*renderImage(tile,
                         tileEntity.getImgURL(i),
                         x + translateOffset("x", tileEntity.getImgStartX(i)),
                         y + tileEntity.getImgStartY(i),
@@ -81,8 +96,21 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                         y + tileEntity.getImgStartY(i),
                         z - translateOffset("z", tileEntity.getImgStartX(i)),
                         tileEntity.getImgScaledX(i),
+                        tileEntity.getImgScaledY(i));*/
+                    renderImageLocal(tile,
+                        tileEntity.getImgPath(i),
+                        x - translateOffset("x", tileEntity.getImgStartX(i)),
+                        y + tileEntity.getImgStartY(i),
+                        z - translateOffset("z", tileEntity.getImgStartX(i)),
+                        tileEntity.getImgScaledX(i),
                         tileEntity.getImgScaledY(i));
-
+                    renderImageLocalBack(tile,
+                        tileEntity.getImgPath(i),
+                        x - translateOffset("x", tileEntity.getImgStartX(i)),
+                        y + tileEntity.getImgStartY(i),
+                        z - translateOffset("z", tileEntity.getImgStartX(i)),
+                        tileEntity.getImgScaledX(i),
+                        tileEntity.getImgScaledY(i));
                 }
             }
         } else {
@@ -94,7 +122,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                 renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "screen");
             }
         }
-
+        this.clearImageCache();
     }
 
 
@@ -293,6 +321,92 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private Map<String, ResourceLocation> localImageCache = new HashMap<>();
+
+    private ResourceLocation getImageFromLocal(String filename) {
+        if (localImageCache.containsKey(filename)) {
+            return localImageCache.get(filename);
+        }
+
+        try {
+            File file = new File(Minecraft.getMinecraft().mcDataDir, "cache/holographic_images/" + filename+".png");
+            if (!file.exists()) {
+                System.out.println("Local image file not found: " + file.getAbsolutePath());
+                return null;
+            }
+
+            BufferedImage image = ImageIO.read(file);
+            String textureName = "local_texture_" + filename.hashCode();
+            ResourceLocation resourceLocation = new ResourceLocation(MOD.ID, textureName);
+
+            Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, new DynamicTexture(image));
+
+            localImageCache.put(filename, resourceLocation);
+            return resourceLocation;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void clearImageCache() {
+        for (ResourceLocation resource : localImageCache.values()) {
+            Minecraft.getMinecraft().getTextureManager().deleteTexture(resource);
+        }
+        localImageCache.clear();
+    }
+
+    public void renderImageLocal(TileEntity tile, String filename, double x, double y, double z, double width, double height) {
+        ResourceLocation texture = getImageFromLocal(filename);
+        if (texture == null) return;
+
+        GL11.glPushMatrix();
+        this.getTextFacing(tile, x, y, z);
+        GL11.glTranslated(0.5, 0.0, 0.5);
+        GlStateManager.disableLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(-width / 2, height / 2, 0.01, 1, 0);
+        tessellator.addVertexWithUV(width / 2, height / 2, 0.01, 0, 0);
+        tessellator.addVertexWithUV(width / 2, -height / 2, 0.01, 0, 1);
+        tessellator.addVertexWithUV(-width / 2, -height / 2, 0.01, 1, 1);
+        tessellator.draw();
+        GL11.glPopMatrix();
+        //this.clearImageCache();
+    }
+
+    public void renderImageLocalBack(TileEntity tile, String filename, double x, double y, double z, double width, double height) {
+        ResourceLocation texture = getImageFromLocal(filename);
+        if (texture == null) return;
+
+        GL11.glPushMatrix();
+        GlStateManager.disableLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+
+        Tessellator tessellator = Tessellator.instance;
+        this.getTextFacingBack(tile, x, y, z);
+        GL11.glTranslated(0.5, 0.0, 0.5);
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(-width / 2, height / 2, 0.01, 1, 0);
+        tessellator.addVertexWithUV(width / 2, height / 2, 0.01, 0, 0);
+        tessellator.addVertexWithUV(width / 2, -height / 2, 0.01, 0, 1);
+        tessellator.addVertexWithUV(-width / 2, -height / 2, 0.01, 1, 1);
+        tessellator.draw();
+        GL11.glPopMatrix();
+        //this.clearImageCache();
     }
 
     public void renderImage(TileEntity tile, String imageUrl, double x, double y, double z, double width, double height) {
