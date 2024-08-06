@@ -39,8 +39,9 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
     private GuiTextField textFieldImgScaledY;
     private GuiTextField textFieldImgStartX;
     private GuiTextField textFieldImgStartY;
+    private GuiTextField textFieldLocation;
     private List<String> contents = new ArrayList<>();
-    private String currentFacing;
+    private String currentHashCode;
 
     private int offsetX = 100;
     private int offsetY = 100;
@@ -68,12 +69,13 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
         this.contents.add(textFieldImgScaledY.getText());
         this.contents.add(textFieldImgStartX.getText());
         this.contents.add(textFieldImgStartY.getText());
+        this.contents.add(textFieldLocation.getText());
     }
 
     @Override
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
-
+        this.currentHashCode = this.tileHolographicDisplay.getImgPath(this.index);
         if (isInitialized) {
             saveCurrentState();
         } else {
@@ -88,6 +90,7 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
             this.contents.add(this.tileHolographicDisplay.getImgScaledY(this.index) + "");
             this.contents.add(this.tileHolographicDisplay.getImgStartX(this.index) + "");
             this.contents.add(this.tileHolographicDisplay.getImgStartY(this.index) + "");
+            this.contents.add(this.tileHolographicDisplay.getImgPath(this.index));
             isInitialized = true;
         }
 
@@ -110,7 +113,8 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
         textFieldsRight.add(this.textFieldImgScaledY);
         textFieldsRight.add(this.textFieldImgStartX);
         textFieldsRight.add(this.textFieldImgStartY);
-        autoTextField("Right",this.textFieldsRight, 0, 20,this.offsetX+190, this.offsetY, 87, 20);
+        textFieldsRight.add(this.textFieldLocation);
+        autoTextField("Right",this.textFieldsRight, 0, 20,this.offsetX+205, this.offsetY, 87, 20);
 
         this.textFieldLine1.setMaxStringLength(100);
         this.textFieldLine1.setFocused(true);
@@ -134,6 +138,8 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
         this.textFieldImgStartX.setText(this.tileHolographicDisplay.getImgStartX(this.index)+"");
         this.textFieldImgStartY.setMaxStringLength(5);
         this.textFieldImgStartY.setText(this.tileHolographicDisplay.getImgStartY(this.index)+"");
+        this.textFieldLocation.setMaxStringLength(100);
+        this.textFieldLocation.setText(this.tileHolographicDisplay.getImgPath(this.index));
 
         //region 保存/取消按钮
         this.buttonList.add(new GuiButton(0,
@@ -148,12 +154,6 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
             70,
             20,
             "Cancel"));
-        this.buttonList.add(new GuiButton(7,
-            this.offsetX + 140,
-            this.offsetY + 110,
-            70,
-            20,
-            "Download"));
 
         this.buttonList.add(new GuiButton(2,
             this.offsetX + 0,
@@ -201,7 +201,7 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
         int intervalYCurrent = 0;
         for (int i = 0; i < textFields.size(); i++) {
             GuiTextField textField = new GuiTextField(this.fontRendererObj, startX + intervalXCurrent, startY + intervalYCurrent, width, height);
-            textFields.set(i, textField); // 更新列表中的元素
+            textFields.set(i, textField);
             intervalXCurrent += intervalX;
             intervalYCurrent += intervalY;
 
@@ -220,6 +220,7 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
                     case 2: this.textFieldImgScaledY = textField; break;
                     case 3: this.textFieldImgStartX = textField; break;
                     case 4: this.textFieldImgStartY = textField; break;
+                    case 5: this.textFieldLocation = textField; break;
                 }
             }
             // 根据 i 的值更新对应的成员变量
@@ -345,7 +346,8 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
 //                this.tileHolographicDisplay.setText(2, this.textFieldLine3.getText());
 //                this.tileHolographicDisplay.setText(3, this.textFieldLine4.getText());
 //                this.tileHolographicDisplay.setImgURL(this.index, this.textFieldImgUrl.getText());
-                this.tileHolographicDisplay.loadImageAsync(this.index, this.textFieldImgUrl.getText());
+                //this.tileHolographicDisplay.loadImageAsync(this.index, this.textFieldImgUrl.getText());
+
                 this.tileHolographicDisplay.setDisplayData(this.index,nbt);
                 this.tileHolographicDisplay.writeToNBT(nbt);
                 isInitialized = false;
@@ -357,7 +359,8 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
                 this.mc.displayGuiScreen(new GuiScreenHolographicDisplay_Main(this.player, this.world, this.tileHolographicDisplay));
             }
             case 7 -> {
-                this.tileHolographicDisplay.loadImageAsync(this.index, this.textFieldImgUrl.getText());
+//                this.tileHolographicDisplay.loadImageAsync(this.index, this.textFieldImgUrl.getText());
+//                this.currentHashCode = this.tileHolographicDisplay.getImgPath(this.index);
              }
             default -> {
                 // 处理其他按钮的行为
@@ -404,10 +407,11 @@ public class GuiScreenHolographicDisplay extends GuiScreen {
 
         String[] text = {"§lLine1", "§lLine2", "§lLine3", "§lLine4", "§lColor"};
         autoText(text, 0, 22, this.offsetX, this.offsetY, this.textColor);
-        String[] text2 = {"§lImgUrl", "§lWidth", "§lHeight", "§lStartX", "§lStartY"};
+        String[] text2 = {"§lImgUrl", "§lWidth", "§lHeight", "§lStartX", "§lStartY", "§lLocation"};
         autoText(text2, 0, 22, this.offsetX+150, this.offsetY, this.textColor);
 
         this.drawCenteredString(this.fontRendererObj, "§lData Config Of §n"+(this.index+1), this.offsetX+192, this.offsetY-20, this.textColor);
+        this.drawCenteredString(this.fontRendererObj, this.currentHashCode, this.offsetX+192, this.offsetY+100, this.textColor);
 
         hoveredTextField = null;
         for (GuiTextField textField : textFieldsLeft) {

@@ -2,9 +2,12 @@ package com.imgood.hyperdimensionaltech.client.render;
 
 import com.gtnewhorizons.modularui.api.GlStateManager;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
+import com.imgood.hyperdimensionaltech.utils.HT_TextureManager;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -22,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,20 +101,25 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                         z - translateOffset("z", tileEntity.getImgStartX(i)),
                         tileEntity.getImgScaledX(i),
                         tileEntity.getImgScaledY(i));*/
-                    renderImageLocal(tile,
+                    try {
+                        renderImageLocal(tile,
+                            tileEntity.getImgPath(i),
+                            x - translateOffset("x", tileEntity.getImgStartX(i)),
+                            y + tileEntity.getImgStartY(i),
+                            z - translateOffset("z", tileEntity.getImgStartX(i)),
+                            tileEntity.getImgScaledX(i),
+                            tileEntity.getImgScaledY(i),
+                            i);
+                    } catch (NoSuchAlgorithmException e) {
+                        throw new RuntimeException(e);
+                    }
+                    /*renderImageLocalBack(tile,
                         tileEntity.getImgPath(i),
                         x - translateOffset("x", tileEntity.getImgStartX(i)),
                         y + tileEntity.getImgStartY(i),
                         z - translateOffset("z", tileEntity.getImgStartX(i)),
                         tileEntity.getImgScaledX(i),
-                        tileEntity.getImgScaledY(i));
-                    renderImageLocalBack(tile,
-                        tileEntity.getImgPath(i),
-                        x - translateOffset("x", tileEntity.getImgStartX(i)),
-                        y + tileEntity.getImgStartY(i),
-                        z - translateOffset("z", tileEntity.getImgStartX(i)),
-                        tileEntity.getImgScaledX(i),
-                        tileEntity.getImgScaledY(i));
+                        tileEntity.getImgScaledY(i));*/
                 }
             }
         } else {
@@ -358,16 +367,16 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         localImageCache.clear();
     }
 
-    public void renderImageLocal(TileEntity tile, String filename, double x, double y, double z, double width, double height) {
-        ResourceLocation texture = getImageFromLocal(filename);
+    @SideOnly(Side.CLIENT)
+    public void renderImageLocal(TileEntity tile, String filename, double x, double y, double z, double width, double height, int index) throws NoSuchAlgorithmException {
+        ResourceLocation texture = HT_TextureManager.getOrLoadTexture(filename,tile,index);
         if (texture == null) return;
 
         GL11.glPushMatrix();
         this.getTextFacing(tile, x, y, z);
         GL11.glTranslated(0.5, 0.0, 0.5);
-        GlStateManager.disableLighting();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
         GL11.glDisable(GL11.GL_LIGHTING);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
@@ -380,7 +389,6 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         tessellator.addVertexWithUV(-width / 2, -height / 2, 0.01, 1, 1);
         tessellator.draw();
         GL11.glPopMatrix();
-        //this.clearImageCache();
     }
 
     public void renderImageLocalBack(TileEntity tile, String filename, double x, double y, double z, double width, double height) {

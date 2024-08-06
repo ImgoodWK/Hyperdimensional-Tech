@@ -40,60 +40,6 @@ public class TileHolographicDisplay extends TileEntity {
     private static int updateIndex;
     private static String updateImagePath;
 
-    public void loadImageAsync(final int index, String imageUrl) {
-        if (imageUrl == null || imageUrl.isEmpty()) {
-            return;
-        }
-        isLoading = true;
-        new Thread(() -> {
-            try {
-                File cacheDir = new File(Minecraft.getMinecraft().mcDataDir, CACHE_DIR);
-                if (!cacheDir.exists()) {
-                    cacheDir.mkdirs();
-                }
-
-                String imageHash = calculateImageHash(imageUrl);
-                File cachedFile = new File(cacheDir,imageHash + ".png");
-                final String finalImagePath = cachedFile.getAbsolutePath();
-                this.setImgPath(index, imageHash);
-                if (!cachedFile.exists()) {
-                    // 下载并保存图片
-                    downloadAndSaveImage(imageUrl, cachedFile);
-                }
-
-                // 设置更新标志和数据
-                needsUpdate = true;
-                updateIndex = index;
-                updateImagePath = imageHash;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                isLoading = false;
-            }
-        }).start();
-    }
-
-
-    private String calculateImageHash(String imageUrl) throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] hashBytes = md.digest(imageUrl.getBytes());
-        StringBuilder sb = new StringBuilder();
-        for (byte b : hashBytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
-    }
-
-    private void downloadAndSaveImage(String imageUrl, File outputFile) throws IOException {
-        URL url = new URL(imageUrl);
-        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-        FileOutputStream fos = new FileOutputStream(outputFile);
-        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        fos.close();
-        rbc.close();
-    }
-
 
     public TileHolographicDisplay() {
         this.displayDataMap = new HashMap<>();
