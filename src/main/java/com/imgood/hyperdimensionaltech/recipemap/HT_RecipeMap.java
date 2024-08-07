@@ -1,16 +1,14 @@
 package com.imgood.hyperdimensionaltech.recipemap;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-
 import com.imgood.hyperdimensionaltech.HT_ItemList;
 import com.imgood.hyperdimensionaltech.recipemap.recipeMapFrontends.HT_GeneralFrontend;
-
 import gregtech.api.gui.modularui.GT_UITextures;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMapBackend;
 import gregtech.api.recipe.RecipeMapBuilder;
 import gregtech.api.util.GT_Recipe;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public class HT_RecipeMap extends GT_Recipe {
 

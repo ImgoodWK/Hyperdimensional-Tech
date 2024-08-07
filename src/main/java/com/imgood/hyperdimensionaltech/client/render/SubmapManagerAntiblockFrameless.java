@@ -1,5 +1,7 @@
 package com.imgood.hyperdimensionaltech.client.render;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -7,11 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer;
-
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import team.chisel.client.render.SubmapManagerBase;
 import team.chisel.ctmlib.Drawing;
 import team.chisel.ctmlib.RenderBlocksCTM;
@@ -73,7 +71,9 @@ public class SubmapManagerAntiblockFrameless extends SubmapManagerBase {
                 this.enableAO = true;
             }
         }
-    };
+    }
+
+    ;
 
     @SideOnly(Side.CLIENT)
     private RenderBlocksCTMFullbright rb;

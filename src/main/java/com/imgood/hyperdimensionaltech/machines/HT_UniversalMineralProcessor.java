@@ -1,10 +1,9 @@
 package com.imgood.hyperdimensionaltech.machines;
 
-import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_HoloController;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBuilder;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.utils.Utils;
@@ -15,7 +14,6 @@ import gregtech.api.enums.GT_HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.util.GT_HatchElementBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -26,7 +24,6 @@ import java.util.Objects;
 
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_HoloController;
 
 public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_UniversalMineralProcessor> {
     private final int horizontalOffSet = 27;
@@ -48,6 +45,7 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
     }
 
     public IStructureDefinition<HT_UniversalMineralProcessor> STRUCTURE_DEFINITION = null;
+
     @Override
     public IStructureDefinition<HT_UniversalMineralProcessor> getStructureDefinition() {
         if (STRUCTURE_DEFINITION == null) {
@@ -60,17 +58,17 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
                     .casingIndex(12)
                     .dot(2)
                     .buildAndChain(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))
-                .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),13))
-                .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),14))
-                .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")),13))
-                .addElement('E', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsBA0")),12))
-                .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsTT")),11))
-                .addElement('G', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.spacetime_compression_field_generator")),8))
-                .addElement('H', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.stabilisation_field_generator")),8))
-                .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.time_acceleration_field_generator")),8))
-                .addElement('J', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")),6))
-                .addElement('K', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")),0))
-                .addElement('L', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")),10002))
+                .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 13))
+                .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 14))
+                .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")), 13))
+                .addElement('E', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsBA0")), 12))
+                .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsTT")), 11))
+                .addElement('G', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.spacetime_compression_field_generator")), 8))
+                .addElement('H', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.stabilisation_field_generator")), 8))
+                .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.time_acceleration_field_generator")), 8))
+                .addElement('J', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")), 6))
+                .addElement('K', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")), 0))
+                .addElement('L', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")), 10002))
                 .build();
         }
         return STRUCTURE_DEFINITION;
@@ -84,7 +82,7 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
         repairMachine();
-        if (!checkPiece(mName, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet)) {
+        if (!checkPiece(mName, this.horizontalOffSet, this.verticalOffSet, this.depthOffSet)) {
             return false;
         }
         this.setCoefficientMultiplier(1 + getExtraCoefficientMultiplierByVoltageTier());
@@ -96,7 +94,7 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
 
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
-        buildPiece(mName, stackSize, hintsOnly, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet);
+        buildPiece(mName, stackSize, hintsOnly, this.horizontalOffSet, this.verticalOffSet, this.depthOffSet);
     }
 
     @Override
@@ -104,13 +102,13 @@ public class HT_UniversalMineralProcessor extends HT_MultiMachineBuilder<HT_Univ
         if (mMachine) {
             return -1;
         }
-        int result = survivialBuildPiece(mName, stackSize,this.horizontalOffSet,this.verticalOffSet,this.depthOffSet, elementBudget, env, false, true);
+        int result = survivialBuildPiece(mName, stackSize, this.horizontalOffSet, this.verticalOffSet, this.depthOffSet, elementBudget, env, false, true);
         return result;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void render(double x, double y, double z,double feildSizeX, double feildSizeY, double feildSizeZ, TileEntity tile) {
+    public void render(double x, double y, double z, double feildSizeX, double feildSizeY, double feildSizeZ, TileEntity tile) {
         if (this.renderer == null) {
             this.renderer = new HT_TileEntityRenderer_HoloController();
         }

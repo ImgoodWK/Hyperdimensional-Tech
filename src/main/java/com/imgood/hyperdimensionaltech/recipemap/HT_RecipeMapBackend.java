@@ -17,5 +17,6 @@ public class HT_RecipeMapBackend extends RecipeMapBackend {
      * Do nothing.
      */
     @Override
-    public void reInit() {}
+    public void reInit() {
+    }
 }

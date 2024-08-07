@@ -6,8 +6,7 @@ import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_HoloC
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityRenderer_ParticleStream;
 
 public class RendererLoader {
-    public static void loadRenderers()
-    {
+    public static void loadRenderers() {
         new HT_TileEntityRenderer_Feild();
         new HT_TileEntityRenderer_ParticleStream();
         new HT_TileEntityRenderer_HoloController();

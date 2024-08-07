@@ -1,14 +1,13 @@
 package com.imgood.hyperdimensionaltech.recipemap.recipeMapFrontends;
 
-import java.util.List;
-
 import com.gtnewhorizons.modularui.api.math.Pos2d;
 import com.gtnewhorizons.modularui.api.math.Size;
-
 import gregtech.api.recipe.BasicUIPropertiesBuilder;
 import gregtech.api.recipe.NEIRecipePropertiesBuilder;
 import gregtech.api.recipe.RecipeMapFrontend;
 import gregtech.common.gui.modularui.UIHelper;
+
+import java.util.List;
 
 public class HT_GeneralFrontend extends RecipeMapFrontend {
 

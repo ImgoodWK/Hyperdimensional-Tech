@@ -1,23 +1,22 @@
 package com.imgood.hyperdimensionaltech.block.textures;
 
-import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
-
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.utils.AutoMap;
+import gregtech.api.GregTech_API;
+import gregtech.api.interfaces.IIconContainer;
+import gregtech.api.objects.GT_RenderedTexture;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import com.imgood.hyperdimensionaltech.utils.AutoMap;
-
-import gregtech.api.GregTech_API;
-import gregtech.api.interfaces.IIconContainer;
-import gregtech.api.objects.GT_RenderedTexture;
+import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
 
 public class TexturesGtBlock {
 
     private static AutoMap<Runnable> mCustomiconMap = new AutoMap<>();
 
-    static {}
+    static {
+    }
 
     public static class CustomIcon implements IIconContainer, Runnable {
 

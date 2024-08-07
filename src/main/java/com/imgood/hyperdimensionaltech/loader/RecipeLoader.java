@@ -8,8 +8,8 @@ import com.imgood.hyperdimensionaltech.recipe.machineRecipe.SingularityUnravelin
 public class RecipeLoader {
 
     public static void loadRecipes() {
-        IRecipePool[] recipePools = new IRecipePool[] { new HyperdimensionalResonanceEvolverRecipePool(),
-        new SingularityUnravelingDeviceRecipePool()};
+        IRecipePool[] recipePools = new IRecipePool[]{new HyperdimensionalResonanceEvolverRecipePool(),
+            new SingularityUnravelingDeviceRecipePool()};
 
         for (IRecipePool recipePool : recipePools) {
             HyperdimensionalTech.logger.info("Loading recipes:" + recipePool);

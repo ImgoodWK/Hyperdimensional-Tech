@@ -1,18 +1,14 @@
 package com.imgood.hyperdimensionaltech.config;
 
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.HyperdimensionalTechFeatures;
+import net.minecraftforge.common.config.Configuration;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-
-import net.minecraftforge.common.config.Configuration;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.imgood.hyperdimensionaltech.HyperdimensionalTechFeatures;
-
-import java.io.File;
 
 
 public class HTConfigurations {
@@ -31,11 +27,12 @@ public class HTConfigurations {
 
     /**
      * 刷新Config（开发时不需要动它
+     *
      * @return 布尔类型刷新结果
      */
     public static boolean refreshConfig() {
 
-            /* features */
+        /* features */
         HyperdimensionalTech.logger.info("Put block feature in config file...");
         for (HyperdimensionalTechFeatures feature : HyperdimensionalTechFeatures.values()) {
             HyperdimensionalTech.logger.info("Put" + feature + "in config file.");
@@ -54,6 +51,7 @@ public class HTConfigurations {
 
     /**
      * 检查模组功能/内容是否启用（开发时不需要动它
+     *
      * @param feature HyperdimensionalTechTeatures类型的本模组内容
      * @return 布尔类型启用结果
      */
@@ -66,6 +64,7 @@ public class HTConfigurations {
     /**
      * Makes the old camelCase names from the new CONSTANT_CASE names
      * 将新的CONSTANT_CASE名称转换为旧的camelCase名称的对象（开发时不需要动它
+     *
      * @param feature HyperdimensionalTechFeatures对象
      * @return 转换结果
      */
@@ -91,17 +90,18 @@ public class HTConfigurations {
 
     /**
      * 静态方法，模组加载时候调用，用于同步（开发时将需要同步的内容申明在这
+     *
      * @param configFile 同步的文件对象
      */
     public static void synchronizeConfiguration(File configFile) {
         HyperdimensionalTech.logger.info("Synchronizing configuration...");
         Configuration configuration = new Configuration(configFile);
         secondsOfHyperdimensionalResonanceProgressCycleTime = Double.parseDouble(configuration.getString("secondsOfHyperdimensionalResonanceProgressCycleTime",
-            HyperdimensionalResonanceEvolver,String.valueOf(secondsOfHyperdimensionalResonanceProgressCycleTime),"Seconds of HyperdimensionalResonance one progress time. Type: double, turn to tick time."));
+            HyperdimensionalResonanceEvolver, String.valueOf(secondsOfHyperdimensionalResonanceProgressCycleTime), "Seconds of HyperdimensionalResonance one progress time. Type: double, turn to tick time."));
         EnableRenderDefaultHyperdimensionalResonanceEvolver = configuration.getBoolean("EnableRenderDefaultHyperdimensionalResonanceEvolver", HyperdimensionalResonanceEvolver, EnableRenderDefaultHyperdimensionalResonanceEvolver, "Enable Render of Hyperdimensional Resonance Evolver when placing a new one.");
 
         activateCombatStats = configuration.getBoolean("activateCombatStats", "CombatStats", activateCombatStats, "decide whether to enable the combatstats system(WIP).DO NOT USE IT FOR NOW!");
-        Mode_Default_HyperdimensionalResonanceEvolver = (byte)configuration.getInt("Mode_Default_HyperdimensionalResonanceEvolver", "HyperdimensionalResonanceEvolver", Mode_Default_HyperdimensionalResonanceEvolver, 0, 1, "The default mode when deploy HyperdimensionalResonanceEvolver. 0=HighSpeedMode, 1=HighParallelMode. Type: byte");
+        Mode_Default_HyperdimensionalResonanceEvolver = (byte) configuration.getInt("Mode_Default_HyperdimensionalResonanceEvolver", "HyperdimensionalResonanceEvolver", Mode_Default_HyperdimensionalResonanceEvolver, 0, 1, "The default mode when deploy HyperdimensionalResonanceEvolver. 0=HighSpeedMode, 1=HighParallelMode. Type: byte");
         if (Mode_Default_HyperdimensionalResonanceEvolver < 0 || Mode_Default_HyperdimensionalResonanceEvolver > 1) {
             Mode_Default_HyperdimensionalResonanceEvolver = 0;
         }
@@ -112,6 +112,7 @@ public class HTConfigurations {
             configuration.save();
         }
     }
+
     static {
         activateCombatStats = false;
         Mode_Default_HyperdimensionalResonanceEvolver = 0;

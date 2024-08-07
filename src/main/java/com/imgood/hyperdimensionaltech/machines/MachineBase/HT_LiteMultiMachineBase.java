@@ -1,31 +1,36 @@
 package com.imgood.hyperdimensionaltech.machines.MachineBase;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-
-
+import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
+import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-
 import com.imgood.hyperdimensionaltech.block.BasicBlocks;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
+import com.imgood.hyperdimensionaltech.machines.processingLogics.HT_ProcessingLogic;
+import com.imgood.hyperdimensionaltech.utils.HTTextHandler;
 import com.imgood.hyperdimensionaltech.utils.HTTextLocalization;
-
+import com.imgood.hyperdimensionaltech.utils.Utils;
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
+import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
+import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.logic.ProcessingLogic;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_ExtendedPowerMultiBlockBase;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Dynamo;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Input;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_InputBus;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Muffler;
 import gregtech.api.recipe.RecipeMap;
-
+import gregtech.api.recipe.check.CheckRecipeResult;
+import gregtech.api.recipe.check.CheckRecipeResultRegistry;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
+import gregtech.api.util.GT_Utility;
+import gregtech.api.util.GT_Utility.ItemId;
+import gregtech.common.tileentities.machines.GT_MetaTileEntity_Hatch_InputBus_ME;
+import gregtech.common.tileentities.machines.IDualInputHatch;
+import gregtech.common.tileentities.machines.IDualInputInventory;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.block.Block;
@@ -36,36 +41,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
-
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.jetbrains.annotations.ApiStatus.OverrideOnly;
 import org.jetbrains.annotations.NotNull;
 
-import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
-import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
-import com.imgood.hyperdimensionaltech.machines.processingLogics.HT_ProcessingLogic;
-import com.imgood.hyperdimensionaltech.utils.HTTextHandler;
-import com.imgood.hyperdimensionaltech.utils.Utils;
-
-import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.logic.ProcessingLogic;
-import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_ExtendedPowerMultiBlockBase;
-import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch;
-import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Dynamo;
-import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Input;
-import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_InputBus;
-import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Muffler;
-import gregtech.api.recipe.check.CheckRecipeResult;
-import gregtech.api.recipe.check.CheckRecipeResultRegistry;
-import gregtech.api.util.GT_Utility;
-import gregtech.api.util.GT_Utility.ItemId;
-import gregtech.common.tileentities.machines.GT_MetaTileEntity_Hatch_InputBus_ME;
-import gregtech.common.tileentities.machines.IDualInputHatch;
-import gregtech.common.tileentities.machines.IDualInputInventory;
-
+import javax.annotation.Nonnull;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
@@ -158,12 +148,13 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
 
     /**
      * 快速开发简单的机器的构造方法，所以参数直接给进去就ok了，在loadMachines直接加进去
-     * @param aID 机器的meta值，从10000开始，依次累增，不能重复，开发的时候乱动前面写好的id会导致存档机器出事
-     * @param aName “Name”+机器的名称
+     *
+     * @param aID           机器的meta值，从10000开始，依次累增，不能重复，开发的时候乱动前面写好的id会导致存档机器出事
+     * @param aName         “Name”+机器的名称
      * @param aNameRegional HTTextLocalization.Name机器的名称.getStackForm(1)
-     * @param aConstructor 机器结构构成的二维String数组，用结构扫描器扫描获得，写在HT_MachineConstrucs里
-     * @param aRecipeMap 机器的NEI界面相关，如：nei界面的进度条图标类型，输入输出物品/流体的格子数量，需要给定这个机器对应的Recipemap对象
-     * @param enableRender 是否开启特效渲染，需要从HTConfigurations获取
+     * @param aConstructor  机器结构构成的二维String数组，用结构扫描器扫描获得，写在HT_MachineConstrucs里
+     * @param aRecipeMap    机器的NEI界面相关，如：nei界面的进度条图标类型，输入输出物品/流体的格子数量，需要给定这个机器对应的Recipemap对象
+     * @param enableRender  是否开启特效渲染，需要从HTConfigurations获取
      */
     public HT_LiteMultiMachineBase(int aID,
                                    String aName,
@@ -181,7 +172,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
                                    int horizontalOffSet,
                                    int verticalOffSet,
                                    int depthOffSet
-                                   ) {
+    ) {
         super(aID, aName, aNameRegional);
         this.constructor = aConstructor;
         this.recipeMap = aRecipeMap;
@@ -267,7 +258,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
             this.mode = (byte) ((this.mode + 1) % 2);
             GT_Utility.sendChatToPlayer(
                 aPlayer,
-                StatCollector.translateToLocal(this.mName +".modeMsg." + this.mode));
+                StatCollector.translateToLocal(this.mName + ".modeMsg." + this.mode));
         }
     }
 
@@ -286,9 +277,10 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
 
     /**
      * 机器的渲染器生成，需要先写好渲染器后给此方法，偏移量的使用自己摸索，偏移量指的是相对于主机
-     * @param offsetX X轴偏移量，也就是主机面向你时的左右偏移
-     * @param offsetY Y轴偏移量，也就是主机面向你时的上下偏移
-     * @param offsetZ Z轴偏移量，也就是主机面向你时的左右偏移
+     *
+     * @param offsetX     X轴偏移量，也就是主机面向你时的左右偏移
+     * @param offsetY     Y轴偏移量，也就是主机面向你时的上下偏移
+     * @param offsetZ     Z轴偏移量，也就是主机面向你时的左右偏移
      * @param isRendering True放置渲染器，False清除渲染器
      * @param renderBlock 渲染器直接放这里就行，支持现有的渲染器，如果你想用TST或者GTNH里其他的渲染器你可以找到代码把渲染器传进去
      */
@@ -297,16 +289,17 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
         int x = this.getBaseMetaTileEntity().getXCoord();
         int y = this.getBaseMetaTileEntity().getYCoord();
         int z = this.getBaseMetaTileEntity().getZCoord();
-        double xOffset = (double)(offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetX + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetX + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetX);
-        double zOffset = (double)(offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetZ + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetZ + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetZ);
-        double yOffset = (double)(offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetY + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetY + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetY);
+        double xOffset = (double) (offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetX + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetX + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetX);
+        double zOffset = (double) (offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetZ + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetZ + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetZ);
+        double yOffset = (double) (offsetZ * this.getExtendedFacing().getRelativeBackInWorld().offsetY + offsetY * this.getExtendedFacing().getRelativeUpInWorld().offsetY + offsetX * this.getExtendedFacing().getRelativeLeftInWorld().offsetY);
         if (isRendering) {
-            this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
-            this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), this.renderBlock);
-        }else {
-            this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
+            this.getBaseMetaTileEntity().getWorld().setBlock((int) ((double) x + xOffset), (int) ((double) y + yOffset), (int) ((double) z + zOffset), Blocks.air);
+            this.getBaseMetaTileEntity().getWorld().setBlock((int) ((double) x + xOffset), (int) ((double) y + yOffset), (int) ((double) z + zOffset), this.renderBlock);
+        } else {
+            this.getBaseMetaTileEntity().getWorld().setBlock((int) ((double) x + xOffset), (int) ((double) y + yOffset), (int) ((double) z + zOffset), Blocks.air);
         }
     }
+
     @Override
     public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         //HyperdimensionalTech.logger.warn("testmsgaddToMachineList");
@@ -328,6 +321,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
 
     /**
      * 这段直接复制到机器类里
+     *
      * @param aBaseMetaTileEntity
      * @param aStack
      * @return
@@ -336,7 +330,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
         //HyperdimensionalTech.logger.warn("testmsgonFirstTickin");
         repairMachine();
-        if (!checkPiece(mName, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet)) {
+        if (!checkPiece(mName, this.horizontalOffSet, this.verticalOffSet, this.depthOffSet)) {
             //HyperdimensionalTech.logger.info("httestmsgcheckmachine" + false);
             return false;
         }
@@ -347,6 +341,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
         //HyperdimensionalTech.logger.info("httestmsgcheckmachine" + true);
         return true;
     }
+
     public int getExtraCoefficientMultiplierByVoltageTier() {
         //HyperdimensionalTech.logger.warn("testmsgetExtraCoefficientMultiplierByVoltageTier");
         return (int) Utils.calculatePowerTier(getMaxInputEu());
@@ -354,17 +349,17 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
 
     /**
      * 这段直接复制到机器类里
+     *
      * @param stackSize
      * @param hintsOnly
      */
     @Override
     public void construct(ItemStack stackSize, boolean hintsOnly) {
         //HyperdimensionalTech.logger.warn("testmsgconstructin");
-        buildPiece(mName, stackSize, hintsOnly, this.horizontalOffSet,this.verticalOffSet,this.depthOffSet);
+        buildPiece(mName, stackSize, hintsOnly, this.horizontalOffSet, this.verticalOffSet, this.depthOffSet);
     }
 
     /**
-     *
      * @param stackSize
      * @param elementBudget The server configured element budget. The implementor can choose to tune this up a bit if
      *                      the structure is too big, but generally should not be a 4 digits number to not overwhelm the
@@ -378,7 +373,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
         if (mMachine) {
             return -1;
         }
-        int result = survivialBuildPiece(mName, stackSize,this.horizontalOffSet,this.verticalOffSet,this.depthOffSet, elementBudget, env, false, true);
+        int result = survivialBuildPiece(mName, stackSize, this.horizontalOffSet, this.verticalOffSet, this.depthOffSet, elementBudget, env, false, true);
         return result;
     }
 
@@ -394,6 +389,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
 
     /**
      * 还需要施工，这里的内容是实现后自带的
+     *
      * @return
      */
     @OverrideOnly
@@ -421,7 +417,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
         return null;
     }
 
-    protected boolean isEnablePerfectOverclock(boolean isEnablePerfectOverclock){
+    protected boolean isEnablePerfectOverclock(boolean isEnablePerfectOverclock) {
         //HyperdimensionalTech.logger.warn("testmsgisEnablePerfectOverclock");
         return isEnablePerfectOverclock;
     }
@@ -437,7 +433,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
         return mode == 1 ? 1 : 0.5F / coefficientMultiplier;
     }
 
-    protected  int getMaxParallelRecipes() {
+    protected int getMaxParallelRecipes() {
         //HyperdimensionalTech.logger.warn("testmsggetMaxParallelRecipes1");
         if (isWirelessMode) {
             //HyperdimensionalTech.logger.warn("testmsggetMaxParallelRecipes2");
@@ -468,9 +464,10 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
                     //HyperdimensionalTech.logger.info("testmsgend"+(this.enableRender && !this.isRendering)+this.enableRender+this.isRendering);
                     RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, true, BasicBlocks.Block_RenderField);
                 }
-            }else {
+            } else {
                 this.isRendering = false;
-                RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, false, BasicBlocks.Block_RenderField);;
+                RenderBlock(this.renderBlockOffsetX, this.renderBlockOffsetY, this.renderBlockOffsetZ, false, BasicBlocks.Block_RenderField);
+                ;
             }
             return super.checkProcessing();
         }
@@ -550,7 +547,8 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
         if (this.supportsCraftingMEBuffer()) {
             Iterator var2 = this.mDualInputHatches.iterator();
 
-            label75: while (var2.hasNext()) {
+            label75:
+            while (var2.hasNext()) {
                 IDualInputHatch dualInputHatch = (IDualInputHatch) var2.next();
                 Iterator<? extends IDualInputInventory> inventoryIterator = dualInputHatch.inventories();
 
@@ -608,6 +606,7 @@ public class HT_LiteMultiMachineBase<T extends HT_LiteMultiMachineBase<T>>
 
         return rList;
     }
+
     @Override
     public String[] getInfoData() {
         //HyperdimensionalTech.logger.warn("testmsggetInfoData");

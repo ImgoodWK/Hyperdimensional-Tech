@@ -1,10 +1,9 @@
 package com.imgood.hyperdimensionaltech.utils.recipes;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GT_Recipe;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,8 @@ public class HT_RecipeBuilder {
     private int duration = 0;
     private int specialValue = 0;
 
-    public HT_RecipeBuilder() {}
+    public HT_RecipeBuilder() {
+    }
 
     public HT_RecipeBuilder itemInputs(ItemStack... inputItems) {
         this.inputItems = inputItems;
@@ -35,6 +35,7 @@ public class HT_RecipeBuilder {
         this.outputItems = outputItems;
         return this;
     }
+
     public HT_RecipeBuilder itemOutputs(ItemStack[]... outputItems) {
         int buff = 0;
         List<ItemStack> itemStacks = new ArrayList<>();

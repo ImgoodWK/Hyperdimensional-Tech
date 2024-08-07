@@ -15,7 +15,8 @@ public class PacketUpdateHolographicDisplay implements IMessage {
     private int x, y, z;
     private NBTTagCompound data;
 
-    public PacketUpdateHolographicDisplay() {}
+    public PacketUpdateHolographicDisplay() {
+    }
 
     public PacketUpdateHolographicDisplay(int x, int y, int z, NBTTagCompound data) {
         this.x = x;

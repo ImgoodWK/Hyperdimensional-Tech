@@ -1,26 +1,12 @@
 package com.imgood.hyperdimensionaltech.machines.MachineBase;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-
-import org.jetbrains.annotations.ApiStatus.OverrideOnly;
-import org.jetbrains.annotations.NotNull;
-
 import com.gtnewhorizon.structurelib.alignment.constructable.IConstructable;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.imgood.hyperdimensionaltech.machines.processingLogics.HT_ProcessingLogic;
 import com.imgood.hyperdimensionaltech.utils.HTTextHandler;
 import com.imgood.hyperdimensionaltech.utils.Utils;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.logic.ProcessingLogic;
@@ -37,6 +23,16 @@ import gregtech.api.util.GT_Utility.ItemId;
 import gregtech.common.tileentities.machines.GT_MetaTileEntity_Hatch_InputBus_ME;
 import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IDualInputInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import org.jetbrains.annotations.ApiStatus.OverrideOnly;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public abstract class HT_MultiMachineBase<T extends HT_MultiMachineBase<T>>
     extends GT_MetaTileEntity_ExtendedPowerMultiBlockBase<T> implements IConstructable, ISurvivalConstructable {
@@ -143,7 +139,8 @@ public abstract class HT_MultiMachineBase<T extends HT_MultiMachineBase<T>>
         if (this.supportsCraftingMEBuffer()) {
             Iterator var2 = this.mDualInputHatches.iterator();
 
-            label75: while (var2.hasNext()) {
+            label75:
+            while (var2.hasNext()) {
                 IDualInputHatch dualInputHatch = (IDualInputHatch) var2.next();
                 Iterator<? extends IDualInputInventory> inventoryIterator = dualInputHatch.inventories();
 
@@ -226,7 +223,7 @@ public abstract class HT_MultiMachineBase<T extends HT_MultiMachineBase<T>>
     }
 
     public boolean addEnergyHatchOrExoticEnergyHatchToMachineList(IGregTechTileEntity aTileEntity,
-        int aBaseCasingIndex) {
+                                                                  int aBaseCasingIndex) {
         return this.addEnergyInputToMachineList(aTileEntity, aBaseCasingIndex)
             || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }

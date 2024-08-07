@@ -19,9 +19,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.imgood.hyperdimensionaltech.utils.Enums.Names.MOD_ID;
@@ -42,14 +42,12 @@ public class HT_TextureManager {
         if (!(entity instanceof TileHolographicDisplay)) {
             return null;
         }
-        TileHolographicDisplay tile = (TileHolographicDisplay) entity;
         if (textureCache.containsKey(filename)) {
             return textureCache.get(filename);
         } else if (isTextureDownloading(filename)) {
-            //下载中返回null
             return null;
         } else {
-            ResourceLocation texture = loadTexture(tile, filename,((TileHolographicDisplay) entity).getImgURL(index), index);
+            ResourceLocation texture = loadTexture((TileHolographicDisplay) entity, filename, ((TileHolographicDisplay) entity).getImgURL(index), index);
             if (texture != null) {
                 textureCache.put(filename, texture);
             }
@@ -58,13 +56,10 @@ public class HT_TextureManager {
     }
 
     @SideOnly(Side.CLIENT)
-    private static ResourceLocation loadTexture(TileHolographicDisplay tileHolographicDisplay,final String filename, final String url, int index) {
+    private static ResourceLocation loadTexture(TileHolographicDisplay tileHolographicDisplay, final String filename, final String url, int index) {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
             return null;
         }
-//        if (filename.isEmpty()) {
-//            return null;
-//        }
         try {
             File file = new File(Minecraft.getMinecraft().mcDataDir, CACHE_DIR + filename + ".png");
             if (!file.exists()) {
@@ -77,12 +72,9 @@ public class HT_TextureManager {
             final String textureName = "local_texture_" + filename.hashCode();
             final ResourceLocation resourceLocation = new ResourceLocation(MOD_ID, textureName);
 
-            Minecraft.getMinecraft().func_152344_a(new Runnable() {
-                @Override
-                public void run() {
-                    DynamicTexture dynamicTexture = new DynamicTexture(image);
-                    Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, dynamicTexture);
-                }
+            Minecraft.getMinecraft().func_152344_a(() -> {
+                DynamicTexture dynamicTexture = new DynamicTexture(image);
+                Minecraft.getMinecraft().getTextureManager().loadTexture(resourceLocation, dynamicTexture);
             });
 
             return resourceLocation;
@@ -108,7 +100,7 @@ public class HT_TextureManager {
                 String imageHash = calculateImageHash(imageUrl);
                 File cachedFile = new File(cacheDir, imageHash + ".png");
                 if (tile instanceof TileHolographicDisplay) {
-                    System.out.println("testmsg "+imageHash);
+                    System.out.println("testmsg " + imageHash);
                     ((TileHolographicDisplay) tile).setImgPath(index, imageHash);
                 }
 
@@ -116,16 +108,16 @@ public class HT_TextureManager {
                     downloadAndSaveImage(imageUrl, cachedFile);
                 }
 
-                // 下载完成后，从下载集合中移除
-                downloadingTextures.remove(filename);
-
-                // 通知Minecraft重新加载纹理
                 Minecraft.getMinecraft().func_152344_a(() -> {
-                    textureCache.remove(filename); // 移除旧的缓存（如果有）
                     try {
-                        getOrLoadTexture(filename, tile, index); // 重新加载纹理
-                    } catch (NoSuchAlgorithmException e) {
-                        throw new RuntimeException(e);
+                        ResourceLocation texture = loadTexture((TileHolographicDisplay) tile, filename, imageUrl, index);
+                        if (texture != null) {
+                            textureCache.put(filename, texture);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        downloadingTextures.remove(filename);
                     }
                 });
 

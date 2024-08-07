@@ -7,8 +7,7 @@ import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileParticleStream;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class TileEntityLoader {
-    public static void loadTileEntities()
-    {
+    public static void loadTileEntities() {
         GameRegistry.registerTileEntity(TileFeild.class, "FeildRender");
         GameRegistry.registerTileEntity(TileParticleStream.class, "ParticleStreamRender");
         GameRegistry.registerTileEntity(TileHoloController.class, "HoloControllerRender");

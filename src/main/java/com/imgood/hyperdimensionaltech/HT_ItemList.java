@@ -1,12 +1,10 @@
 package com.imgood.hyperdimensionaltech;
 
+import com.imgood.hyperdimensionaltech.utils.Utils;
+import gregtech.api.util.GT_Log;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import com.imgood.hyperdimensionaltech.utils.Utils;
-
-import gregtech.api.util.GT_Log;
 
 public enum HT_ItemList {
 
@@ -33,6 +31,7 @@ public enum HT_ItemList {
 
     /**
      * 构造方法
+     *
      * @param aDeprecated true代表弃用，false代表启用
      */
     HT_ItemList(boolean aDeprecated) {
@@ -44,6 +43,7 @@ public enum HT_ItemList {
 
     /**
      * 获取Item对象
+     *
      * @return 对应的Item
      */
     public Item getItem() {
@@ -56,6 +56,7 @@ public enum HT_ItemList {
 
     /**
      * 获取Block对象
+     *
      * @return 对应的Block
      */
     public Block getBlock() {
@@ -65,8 +66,9 @@ public enum HT_ItemList {
 
     /**
      * 返回物品堆ItemStack对象
-     * @param aAmount 数量
-     * @param aReplacements  这啥啊 我也不知道，以后补充
+     *
+     * @param aAmount       数量
+     * @param aReplacements 这啥啊 我也不知道，以后补充
      * @return ItemStack
      */
     public ItemStack get(int aAmount, Object... aReplacements) {
@@ -82,6 +84,7 @@ public enum HT_ItemList {
 
     /**
      * 枚举对象的Item“set”
+     *
      * @param aItem 传入Item对象
      * @return
      */
@@ -97,6 +100,7 @@ public enum HT_ItemList {
 
     /**
      * 枚举对象的ItemStack“set”
+     *
      * @param aStack ItemStack对象
      * @return
      */
@@ -110,6 +114,7 @@ public enum HT_ItemList {
 
     /**
      * 判断枚举对象Set状态
+     *
      * @return true为has been set，false为not set
      */
     public boolean hasBeenSet() {

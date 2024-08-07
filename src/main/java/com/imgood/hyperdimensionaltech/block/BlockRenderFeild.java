@@ -4,8 +4,8 @@ import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileFeild;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -15,9 +15,10 @@ import java.util.ArrayList;
 
 import static com.imgood.hyperdimensionaltech.utils.Enums.MOD;
 
-public class BlockRenderFeild extends Block{
+public class BlockRenderFeild extends Block {
     String textureFile;
     String objFile;
+
     public BlockRenderFeild() {
         super(Material.iron);
         this.setResistance(20f);
@@ -26,6 +27,7 @@ public class BlockRenderFeild extends Block{
         this.setLightLevel(100.0f);
         GameRegistry.registerBlock(this, getUnlocalizedName());
     }
+
     public BlockRenderFeild(String blockRenderId, String textureFile, String objFile) {
         super(Material.iron);
         this.setResistance(20f);
@@ -36,6 +38,7 @@ public class BlockRenderFeild extends Block{
         this.objFile = objFile;
         GameRegistry.registerBlock(this, getUnlocalizedName());
     }
+
     public BlockRenderFeild(String blockRenderId) {
         super(Material.iron);
         this.setResistance(20f);
@@ -48,7 +51,7 @@ public class BlockRenderFeild extends Block{
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        blockIcon = iconRegister.registerIcon(MOD.ID+":TRANSPARENT");
+        blockIcon = iconRegister.registerIcon(MOD.ID + ":TRANSPARENT");
     }
 
     @Override

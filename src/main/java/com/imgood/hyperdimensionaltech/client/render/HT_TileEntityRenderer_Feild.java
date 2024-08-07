@@ -7,7 +7,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
@@ -29,7 +28,7 @@ public class HT_TileEntityRenderer_Feild extends TileEntitySpecialRenderer {
 
     private double feildSizeMax = 0.8;
     private double feildSizeMin = 0.7;
-    private boolean feildFlag= true;
+    private boolean feildFlag = true;
     private double feildChangeSpeed = 0.0005;
     private String blockRenderId;
     private String textureFile;
@@ -40,12 +39,12 @@ public class HT_TileEntityRenderer_Feild extends TileEntitySpecialRenderer {
     }
 
     public HT_TileEntityRenderer_Feild(
-                                  String textureFile,
-                                  String objFile) {
+        String textureFile,
+        String objFile) {
         this.textureFile = textureFile;
         this.objFile = objFile;
-        this.FEILDTEXTURE = new ResourceLocation(MOD.ID + ":textures/model/"+this.textureFile+".png");
-        this.FEILD = AdvancedModelLoader.loadModel(new ResourceLocation(MOD.ID + ":model/"+this.objFile+".obj"));
+        this.FEILDTEXTURE = new ResourceLocation(MOD.ID + ":textures/model/" + this.textureFile + ".png");
+        this.FEILD = AdvancedModelLoader.loadModel(new ResourceLocation(MOD.ID + ":model/" + this.objFile + ".obj"));
         ClientRegistry.bindTileEntitySpecialRenderer(TileFeild.class, this);
     }
 
@@ -59,31 +58,32 @@ public class HT_TileEntityRenderer_Feild extends TileEntitySpecialRenderer {
                                        double feildSizeMin) {
         this.textureFile = textureFile;
         this.objFile = objFile;
-        this.FEILDTEXTURE = new ResourceLocation(MOD.ID + ":textures/model/"+this.textureFile+".png");
-        this.FEILD = AdvancedModelLoader.loadModel(new ResourceLocation(MOD.ID + ":model/"+this.objFile+".obj"));
+        this.FEILDTEXTURE = new ResourceLocation(MOD.ID + ":textures/model/" + this.textureFile + ".png");
+        this.FEILD = AdvancedModelLoader.loadModel(new ResourceLocation(MOD.ID + ":model/" + this.objFile + ".obj"));
         ClientRegistry.bindTileEntitySpecialRenderer(TileFeild.class, this);
     }
+
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float timeSinceLastTick) {
         if (!(tile instanceof TileFeild tileFeild)) return;
         //final double size = TILEhrefEILD.size;
 
-        if(feildSizeX >= feildSizeMax) {
+        if (feildSizeX >= feildSizeMax) {
             feildFlag = false;
-        }else if(feildSizeX <= feildSizeMin) {
+        } else if (feildSizeX <= feildSizeMin) {
             feildFlag = true;
         }
-        if(feildFlag){
+        if (feildFlag) {
             feildSizeX += feildChangeSpeed;
             feildSizeZ += feildChangeSpeed;
-        }else{
+        } else {
             feildSizeX -= feildChangeSpeed;
             feildSizeZ -= feildChangeSpeed;
         }
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
         //GL11.glRotated(TILEhrefEILD.Rotation, 1, 1, 1);
-        GL11.glRotated(tileFeild.Rotation, 0,10,0);
+        GL11.glRotated(tileFeild.Rotation, 0, 10, 0);
         renderFeild(feildSizeX, feildSizeY, feildSizeZ);
         GL11.glPopMatrix();
     }
@@ -102,20 +102,24 @@ public class HT_TileEntityRenderer_Feild extends TileEntitySpecialRenderer {
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
+
     public HT_TileEntityRenderer_Feild setRenderSize(double sizeX, double sizeY, double sizeZ) {
         this.feildSizeX = sizeX;
         this.feildSizeY = sizeY;
         this.feildSizeZ = sizeZ;
         return this;
     }
+
     public HT_TileEntityRenderer_Feild setChangeSpeed(double changeSpeed) {
         this.feildChangeSpeed = changeSpeed;
         return this;
     }
+
     public HT_TileEntityRenderer_Feild setMaxSize(double maxSize) {
         this.feildSizeMax = maxSize;
         return this;
     }
+
     public HT_TileEntityRenderer_Feild setMinSize(double minSize) {
         this.feildSizeMin = minSize;
         return this;

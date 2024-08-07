@@ -1,13 +1,11 @@
 package com.imgood.hyperdimensionaltech.nei;
 
-import static gregtech.api.enums.Mods.NotEnoughItems;
-
-import net.minecraft.nbt.NBTTagCompound;
-
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-
 import cpw.mods.fml.common.event.FMLInterModComms;
 import gregtech.api.interfaces.tileentity.RecipeMapWorkable;
+import net.minecraft.nbt.NBTTagCompound;
+
+import static gregtech.api.enums.Mods.NotEnoughItems;
 
 /**
  * Handle NEI tags.

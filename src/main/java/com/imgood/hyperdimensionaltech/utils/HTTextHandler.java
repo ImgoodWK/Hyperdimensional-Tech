@@ -1,6 +1,6 @@
 package com.imgood.hyperdimensionaltech.utils;
 
-import static net.minecraft.util.StatCollector.translateToLocalFormatted;
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import static net.minecraft.util.StatCollector.translateToLocalFormatted;
 
 /**
  * When Texts need auto generate .lang . Use this.

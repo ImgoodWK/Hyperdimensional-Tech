@@ -1,22 +1,7 @@
 package com.imgood.hyperdimensionaltech.machines.processingLogics;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-
 import com.imgood.hyperdimensionaltech.utils.HT_ItemID;
 import com.imgood.hyperdimensionaltech.utils.Utils;
-
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.tileentity.IRecipeLockable;
 import gregtech.api.interfaces.tileentity.IVoidable;
@@ -33,6 +18,18 @@ import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Utility;
 import gregtech.api.util.VoidProtectionHelper;
 import ic2.core.Ic2Items;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 public class HT_ParallelHelper extends GT_ParallelHelper {
 
@@ -68,16 +65,20 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
         this.result = CheckRecipeResultRegistry.NONE;
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public GT_ParallelHelper setController(GT_MetaTileEntity_MultiBlockBase machineMeta) {
         return this.setMachine(machineMeta, machineMeta.protectsExcessItem(), machineMeta.protectsExcessFluid());
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public GT_ParallelHelper setController(GT_MetaTileEntity_MultiBlockBase machineMeta, boolean protectExcessItem,
-        boolean protectExcessFluid) {
+                                           boolean protectExcessFluid) {
         return this.setMachine(machineMeta, protectExcessItem, protectExcessFluid);
     }
 
@@ -128,7 +129,9 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
         return this;
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public GT_ParallelHelper enableConsumption() {
         return this.setConsumption(true);
@@ -150,7 +153,9 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
         return this;
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public GT_ParallelHelper enableOutputCalculation() {
         return this.setOutputCalculation(true);
@@ -199,7 +204,9 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public float getDurationMultiplier() {
         return (float) this.getDurationMultiplierDouble();
@@ -234,14 +241,16 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     protected boolean tryConsumeRecipeInputs(GT_Recipe recipe, FluidStack[] fluids, ItemStack[] items) {
         return this.tryConsumeRecipeInputs(recipe, fluids, items, 1);
     }
 
     protected boolean tryConsumeRecipeInputs(GT_Recipe recipe, FluidStack[] fluids, ItemStack[] items,
-        int minParallel) {
+                                             int minParallel) {
         return recipe.isRecipeInputEqual(true, false, minParallel, fluids, items);
     }
 
@@ -482,7 +491,7 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
     }
 
     public static void consumeInput(GT_Recipe recipe, int amountMultiplier, FluidStack[] aFluidInputs,
-        ItemStack... aInputs) {
+                                    ItemStack... aInputs) {
         if (amountMultiplier > 0) {
             long remainingCost;
             int var7;
@@ -533,18 +542,18 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
                                 if ((!recipe.isNBTSensitive
                                     || GT_Utility.areStacksEqual(providedItem, unifiedItemCost, false))
                                     && (recipe.isNBTSensitive
-                                        || GT_OreDictUnificator.isInputStackEqual(providedItem, unifiedItemCost))
+                                    || GT_OreDictUnificator.isInputStackEqual(providedItem, unifiedItemCost))
                                     && (!GT_Recipe.GTppRecipeHelper
-                                        || !GT_Utility.areStacksEqual(providedItem, Ic2Items.FluidCell.copy(), true)
-                                            && !GT_Utility.areStacksEqual(
-                                                providedItem,
-                                                ItemList.Tool_DataStick.get(1L, new Object[0]),
-                                                true)
-                                            && !GT_Utility.areStacksEqual(
-                                                providedItem,
-                                                ItemList.Tool_DataOrb.get(1L, new Object[0]),
-                                                true)
-                                        || GT_Utility.areStacksEqual(providedItem, recipeItemCost, false))) {
+                                    || !GT_Utility.areStacksEqual(providedItem, Ic2Items.FluidCell.copy(), true)
+                                    && !GT_Utility.areStacksEqual(
+                                    providedItem,
+                                    ItemList.Tool_DataStick.get(1L, new Object[0]),
+                                    true)
+                                    && !GT_Utility.areStacksEqual(
+                                    providedItem,
+                                    ItemList.Tool_DataOrb.get(1L, new Object[0]),
+                                    true)
+                                    || GT_Utility.areStacksEqual(providedItem, recipeItemCost, false))) {
                                     if ((long) providedItem.stackSize >= remainingCost) {
                                         providedItem.stackSize -= (int) remainingCost;
                                         break;
@@ -563,7 +572,7 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
     }
 
     public static double maxParallelCalculatedByInputs(GT_Recipe recipe, int maxParallel, FluidStack[] aFluidInputs,
-        ItemStack... aInputs) {
+                                                       ItemStack... aInputs) {
         if (recipe.mInputs.length > 0 && aInputs == null) {
             return 0.0;
         } else if (recipe.mFluidInputs.length > 0 && aFluidInputs == null) {
@@ -651,7 +660,8 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
                     .iterator();
 
                 while (true) {
-                    label100: while (var24.hasNext()) {
+                    label100:
+                    while (var24.hasNext()) {
                         Map.Entry<HT_ItemID, Long> itemID = (Map.Entry) var24.next();
                         ItemStack unifiedItemCost;
                         if (isNBTSensitive) {
@@ -671,7 +681,7 @@ public class HT_ParallelHelper extends GT_ParallelHelper {
                             ItemStack providedItem = var27[var16];
                             if ((!isNBTSensitive || GT_Utility.areStacksEqual(providedItem, unifiedItemCost, false))
                                 && (isNBTSensitive
-                                    || GT_OreDictUnificator.isInputStackEqual(providedItem, unifiedItemCost))) {
+                                || GT_OreDictUnificator.isInputStackEqual(providedItem, unifiedItemCost))) {
                                 providedAmount += providedItem.stackSize;
                                 if ((double) providedAmount >= remainingCost) {
                                     continue label100;

@@ -1,6 +1,9 @@
 package com.imgood.hyperdimensionaltech.utils;
 
-import static net.minecraft.util.StatCollector.translateToLocalFormatted;
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import gregtech.api.metatileentity.MetaTileEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -8,11 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-
-import gregtech.api.metatileentity.MetaTileEntity;
+import static net.minecraft.util.StatCollector.translateToLocalFormatted;
 
 public final class Utils {
 
@@ -36,7 +35,6 @@ public final class Utils {
     }
 
     /**
-     *
      * @param isa1 The ItemStack Array 1.
      * @param isa2 The ItemStack Array 2.
      * @return The elements of these two arrays are identical and in the same order.
@@ -68,7 +66,7 @@ public final class Utils {
     public static ItemStack copyAmount(int aAmount, ItemStack aStack) {
         ItemStack rStack = aStack.copy();
         if (isStackInvalid(rStack)) return null;
-        // if (aAmount > 64) aAmount = 64;
+            // if (aAmount > 64) aAmount = 64;
         else if (aAmount == -1) aAmount = 111;
         else if (aAmount < 0) aAmount = 0;
         rStack.stackSize = aAmount;

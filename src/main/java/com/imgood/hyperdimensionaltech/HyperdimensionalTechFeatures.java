@@ -1,14 +1,12 @@
 package com.imgood.hyperdimensionaltech;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemDye;
-import net.minecraftforge.oredict.OreDictionary;
-
 import com.cricketcraft.chisel.api.ChiselTabs;
 import com.imgood.hyperdimensionaltech.client.render.SubmapManagerAntiblockFrameless;
 import com.imgood.hyperdimensionaltech.config.HTConfigurations;
-
 import cpw.mods.fml.common.Loader;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemDye;
+import net.minecraftforge.oredict.OreDictionary;
 import team.chisel.Chisel;
 import team.chisel.block.BlockCarvable;
 import team.chisel.block.BlockCarvableGlowie;
@@ -17,7 +15,6 @@ import team.chisel.config.Configurations;
 public enum HyperdimensionalTechFeatures {
 
     ANTIBLOCKFRAMELESS {
-
         @Override
         void addBlocks() {
             HyperdimensionalTech.logger.info("Adding blocks:AntiblockFrameless");

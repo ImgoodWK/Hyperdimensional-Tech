@@ -1,12 +1,11 @@
 package com.imgood.hyperdimensionaltech.utils;
 
-import java.util.Objects;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class HT_ItemID {
 
@@ -30,7 +29,8 @@ public class HT_ItemID {
         this.metaData = 0;
     }
 
-    public HT_ItemID() {}
+    public HT_ItemID() {
+    }
 
     public static HT_ItemID create(ItemStack itemStack) {
         return new HT_ItemID(itemStack.getItem(), itemStack.getItemDamage(), itemStack.getTagCompound());
@@ -124,6 +124,6 @@ public class HT_ItemID {
     }
 
     public int hashCode() {
-        return Objects.hash(new Object[] { this.item, this.metaData, this.nbt });
+        return Objects.hash(new Object[]{this.item, this.metaData, this.nbt});
     }
 }

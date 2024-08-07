@@ -42,14 +42,14 @@ public class LanguageUtil {
     }
 
     public static String getCurLangDescription(String nameKey) {
-        String descriptionKey = (String)nameKey2DescriptionKey.get(nameKey);
-        String description = (String)currentLang.get(descriptionKey);
-        return description == null ? (String)zhCN.get(descriptionKey) : description;
+        String descriptionKey = (String) nameKey2DescriptionKey.get(nameKey);
+        String description = (String) currentLang.get(descriptionKey);
+        return description == null ? (String) zhCN.get(descriptionKey) : description;
     }
 
     public static String getCurLangItemName(String nameKey) {
-        String name = (String)currentLang.get(nameKey);
-        return name == null ? (String)zhCN.get(nameKey) : name;
+        String name = (String) currentLang.get(nameKey);
+        return name == null ? (String) zhCN.get(nameKey) : name;
     }
 
     private static Map<String, String> parseLangFile() {
@@ -70,8 +70,8 @@ public class LanguageUtil {
             Splitter equalSignSplitter = Splitter.on('=').limit(2);
             Iterator var6 = langList.iterator();
 
-            while(var6.hasNext()) {
-                String s = (String)var6.next();
+            while (var6.hasNext()) {
+                String s = (String) var6.next();
                 if (!s.isEmpty() && s.charAt(0) != '#') {
                     String[] sArr = (String[]) Iterables.toArray(equalSignSplitter.split(s), String.class);
                     if (sArr != null && sArr.length == 2 && !"".equals(sArr[0]) && !"".equals(sArr[1])) {
@@ -117,8 +117,8 @@ public class LanguageUtil {
         nameKey2DescriptionKey = new HashMap();
         Iterator var1 = zhCN.keySet().iterator();
 
-        while(var1.hasNext()) {
-            String s = (String)var1.next();
+        while (var1.hasNext()) {
+            String s = (String) var1.next();
             if (s.startsWith("item.")) {
                 itemNameKey.add(s);
             } else if (s.startsWith("tile.")) {

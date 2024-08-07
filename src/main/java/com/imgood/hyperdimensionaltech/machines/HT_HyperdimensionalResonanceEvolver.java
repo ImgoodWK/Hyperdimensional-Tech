@@ -1,40 +1,20 @@
 package com.imgood.hyperdimensionaltech.machines;
 
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import javax.annotation.Nonnull;
-
+import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
+import com.gtnewhorizon.structurelib.structure.StructureDefinition;
+import com.imgood.hyperdimensionaltech.block.BasicBlocks;
+import com.imgood.hyperdimensionaltech.config.HTConfigurations;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBase;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.ValueEnum;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import org.jetbrains.annotations.NotNull;
-
-
-import com.imgood.hyperdimensionaltech.block.BasicBlocks;
-import com.imgood.hyperdimensionaltech.config.HTConfigurations;
 import com.imgood.hyperdimensionaltech.machines.processingLogics.HT_ProcessingLogic;
 import com.imgood.hyperdimensionaltech.recipemap.HT_RecipeMap;
 import com.imgood.hyperdimensionaltech.utils.HTTextHandler;
 import com.imgood.hyperdimensionaltech.utils.HTTextLocalization;
 import com.imgood.hyperdimensionaltech.utils.Utils;
-import static com.imgood.hyperdimensionaltech.utils.HTTextLocalization.Tooltip_DoNotNeedMaintenance;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.GT_HatchElement;
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.ITexture;
@@ -50,20 +30,35 @@ import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import gregtech.api.util.GT_OverclockCalculator;
 import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Utility;
-import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
+import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
+import static com.imgood.hyperdimensionaltech.utils.HTTextLocalization.Tooltip_DoNotNeedMaintenance;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_OFF;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_ON;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_FUSION1_GLOW;
 import static gregtech.api.enums.Textures.BlockIcons.casingTexturePages;
-
-import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
-import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
-import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
-
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
+import static gregtech.common.misc.WirelessNetworkManager.addEUToGlobalEnergyMap;
 
 /**
  * @author Imgood
@@ -82,7 +77,6 @@ public class HT_HyperdimensionalResonanceEvolver
     private boolean enableRender = HTConfigurations.EnableRenderDefaultHyperdimensionalResonanceEvolver;
 
 
-
     public HT_HyperdimensionalResonanceEvolver(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
@@ -98,7 +92,7 @@ public class HT_HyperdimensionalResonanceEvolver
 
     @Override
     public void getWailaBody(ItemStack itemStack, List<String> currentTip, IWailaDataAccessor accessor,
-        IWailaConfigHandler config) {
+                             IWailaConfigHandler config) {
         super.getWailaBody(itemStack, currentTip, accessor, config);
         final NBTTagCompound tag = accessor.getNBTData();
         if (tag.getBoolean("isWirelessMode")) {
@@ -120,7 +114,7 @@ public class HT_HyperdimensionalResonanceEvolver
 
     @Override
     public void getWailaNBTData(EntityPlayerMP player, TileEntity tile, NBTTagCompound tag, World world, int x, int y,
-        int z) {
+                                int z) {
         super.getWailaNBTData(player, tile, tag, world, x, y, z);
         final IGregTechTileEntity tileEntity = getBaseMetaTileEntity();
         if (tileEntity != null) {
@@ -218,7 +212,7 @@ public class HT_HyperdimensionalResonanceEvolver
                 if (this.enableRender && this.isRendering) {
                     this.createRenderBlock();
                 }
-            }else {
+            } else {
                 this.isRendering = false;
                 this.destroyRenderBlock();
             }
@@ -331,6 +325,7 @@ public class HT_HyperdimensionalResonanceEvolver
     public int tier() {
         return 10;
     }
+
     private static final String STRUCTURE_PIECE_MAIN = "mainHyperdimensionalResonanceEvolver";
     private IStructureDefinition<HT_HyperdimensionalResonanceEvolver> STRUCTURE_DEFINITION = null;
 
@@ -343,6 +338,7 @@ public class HT_HyperdimensionalResonanceEvolver
     public boolean addToMachineList(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
         return super.addToMachineList(aTileEntity, aBaseCasingIndex) || this.addExoticEnergyInputToMachineList(aTileEntity, aBaseCasingIndex);
     }
+
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) {
@@ -356,35 +352,34 @@ public class HT_HyperdimensionalResonanceEvolver
     public boolean renderInWorld() {
         return false;
     }
+
     @Override
     public IStructureDefinition<HT_HyperdimensionalResonanceEvolver> getStructureDefinition() {
         if (STRUCTURE_DEFINITION == null) {
             STRUCTURE_DEFINITION = StructureDefinition
                 .<HT_HyperdimensionalResonanceEvolver>builder()
                 .addShape("mainHyperdimensionalResonanceEvolver", transpose(HT_MachineConstrucs.CONSTRUCTOR_HyperdimensionalResonanceEvolver))
-                    .addElement('A', GT_HatchElementBuilder.<HT_HyperdimensionalResonanceEvolver>builder()
+                .addElement('A', GT_HatchElementBuilder.<HT_HyperdimensionalResonanceEvolver>builder()
                     .atLeast(GT_HatchElement.InputBus, GT_HatchElement.OutputBus)
                     .adder(HT_HyperdimensionalResonanceEvolver::addToMachineList)
                     .casingIndex(12)
                     .dot(2)
                     .buildAndChain(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))
-                .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),13))
-                .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),14))
-                .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")),13))
-                .addElement('E', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsBA0")),12))
-                .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsTT")),11))
-                .addElement('G', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.spacetime_compression_field_generator")),8))
-                .addElement('H', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.stabilisation_field_generator")),8))
-                .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.time_acceleration_field_generator")),8))
-                .addElement('J', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")),6))
-                .addElement('K', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")),0))
-                .addElement('L', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")),10000))
+                .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 13))
+                .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 14))
+                .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")), 13))
+                .addElement('E', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsBA0")), 12))
+                .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsTT")), 11))
+                .addElement('G', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.spacetime_compression_field_generator")), 8))
+                .addElement('H', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.stabilisation_field_generator")), 8))
+                .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.time_acceleration_field_generator")), 8))
+                .addElement('J', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")), 6))
+                .addElement('K', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")), 0))
+                .addElement('L', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")), 10000))
                 .build();
         }
         return STRUCTURE_DEFINITION;
     }
-
-
 
 
     // spotless:on
@@ -437,28 +432,30 @@ public class HT_HyperdimensionalResonanceEvolver
         int x = this.getBaseMetaTileEntity().getXCoord();
         int y = this.getBaseMetaTileEntity().getYCoord();
         int z = this.getBaseMetaTileEntity().getZCoord();
-        double xOffset = (double)(10 * this.getExtendedFacing().getRelativeBackInWorld().offsetX + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetX);
-        double zOffset = (double)(10 * this.getExtendedFacing().getRelativeBackInWorld().offsetZ + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetZ);
-        double yOffset = (double)(10 * this.getExtendedFacing().getRelativeBackInWorld().offsetY + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetY);
-        this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
-        this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), BasicBlocks.Block_RenderField);
+        double xOffset = (double) (10 * this.getExtendedFacing().getRelativeBackInWorld().offsetX + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetX);
+        double zOffset = (double) (10 * this.getExtendedFacing().getRelativeBackInWorld().offsetZ + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetZ);
+        double yOffset = (double) (10 * this.getExtendedFacing().getRelativeBackInWorld().offsetY + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetY);
+        this.getBaseMetaTileEntity().getWorld().setBlock((int) ((double) x + xOffset), (int) ((double) y + yOffset), (int) ((double) z + zOffset), Blocks.air);
+        this.getBaseMetaTileEntity().getWorld().setBlock((int) ((double) x + xOffset), (int) ((double) y + yOffset), (int) ((double) z + zOffset), BasicBlocks.Block_RenderField);
     }
+
     public void destroyRenderBlock() {
         int x = this.getBaseMetaTileEntity().getXCoord();
         int y = this.getBaseMetaTileEntity().getYCoord();
         int z = this.getBaseMetaTileEntity().getZCoord();
-        double xOffset = (double)(10 * this.getExtendedFacing().getRelativeBackInWorld().offsetX + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetX);
-        double zOffset = (double)(10 * this.getExtendedFacing().getRelativeBackInWorld().offsetZ + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetZ);
-        double yOffset = (double)(10 * this.getExtendedFacing().getRelativeBackInWorld().offsetY + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetY);
-        this.getBaseMetaTileEntity().getWorld().setBlock((int)((double)x + xOffset), (int)((double)y + yOffset), (int)((double)z + zOffset), Blocks.air);
+        double xOffset = (double) (10 * this.getExtendedFacing().getRelativeBackInWorld().offsetX + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetX);
+        double zOffset = (double) (10 * this.getExtendedFacing().getRelativeBackInWorld().offsetZ + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetZ);
+        double yOffset = (double) (10 * this.getExtendedFacing().getRelativeBackInWorld().offsetY + 33 * this.getExtendedFacing().getRelativeUpInWorld().offsetY);
+        this.getBaseMetaTileEntity().getWorld().setBlock((int) ((double) x + xOffset), (int) ((double) y + yOffset), (int) ((double) z + zOffset), Blocks.air);
     }
+
     @Override
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, ForgeDirection side, ForgeDirection aFacing,
-        int colorIndex, boolean aActive, boolean redstoneLevel) {
+                                 int colorIndex, boolean aActive, boolean redstoneLevel) {
         ITexture[] rTexture;
         if (side == aFacing) {
             if (aActive) {
-                rTexture = new ITexture[] { casingTexturePages[0][12], TextureFactory.builder()
+                rTexture = new ITexture[]{casingTexturePages[0][12], TextureFactory.builder()
                     .addIcon(OVERLAY_DTPF_ON)
                     .extFacing()
                     .build(),
@@ -466,9 +463,9 @@ public class HT_HyperdimensionalResonanceEvolver
                         .addIcon(OVERLAY_FUSION1_GLOW)
                         .extFacing()
                         .glow()
-                        .build() };
+                        .build()};
             } else {
-                rTexture = new ITexture[] { casingTexturePages[0][12], TextureFactory.builder()
+                rTexture = new ITexture[]{casingTexturePages[0][12], TextureFactory.builder()
                     .addIcon(OVERLAY_DTPF_OFF)
                     .extFacing()
                     .build(),
@@ -476,10 +473,10 @@ public class HT_HyperdimensionalResonanceEvolver
                         .addIcon(OVERLAY_DTPF_OFF)
                         .extFacing()
                         .glow()
-                        .build() };
+                        .build()};
             }
         } else {
-            rTexture = new ITexture[] { casingTexturePages[0][12] };
+            rTexture = new ITexture[]{casingTexturePages[0][12]};
         }
         return rTexture;
     }

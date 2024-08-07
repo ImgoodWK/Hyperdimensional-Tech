@@ -1,16 +1,15 @@
 package com.imgood.hyperdimensionaltech.client.render;
 
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
 
 public class HT_ItemRenderer implements IItemRenderer {
 
     private Field mMetaTileEntityField;
+
     public HT_ItemRenderer() {
         try {
             mMetaTileEntityField = BaseMetaTileEntity.class.getDeclaredField("mMetaTileEntity");
@@ -19,6 +18,7 @@ public class HT_ItemRenderer implements IItemRenderer {
             e.printStackTrace();
         }
     }
+
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
         String itemName = item.getItem().getUnlocalizedName();
@@ -95,7 +95,7 @@ public class HT_ItemRenderer implements IItemRenderer {
                 case "gt.blockmachines" -> {
                     switch (meta) {
                         case 10002 -> {
-                            new HT_TileEntityRenderer_HoloController().renderInventory(1,1,1,2,0.5,0,90);
+                            new HT_TileEntityRenderer_HoloController().renderInventory(1, 1, 1, 2, 0.5, 0, 90);
                         }
                         default -> {
 
@@ -103,7 +103,7 @@ public class HT_ItemRenderer implements IItemRenderer {
                     }
                 }
                 case "tile.HolographicDisplay" -> {
-                    new HT_TileEntityHolographicDisplay().renderInventory(1,1,1,2,0.5,0,90);
+                    new HT_TileEntityHolographicDisplay().renderInventory(1, 1, 1, 2, 0.5, 0, 90);
                 }
                 default -> {
 
@@ -112,7 +112,6 @@ public class HT_ItemRenderer implements IItemRenderer {
         }
 
     }
-
 
 
 }

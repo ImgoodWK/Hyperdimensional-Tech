@@ -3,9 +3,6 @@ package com.imgood.hyperdimensionaltech.tiles.rendertiles;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -13,14 +10,6 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,11 +28,12 @@ public class TileHolographicDisplay extends TileEntity {
     private static boolean needsUpdate = false;
     private static int updateIndex;
     private static String updateImagePath;
+    private static double linesYOffset = 0.0;
 
 
     public TileHolographicDisplay() {
         this.displayDataMap = new HashMap<>();
-        this.setDisplayData(0,null);
+        this.setDisplayData(0, null);
         FMLCommonHandler.instance().bus().register(this);
     }
 
@@ -56,7 +46,15 @@ public class TileHolographicDisplay extends TileEntity {
         return meta;
     }
 
+    public double getLinesYOffset(int index) {
+        return getDisplayData(index).getDouble("LinesYOffset");
+    }
 
+    public void setLinesYOffset(int index, double linesYOffset) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setDouble("LinesYOffset", linesYOffset);
+        setDisplayData(index, displayData);
+    }
 
     public int getDisplayDataSize() {
         return displayDataMap.size();
@@ -84,16 +82,22 @@ public class TileHolographicDisplay extends TileEntity {
 
     public List<String> getDisplayDataToShow(int index) {
         NBTTagCompound displayData = displayDataMap.get(index);
+        if (displayData == null) {
+            List<String> emptyList = new ArrayList<>();
+            emptyList.add("No Data");
+            return emptyList;
+        }
         List<String> dataList = new ArrayList<>();
         for (int i = 1; i <= 4; i++) {
             dataList.add("Text" + i + ":" + displayData.getString("Text" + i));
         }
         dataList.add("Color:" + displayData.getString("RGBColor"));
         dataList.add("ImgURL:" + displayData.getString("ImgURL"));
-        dataList.add("ImgScaledX:" + displayData.getDouble("Width"));
-        dataList.add("ImgScaledY:" + displayData.getDouble("Height"));
+        dataList.add("Width:" + displayData.getDouble("ImgScaledX"));
+        dataList.add("Height:" + displayData.getDouble("ImgScaledY"));
         dataList.add("ImgStartX:" + displayData.getDouble("ImgStartX"));
         dataList.add("ImgStartY:" + displayData.getDouble("ImgStartY"));
+        dataList.add("LinesYOffset:" + displayData.getDouble("LinesYOffset"));
         //dataList.add("ImgPath:" + displayData.getString("ImgPath"));
         return dataList;
     }
@@ -101,15 +105,15 @@ public class TileHolographicDisplay extends TileEntity {
     public void setDisplayData(int index, NBTTagCompound displayData) {
         // 创建一个包含默认值的NBTTagCompound
         NBTTagCompound defaultData = new NBTTagCompound();
-
         // 设置默认值
         defaultData.setString("RGBColor", "00FFFF");
+        defaultData.setDouble("LinesYOffset", 0);
         defaultData.setString("ImgURL", "");
         defaultData.setDouble("ImgScaledX", 1);
         defaultData.setDouble("ImgScaledY", 1);
         defaultData.setDouble("ImgStartX", 0);
         defaultData.setDouble("ImgStartY", 1);
-        defaultData.setString("ImgPath","");
+        defaultData.setString("ImgPath", "");
         for (int i = 1; i <= 4; i++) {
             defaultData.setString("Text" + i, "");
         }
@@ -142,14 +146,14 @@ public class TileHolographicDisplay extends TileEntity {
 
     public String getText(int index, int line) {
         line += 1;
-        return getDisplayData(index).getString("Text"+line);
+        return getDisplayData(index).getString("Text" + line);
     }
 
     public String[] getContents(int index) {
         String[] contents = new String[4];
         NBTTagCompound displayData = getDisplayData(index);
         for (int i = 1; i <= 4; i++) {
-            contents[i-1] = displayData.getString("Text" + i);
+            contents[i - 1] = displayData.getString("Text" + i);
         }
         return contents;
     }

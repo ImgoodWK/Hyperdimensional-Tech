@@ -4,14 +4,10 @@ import com.google.common.collect.ImmutableList;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_LiteMultiMachineBase;
 import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_MachineConstrucs;
-
-import com.imgood.hyperdimensionaltech.machines.machineaAttributes.HT_StructureDefinitionBuilder;
 import com.imgood.hyperdimensionaltech.utils.Utils;
 import gregtech.api.enums.GT_HatchElement;
-
 import gregtech.api.enums.ItemList;
 import gregtech.api.interfaces.IHatchElement;
 import gregtech.api.interfaces.ITexture;
@@ -21,7 +17,6 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.render.TextureFactory;
 import gregtech.api.util.GT_HatchElementBuilder;
 import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -29,9 +24,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.List;
 import java.util.Objects;
 
-
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofBlock;
-
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 import static gregtech.api.enums.GT_HatchElement.Energy;
 import static gregtech.api.enums.GT_HatchElement.ExoticEnergy;
@@ -55,6 +48,7 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
     public int verticalOffSet = 16;
     public int depthOffSet = 3;
     HT_MachineConstrucs machineConstrucs = new HT_MachineConstrucs();
+
     /**
      * 快速开发简单的机器的构造方法，所以参数直接给进去就ok了，在loadMachines直接加进去
      *
@@ -100,6 +94,7 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
     }
 
     public IStructureDefinition<HT_SingularityUnravelingDevice> STRUCTURE_DEFINITION = null;
+
     public HT_SingularityUnravelingDevice(@SuppressWarnings("AlibabaLowerCamelCaseVariableNaming") int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
     }
@@ -152,22 +147,22 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
                     .casingIndex(12)
                     .dot(2)
                     .buildAndChain(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 12))
-                .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")),14))
-                .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")),13))
-                .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsTT")),11))
-                .addElement('E', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.spacetime_compression_field_generator")),8))
-                .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.stabilisation_field_generator")),8))
-                .addElement('G', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")),6))
-                .addElement('H', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")),0))
-                .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")),10001))
+                .addElement('B', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings")), 14))
+                .addElement('C', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockcasings5")), 13))
+                .addElement('D', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.blockcasingsTT")), 11))
+                .addElement('E', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.spacetime_compression_field_generator")), 8))
+                .addElement('F', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:gt.stabilisation_field_generator")), 8))
+                .addElement('G', ofBlock(Objects.requireNonNull(Block.getBlockFromName("hyperdimensionaltech:antiBlockFrameless")), 6))
+                .addElement('H', ofBlock(Objects.requireNonNull(Block.getBlockFromName("tectech:tile.quantumGlass")), 0))
+                .addElement('I', ofBlock(Objects.requireNonNull(Block.getBlockFromName("gregtech:gt.blockmachines")), 10001))
                 .build();
         }
         return STRUCTURE_DEFINITION;
     }
+
     private List<IHatchElement<? super HT_SingularityUnravelingDevice>> getAllowedHatches() {
         return ImmutableList.of(InputHatch, OutputHatch, InputBus, OutputBus, Maintenance, Energy, ExoticEnergy);
     }
-
 
 
     /**
@@ -204,7 +199,7 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         ITexture[] rTexture;
         if (side == aFacing) {
             if (aActive) {
-                rTexture = new ITexture[] { casingTexturePages[0][12], TextureFactory.builder()
+                rTexture = new ITexture[]{casingTexturePages[0][12], TextureFactory.builder()
                     .addIcon(OVERLAY_DTPF_ON)
                     .extFacing()
                     .build(),
@@ -212,9 +207,9 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
                         .addIcon(OVERLAY_FUSION1_GLOW)
                         .extFacing()
                         .glow()
-                        .build() };
+                        .build()};
             } else {
-                rTexture = new ITexture[] { casingTexturePages[0][12], TextureFactory.builder()
+                rTexture = new ITexture[]{casingTexturePages[0][12], TextureFactory.builder()
                     .addIcon(OVERLAY_DTPF_OFF)
                     .extFacing()
                     .build(),
@@ -222,13 +217,14 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
                         .addIcon(OVERLAY_DTPF_OFF)
                         .extFacing()
                         .glow()
-                        .build() };
+                        .build()};
             }
         } else {
-            rTexture = new ITexture[] { casingTexturePages[0][12] };
+            rTexture = new ITexture[]{casingTexturePages[0][12]};
         }
         return rTexture;
     }
+
     @Override
     public int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
         if (mMachine) {
@@ -236,14 +232,15 @@ public class HT_SingularityUnravelingDevice extends HT_LiteMultiMachineBase<HT_S
         }
 
 
-        int result = survivialBuildPiece(mName, stackSize,31,16,3, elementBudget, env, false, true);
+        int result = survivialBuildPiece(mName, stackSize, 31, 16, 3, elementBudget, env, false, true);
 
         return result;
     }
+
     @Override
     public boolean checkMachine(IGregTechTileEntity aBaseMetaTileEntity, ItemStack aStack) {
         repairMachine();
-        if (!checkPiece(mName, 31,16,3)) {
+        if (!checkPiece(mName, 31, 16, 3)) {
 
             return false;
         }

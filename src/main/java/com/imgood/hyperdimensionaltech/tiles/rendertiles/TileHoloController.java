@@ -1,13 +1,8 @@
 package com.imgood.hyperdimensionaltech.tiles.rendertiles;
 
-import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import org.lwjgl.opengl.GL11;
-
-import static com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing.byName;
 
 /**
  * @program: Hyperdimensional-Tech
@@ -20,10 +15,10 @@ public class TileHoloController extends TileEntity {
     public double size = 1;
     private int meta = 0;
 
-    public TileHoloController(){
+    public TileHoloController() {
     }
 
-    public TileHoloController(int meta){
+    public TileHoloController(int meta) {
         this.meta = meta;
     }
 
@@ -44,7 +39,7 @@ public class TileHoloController extends TileEntity {
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setDouble("renderStatus",this.size);
+        nbt.setDouble("renderStatus", this.size);
     }
 
     @Override

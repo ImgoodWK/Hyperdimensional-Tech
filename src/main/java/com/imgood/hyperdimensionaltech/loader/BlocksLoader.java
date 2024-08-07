@@ -5,11 +5,6 @@ import com.imgood.hyperdimensionaltech.block.BlockHolographicDisplay;
 import com.imgood.hyperdimensionaltech.block.BlockRenderFeild;
 import com.imgood.hyperdimensionaltech.block.BlockRenderHoloController;
 import com.imgood.hyperdimensionaltech.block.BlockRenderParticleStream;
-import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileFeild;
-import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHoloController;
-import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
-import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileParticleStream;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlocksLoader {
     public static void loadBlocks() {

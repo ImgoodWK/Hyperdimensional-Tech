@@ -1,8 +1,8 @@
 package com.imgood.hyperdimensionaltech.utils;
 
-import static com.imgood.hyperdimensionaltech.utils.HTTextHandler.texter;
-
 import net.minecraft.util.EnumChatFormatting;
+
+import static com.imgood.hyperdimensionaltech.utils.HTTextHandler.texter;
 
 // spotless:off
 
@@ -35,7 +35,8 @@ public class HTTextLocalization {
     // region SingularityUnravelingDevice
     public static final String NameSingularityUnravelingDevice = texter("SingularityUnravelingDevice", "NameSingularityUnravelingDevice");
     //endregion
-    public static final String Tooltip_DoNotNeedMaintenance = texter("Do Not Need Maintenance!", "Tooltip_DoNotNeedMaintenance");;
+    public static final String Tooltip_DoNotNeedMaintenance = texter("Do Not Need Maintenance!", "Tooltip_DoNotNeedMaintenance");
+    ;
     public static final String BLUE_PRINT_INFO = texter("Follow the" + EnumChatFormatting.BLUE + " Structure" + EnumChatFormatting.DARK_BLUE + "Lib" + EnumChatFormatting.GRAY + " hologram projector to build the main structure.", "BLUE_PRINT_INFO");
     public static final String StructureTooComplex = texter("The structure is too complex!", "StructureTooComplex");
     public static final String textScrewdriverChangeMode = texter("Use screwdriver to change mode.", "textScrewdriverChangeMode");

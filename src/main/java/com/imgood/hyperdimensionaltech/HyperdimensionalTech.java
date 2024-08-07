@@ -4,21 +4,13 @@ package com.imgood.hyperdimensionaltech;
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityHolographicDisplay;
 import com.imgood.hyperdimensionaltech.loader.BlocksLoader;
 import com.imgood.hyperdimensionaltech.loader.GuiLoader;
-import com.imgood.hyperdimensionaltech.loader.TileEntityLoader;
-import com.imgood.hyperdimensionaltech.network.PacketUpdateHandlerHolographicDisplay;
-import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
-import net.minecraftforge.common.MinecraftForge;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.imgood.hyperdimensionaltech.loader.MachineLoader;
 import com.imgood.hyperdimensionaltech.loader.RecipeLoader;
+import com.imgood.hyperdimensionaltech.loader.TileEntityLoader;
 import com.imgood.hyperdimensionaltech.nei.NEIHandler;
+import com.imgood.hyperdimensionaltech.network.PacketUpdateHandlerHolographicDisplay;
+import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
 import com.imgood.hyperdimensionaltech.utils.HTTextHandler;
-
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -26,6 +18,12 @@ import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.common.MinecraftForge;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(
     modid = HyperdimensionalTech.MODID,

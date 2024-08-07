@@ -1,14 +1,12 @@
 package com.imgood.hyperdimensionaltech.nei;
 
+import codechicken.nei.api.API;
+import codechicken.nei.api.IConfigureNEI;
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.Tags;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import com.imgood.hyperdimensionaltech.Tags;
-
-import codechicken.nei.api.API;
-import codechicken.nei.api.IConfigureNEI;
 
 public class NEI_Config implements IConfigureNEI {
 

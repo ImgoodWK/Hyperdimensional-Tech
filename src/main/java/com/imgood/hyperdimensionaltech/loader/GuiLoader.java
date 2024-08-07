@@ -11,8 +11,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
  * @create: 2024-07-30 16:14
  **/
 public class GuiLoader {
-    public static void loadGuis(HyperdimensionalTech hyperdimensionalTech)
-    {
+    public static void loadGuis(HyperdimensionalTech hyperdimensionalTech) {
         NetworkRegistry.INSTANCE.registerGuiHandler(hyperdimensionalTech, new GuiHandlerHolographicDisplay());
     }
 }

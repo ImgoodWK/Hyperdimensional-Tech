@@ -1,24 +1,13 @@
 package com.imgood.hyperdimensionaltech.gui.guiscreen;
 
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -276,7 +265,7 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, "§lHolographic Display"+(this.index+1), this.offsetX+192, this.offsetY-20, this.textColor);
+        this.drawCenteredString(this.fontRendererObj, "§lHolographic Display" + (this.index + 1), this.offsetX + 192, this.offsetY - 20, this.textColor);
 
         for (Object buttonObj : this.buttonList) {
             GuiButton button = (GuiButton) buttonObj;
@@ -290,7 +279,7 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
 
 
     private void drawColoredHoveringText(List<String> textLines, int x, int y, int buttonId) {
-        if (!textLines.isEmpty()) {
+        if (textLines != null || !textLines.isEmpty()) {
             int tooltipTextWidth = 0;
             for (String line : textLines) {
                 int lineWidth = this.fontRendererObj.getStringWidth(line);

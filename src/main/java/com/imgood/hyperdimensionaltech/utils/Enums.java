@@ -1,10 +1,9 @@
 package com.imgood.hyperdimensionaltech.utils;
 
-import java.util.Locale;
-
+import cpw.mods.fml.common.Loader;
 import net.minecraft.util.ResourceLocation;
 
-import cpw.mods.fml.common.Loader;
+import java.util.Locale;
 
 public enum Enums {
 

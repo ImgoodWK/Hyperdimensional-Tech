@@ -20,10 +20,10 @@ public class HT_MachineTooltips {
             .addInfo("错误的Tooltip,检查MachineLoader内注册参数getTooltip(‘机器名称’)是否错误")
             .addSeparator()
             .addStructureInfo("错误结构信息")
-            .beginStructureBlock(1,1,1,false)
+            .beginStructureBlock(1, 1, 1, false)
             .addController("错误控制器信息")
-            .addInputHatch("错误输入仓",1)
-            .addOutputHatch("错误输出仓",1)
+            .addInputHatch("错误输入仓", 1)
+            .addOutputHatch("错误输出仓", 1)
             .addInputBus("错误输入总线", 1)
             .addOutputBus("错误输出总线", 1)
             .addEnergyHatch("错误能源仓", 1)
@@ -33,10 +33,10 @@ public class HT_MachineTooltips {
             .addInfo("InfoSingularityUnravelingDevice01")//解压物质的时候利用巨大的引力和分子活动发电（谁知道它哪天会爆炸）
             .addSeparator()
             .addStructureInfo("测试结构信息")
-            .beginStructureBlock(15,37,15,false)
+            .beginStructureBlock(15, 37, 15, false)
             .addController("测试控制器信息")
-            .addInputHatch("任意超维度机械方块",1)
-            .addOutputHatch("任意超维度机械方块",1)
+            .addInputHatch("任意超维度机械方块", 1)
+            .addOutputHatch("任意超维度机械方块", 1)
             .addInputBus("任意超维度机械方块", 1)
             .addOutputBus("任意超维度机械方块", 1)
             .addEnergyHatch("任意超维度机械方块", 1)
@@ -48,17 +48,20 @@ public class HT_MachineTooltips {
             .addStructureInfo("测试结构信息")
             //.beginStructureBlock(15,37,15,false)
             .addController("测试控制器信息")
-            .addInputHatch("测试输入仓",1)
-            .addOutputHatch("测试输出仓",1)
+            .addInputHatch("测试输入仓", 1)
+            .addOutputHatch("测试输出仓", 1)
             .addInputBus("测试输入总线", 1)
             .addOutputBus("测试输出总线", 1)
-            .addEnergyHatch("测试能源仓",2);
+            .addEnergyHatch("测试能源仓", 2);
         //endregion
 
         switch (machineName) {
-            case "SingularityUnravelingDevice","singularityunravelingdevice": return SingularityUnravelingDevice;
-            case "UniversalMineralProcessor","universalmineralprocessor": return UniversalMineralProcessor;
-            default: return Error;
+            case "SingularityUnravelingDevice", "singularityunravelingdevice":
+                return SingularityUnravelingDevice;
+            case "UniversalMineralProcessor", "universalmineralprocessor":
+                return UniversalMineralProcessor;
+            default:
+                return Error;
         }
     }
 }

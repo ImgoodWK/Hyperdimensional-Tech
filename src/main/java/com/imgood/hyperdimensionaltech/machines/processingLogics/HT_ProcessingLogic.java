@@ -1,11 +1,10 @@
 package com.imgood.hyperdimensionaltech.machines.processingLogics;
 
-import javax.annotation.Nonnull;
-
-
 import gregtech.api.logic.ProcessingLogic;
 import gregtech.api.util.GT_ParallelHelper;
 import gregtech.api.util.GT_Recipe;
+
+import javax.annotation.Nonnull;
 
 public class HT_ProcessingLogic extends ProcessingLogic {
 

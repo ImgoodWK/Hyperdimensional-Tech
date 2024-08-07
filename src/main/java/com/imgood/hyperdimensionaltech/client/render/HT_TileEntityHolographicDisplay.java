@@ -59,7 +59,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         if (event.phase == TickEvent.Phase.END) {
             tickCount++;
 
-            if (tickCount >=21) {
+            if (tickCount >= 21) {
                 tickCount = 0;
             }
         }
@@ -71,7 +71,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         TileHolographicDisplay tileEntity = (TileHolographicDisplay) world.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord);
         double textYOffset = 1;
         boolean isIntest = false;
-        if (tileEntity != null && !isIntest &&this.tickCount == 0) {
+        if (tileEntity != null && !isIntest && this.tickCount == 0) {
             if (tileEntity.isVisableBody()) {
                 renderNoGlowExpect(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "screen", "botmidlight");
                 renderGlow(this.feildSizeX, this.feildSizeY, this.feildSizeZ, x, y + 0.4, z, tile, "botmidlight");
@@ -81,11 +81,12 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
             }
             for (int i = 0; i < tileEntity.getDisplayDataSize(); i++) {
                 this.facing = tileEntity.facing;
+                double linesYOffset = tileEntity.getLinesYOffset(i);
                 String textContents[] = tileEntity.getContents(i);
-                drawCenteredString(tile, textContents[3], x, textYOffset + 0.80 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
-                drawCenteredString(tile, textContents[2], x, textYOffset + 1.00 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
-                drawCenteredString(tile, textContents[1], x, textYOffset + 1.20 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
-                drawCenteredString(tile, textContents[0], x, textYOffset + 1.40 + y, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                drawCenteredString(tile, textContents[3], x, textYOffset + 0.80 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                drawCenteredString(tile, textContents[2], x, textYOffset + 1.00 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                drawCenteredString(tile, textContents[1], x, textYOffset + 1.20 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                drawCenteredString(tile, textContents[0], x, textYOffset + 1.40 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
                 if (!tileEntity.getImgURL(i).isEmpty()) {
                     /*renderImage(tile,
                         tileEntity.getImgURL(i),
@@ -103,6 +104,14 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                         tileEntity.getImgScaledY(i));*/
                     try {
                         renderImageLocal(tile,
+                            tileEntity.getImgPath(i),
+                            x + translateOffset("x", tileEntity.getImgStartX(i)),
+                            y + tileEntity.getImgStartY(i),
+                            z + translateOffset("z", tileEntity.getImgStartX(i)),
+                            tileEntity.getImgScaledX(i),
+                            tileEntity.getImgScaledY(i),
+                            i);
+                        renderImageLocalBack(tile,
                             tileEntity.getImgPath(i),
                             x - translateOffset("x", tileEntity.getImgStartX(i)),
                             y + tileEntity.getImgStartY(i),
@@ -340,7 +349,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         }
 
         try {
-            File file = new File(Minecraft.getMinecraft().mcDataDir, "cache/holographic_images/" + filename+".png");
+            File file = new File(Minecraft.getMinecraft().mcDataDir, "cache/holographic_images/" + filename + ".png");
             if (!file.exists()) {
                 System.out.println("Local image file not found: " + file.getAbsolutePath());
                 return null;
@@ -369,7 +378,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
 
     @SideOnly(Side.CLIENT)
     public void renderImageLocal(TileEntity tile, String filename, double x, double y, double z, double width, double height, int index) throws NoSuchAlgorithmException {
-        ResourceLocation texture = HT_TextureManager.getOrLoadTexture(filename,tile,index);
+        ResourceLocation texture = HT_TextureManager.getOrLoadTexture(filename, tile, index);
         if (texture == null) return;
 
         GL11.glPushMatrix();
@@ -391,8 +400,9 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         GL11.glPopMatrix();
     }
 
-    public void renderImageLocalBack(TileEntity tile, String filename, double x, double y, double z, double width, double height) {
-        ResourceLocation texture = getImageFromLocal(filename);
+    @SideOnly(Side.CLIENT)
+    public void renderImageLocalBack(TileEntity tile, String filename, double x, double y, double z, double width, double height, int index) throws NoSuchAlgorithmException {
+        ResourceLocation texture = HT_TextureManager.getOrLoadTexture(filename, tile, index);
         if (texture == null) return;
 
         GL11.glPushMatrix();

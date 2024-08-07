@@ -1,7 +1,7 @@
 package com.imgood.hyperdimensionaltech.machines.machineaAttributes;
+
 import gregtech.api.enums.Textures;
 import gregtech.api.interfaces.IIconContainer;
-
 
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_OFF;
 import static gregtech.api.enums.Textures.BlockIcons.OVERLAY_DTPF_ON;
@@ -24,7 +24,7 @@ public class HT_MachineTextureBuilder {
 
 
     public HT_MachineTextureBuilder getMachineTextures(String machineName) {
-            HT_MachineTextureBuilder StandardHyperdimensionalTech = new HT_MachineTextureBuilder();
+        HT_MachineTextureBuilder StandardHyperdimensionalTech = new HT_MachineTextureBuilder();
         StandardHyperdimensionalTech.setMachineName("SingularityUnravelingDevice")
             .setMachineON(OVERLAY_DTPF_ON)
             .setMachineOFF(OVERLAY_DTPF_OFF)
@@ -36,7 +36,6 @@ public class HT_MachineTextureBuilder {
             default -> null;
         };
     }
-
 
 
     public HT_MachineTextureBuilder setMachineON(Textures.BlockIcons machineON) {
@@ -51,7 +50,6 @@ public class HT_MachineTextureBuilder {
     }
 
 
-
     public HT_MachineTextureBuilder setMachineCasing(int casingPage, int casingId) {
         this.machineCasingPage = casingPage;
         this.machineCasingId = casingId;
@@ -59,12 +57,10 @@ public class HT_MachineTextureBuilder {
     }
 
 
-
     public HT_MachineTextureBuilder setMachineControl(Textures.BlockIcons machineControll) {
         this.machineControll = machineControll;
         return this;
     }
-
 
 
     public HT_MachineTextureBuilder setMachineName(String maachineName) {

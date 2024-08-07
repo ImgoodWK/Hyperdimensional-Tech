@@ -2,7 +2,6 @@ package com.imgood.hyperdimensionaltech.client.render;
 
 
 import com.gtnewhorizons.modularui.api.GlStateManager;
-import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.machines.MachineBase.HT_MultiMachineBuilder;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -125,25 +124,26 @@ public class HT_TileEntityRenderer_HoloController extends TileEntitySpecialRende
         GL11.glPopMatrix();
     }
 
-    public void renderInventory(double scaleX, double scaleY, double scaleZ, double x, double y, double z, double rotation){
+    public void renderInventory(double scaleX, double scaleY, double scaleZ, double x, double y, double z, double rotation) {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.bindTexture(ParticleStreamTexture);
         GL11.glScaled(scaleX, scaleY, scaleZ);
-        GL11.glTranslated(x,y,z);
+        GL11.glTranslated(x, y, z);
         GL11.glRotated(rotation, 0.0, 1.0, 0.0);
         ParticleStream.renderAllExcept("cubeholoscreen");
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
     }
-    public void renderInventory(){
+
+    public void renderInventory() {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.bindTexture(ParticleStreamTexture);
         GL11.glScaled(0.7, 0.7, 0.7);
-        GL11.glTranslated(0,-0.5,0);
+        GL11.glTranslated(0, -0.5, 0);
         GL11.glRotated(-90.0, 0.0, 1.0, 0.0);
         ParticleStream.renderAllExcept("cubeholoscreen");
         GL11.glDisable(GL11.GL_BLEND);

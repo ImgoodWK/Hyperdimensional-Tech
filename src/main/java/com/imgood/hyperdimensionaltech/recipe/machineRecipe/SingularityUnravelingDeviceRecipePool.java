@@ -1,18 +1,14 @@
 package com.imgood.hyperdimensionaltech.recipe.machineRecipe;
 
-import static gregtech.api.enums.TierEU.RECIPE_MAX;
-
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import net.minecraft.item.ItemStack;
-
 import com.imgood.hyperdimensionaltech.recipe.IRecipePool;
 import com.imgood.hyperdimensionaltech.recipemap.HT_RecipeMap;
 import com.imgood.hyperdimensionaltech.utils.recipes.HT_RecipeBuilder;
-import static com.imgood.hyperdimensionaltech.utils.recipes.RecipeHelper.getItemStack;
-
-import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GT_Utility;
+
+import static com.imgood.hyperdimensionaltech.utils.recipes.RecipeHelper.getItemStack;
+import static gregtech.api.enums.TierEU.RECIPE_MAX;
 
 public class SingularityUnravelingDeviceRecipePool implements IRecipePool {
 
@@ -33,8 +29,8 @@ public class SingularityUnravelingDeviceRecipePool implements IRecipePool {
 
             )
             .itemOutputs(
-                getItemStack("gregtech", "gt.metaitem.03", 32160,32177, 64),
-                getItemStack("eternalsingularity", "combined_singularity", 10,10,1)
+                getItemStack("gregtech", "gt.metaitem.03", 32160, 32177, 64),
+                getItemStack("eternalsingularity", "combined_singularity", 10, 10, 1)
             )
             .specialValue(11700)
             .eut(RECIPE_MAX)
