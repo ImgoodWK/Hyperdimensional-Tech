@@ -11,6 +11,7 @@ import com.imgood.hyperdimensionaltech.nei.NEIHandler;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHandlerHolographicDisplay;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
 import com.imgood.hyperdimensionaltech.utils.HTTextHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -67,7 +68,10 @@ public class HyperdimensionalTech {
         NEIHandler.IMCSender();
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         network.registerMessage(PacketUpdateHandlerHolographicDisplay.class, PacketUpdateHolographicDisplay.class, 0, Side.SERVER);
-        MinecraftForge.EVENT_BUS.register(new HT_TileEntityHolographicDisplay());
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+            MinecraftForge.EVENT_BUS.register(new HT_TileEntityHolographicDisplay());
+        }
+
         proxy.init(event);
 
     }

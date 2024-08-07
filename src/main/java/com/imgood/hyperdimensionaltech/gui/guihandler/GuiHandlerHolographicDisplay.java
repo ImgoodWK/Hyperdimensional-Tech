@@ -28,7 +28,7 @@ public class GuiHandlerHolographicDisplay implements IGuiHandler {
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity instanceof TileHolographicDisplay) {
-            //return new GuiScreenHolographicDisplay(player, world, (TileHolographicDisplay) tileEntity);
+            //return new GuiScreenHolographicDisplay_Sub(player, world, (TileHolographicDisplay) tileEntity);
             return new GuiScreenHolographicDisplay_Main(player, world, (TileHolographicDisplay) tileEntity);
         }
         return null;

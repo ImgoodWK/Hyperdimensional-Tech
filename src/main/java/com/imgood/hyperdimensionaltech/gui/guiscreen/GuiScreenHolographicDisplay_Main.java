@@ -11,6 +11,8 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.imgood.hyperdimensionaltech.utils.HT_ContentsHelper.wrapText;
+
 public class GuiScreenHolographicDisplay_Main extends GuiScreen {
 
     private static final String IMAGE_PATH_PREFIX = "cache/holographic_images/";
@@ -175,11 +177,11 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
     }
 
     private void openSubMenu() {
-        mc.displayGuiScreen(new GuiScreenHolographicDisplay(this.player, this.world, this.tileHolographicDisplay, this.displayDataSize));
+        mc.displayGuiScreen(new GuiScreenHolographicDisplay_Sub(this.player, this.world, this.tileHolographicDisplay, this.displayDataSize));
     }
 
     private void openSubMenu(int index) {
-        mc.displayGuiScreen(new GuiScreenHolographicDisplay(this.player, this.world, this.tileHolographicDisplay, index));
+        mc.displayGuiScreen(new GuiScreenHolographicDisplay_Sub(this.player, this.world, this.tileHolographicDisplay, index));
     }
 
     private void openSubMenu(NBTTagCompound data) {
@@ -279,75 +281,132 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
 
 
     private void drawColoredHoveringText(List<String> textLines, int x, int y, int buttonId) {
-        if (textLines != null || !textLines.isEmpty()) {
-            int tooltipTextWidth = 0;
-            for (String line : textLines) {
+        if (textLines == null || textLines.isEmpty()) return;
+
+        int tooltipTextWidth = 0;
+        int tooltipHeight = 8; // 初始高度
+        int tooltipX = x + 12;
+        int tooltipY = y - 12;
+        int maxLineWidth = 200; // 设置最大行宽
+
+        // 计算提示框的尺寸
+        for (int lineNumber = 0; lineNumber < textLines.size(); ++lineNumber) {
+            String line = textLines.get(lineNumber);
+            int colonIndex = line.indexOf(':');
+            String[] buff;
+            if (colonIndex != -1) {
+                buff = new String[]{
+                    line.substring(0, colonIndex),
+                    colonIndex < line.length() - 1 ? line.substring(colonIndex + 1).trim() : ""
+                };
+            } else {
+                buff = new String[]{line, ""};
+            }
+
+            int prefixWidth = this.fontRendererObj.getStringWidth(buff[0] + ": ");
+
+            if (line.contains("Color:") || line.contains("Text1:") || line.contains("Text2:") || line.contains("Text3:") || line.contains("Text4:")||line.contains("ImgURL:")) {
+                if (!buff[1].isEmpty()) {
+                    List<String> wrappedText = wrapText(buff[1], 12);
+                    for (int i = 0; i < wrappedText.size(); i++) {
+                        int wrappedLineWidth = prefixWidth + this.fontRendererObj.getStringWidth(wrappedText.get(i));
+                        tooltipTextWidth = Math.max(tooltipTextWidth, Math.min(wrappedLineWidth, maxLineWidth));
+                        if (i < wrappedText.size() - 1) {
+                            tooltipHeight += 10;
+                        }
+                    }
+                } else {
+                    tooltipTextWidth = Math.max(tooltipTextWidth, Math.min(prefixWidth, maxLineWidth));
+                }
+            } else {
                 int lineWidth = this.fontRendererObj.getStringWidth(line);
-                if (lineWidth > tooltipTextWidth) {
-                    tooltipTextWidth = lineWidth;
-                }
+                tooltipTextWidth = Math.max(tooltipTextWidth, Math.min(lineWidth, maxLineWidth));
             }
-            tooltipTextWidth += 10;
-            int tooltipX = x + 12;
-            int tooltipY = y - 12;
-            int tooltipHeight = 8;
-
-            if (textLines.size() > 1) {
-                tooltipHeight += 2 + (textLines.size() - 1) * 10;
-            }
-
-            if (tooltipX + tooltipTextWidth > this.width) {
-                tooltipX -= 28 + tooltipTextWidth;
-            }
-
-            if (tooltipY + tooltipHeight + 6 > this.height) {
-                tooltipY = this.height - tooltipHeight - 6;
-            }
-
-            tooltipX += 10;
-            tooltipY += 10;
-
-            //region 绘制背景
-            // 绘制背景和边框
-            this.zLevel = 0F;
-            drawTooltipBackground(tooltipX, tooltipY, tooltipTextWidth, tooltipHeight);
-            //end region
-
-
-            for (int lineNumber = 0; lineNumber < textLines.size(); ++lineNumber) {
-                String line = textLines.get(lineNumber);
-                int colonIndex = line.indexOf(':');
-                String[] buff;
-                if (colonIndex != -1) {
-                    buff = new String[]{
-                        line.substring(0, colonIndex),
-                        colonIndex < line.length() - 1 ? line.substring(colonIndex + 1).trim() : ""
-                    };
-                } else {
-                    buff = new String[]{line, ""};
-                }
-                if (line.contains("Color:") || line.contains("Text1:") || line.contains("Text2:") || line.contains("Text3:") || line.contains("Text4:")) {
-                    this.fontRendererObj.drawStringWithShadow(buff[0] + ": ", tooltipX, tooltipY, Integer.parseInt("00ffff", 16));
-                    if (!buff[1].isEmpty()) {
-                        this.fontRendererObj.drawStringWithShadow(buff[1], tooltipX + this.fontRendererObj.getStringWidth(buff[0] + ": "), tooltipY, Integer.parseInt(this.tileHolographicDisplay.getRGBColor(buttonId), 16));
-                    }
-                } else {
-                    this.fontRendererObj.drawStringWithShadow(buff[0] + ": ", tooltipX, tooltipY, Integer.parseInt("00ffff", 16));
-                    if (!buff[1].isEmpty()) {
-                        this.fontRendererObj.drawStringWithShadow(buff[1], tooltipX + this.fontRendererObj.getStringWidth(buff[0] + ": "), tooltipY, Integer.parseInt("00ffff", 16));
-                    }
-                }
-
-                if (lineNumber == 0) {
-                    tooltipY += 2;
-                }
-
-                tooltipY += 10;
-
-            }
-
-            this.zLevel = 0.0F;
+            tooltipHeight += 10;
         }
+
+        // 添加一些额外的填充
+        tooltipTextWidth += 8;
+        tooltipHeight += 2;
+
+        if (tooltipX + tooltipTextWidth > this.width) {
+            tooltipX -= 28 + tooltipTextWidth;
+        }
+
+        if (tooltipY + tooltipHeight + 6 > this.height) {
+            tooltipY = this.height - tooltipHeight - 6;
+        }
+
+        tooltipX -= 10;
+        tooltipY += 10;
+
+        // 先绘制背景
+        this.zLevel = 300.0F;
+        drawTooltipBackground(tooltipX, tooltipY - 5, tooltipTextWidth, tooltipHeight);
+
+        // 然后绘制文字
+        this.zLevel = 301.0F;
+        int currentY = tooltipY;
+        for (int lineNumber = 0; lineNumber < textLines.size(); ++lineNumber) {
+            String line = textLines.get(lineNumber);
+            int colonIndex = line.indexOf(':');
+            String[] buff;
+            if (colonIndex != -1) {
+                buff = new String[]{
+                    line.substring(0, colonIndex),
+                    colonIndex < line.length() - 1 ? line.substring(colonIndex + 1).trim() : ""
+                };
+            } else {
+                buff = new String[]{line, ""};
+            }
+
+            if (line.contains("Color:") || line.contains("Text1:") || line.contains("Text2:") || line.contains("Text3:") || line.contains("Text4:")) {
+                this.fontRendererObj.drawStringWithShadow(buff[0] + ": ", tooltipX, currentY, Integer.parseInt("00ffff", 16));
+                if (!buff[1].isEmpty()) {
+                    List<String> wrappedText = wrapText(buff[1], 12);
+                    for (int i = 0; i < wrappedText.size(); i++) {
+                        String text = wrappedText.get(i);
+                        if (line.contains("Color:")) {
+                            this.fontRendererObj.drawStringWithShadow("§n"+text, tooltipX + this.fontRendererObj.getStringWidth(buff[0] + ": "), currentY, Integer.parseInt(this.tileHolographicDisplay.getRGBColor(buttonId), 16));
+                        } else {
+                            this.fontRendererObj.drawStringWithShadow(text, tooltipX + this.fontRendererObj.getStringWidth(buff[0] + ": "), currentY, Integer.parseInt(this.tileHolographicDisplay.getRGBColor(buttonId), 16));
+                        }
+                        // 只有当不是最后一次迭代时才增加 currentY
+                        if (i < wrappedText.size() - 1) {
+                            currentY += 10;
+                        }
+                    }
+                }
+            } else if (line.contains("ImgURL:")) {
+                this.fontRendererObj.drawStringWithShadow(buff[0] + ": ", tooltipX, currentY, Integer.parseInt("00ffff", 16));
+                if (!buff[1].isEmpty()) {
+                    List<String> wrappedText = wrapText(buff[1], 12);
+                    for (int i = 0; i < wrappedText.size(); i++) {
+                        String text = wrappedText.get(i);
+                        this.fontRendererObj.drawStringWithShadow("§n"+text, tooltipX + this.fontRendererObj.getStringWidth(buff[0] + ": "), currentY, Integer.parseInt("00ffff", 16));
+
+                        // 只有当不是最后一次迭代时才增加 currentY
+                        if (i < wrappedText.size() - 1) {
+                            currentY += 10;
+                        }
+                    }
+                }
+            } else {
+                this.fontRendererObj.drawStringWithShadow(buff[0] + ": ", tooltipX, currentY, Integer.parseInt("00ffff", 16));
+                if (!buff[1].isEmpty()) {
+                    this.fontRendererObj.drawStringWithShadow("§n"+buff[1], tooltipX + this.fontRendererObj.getStringWidth(buff[0] + ": "), currentY, Integer.parseInt("00ffff", 16));
+                }
+            }
+
+            if (lineNumber == 0) {
+                currentY += 2;
+            }
+
+            currentY += 10;
+        }
+
+        // 恢复 zLevel
+        this.zLevel = 0.0F;
     }
 
     @Override
