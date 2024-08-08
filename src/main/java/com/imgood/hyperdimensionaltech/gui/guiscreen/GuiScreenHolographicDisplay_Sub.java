@@ -1,17 +1,20 @@
 package com.imgood.hyperdimensionaltech.gui.guiscreen;
 
+import com.imgood.hyperdimensionaltech.gui.costom.HT_Button;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.imgood.hyperdimensionaltech.utils.Enums.Names.MOD_ID;
 import static com.imgood.hyperdimensionaltech.utils.HT_ContentsHelper.isValidDouble;
 import static com.imgood.hyperdimensionaltech.utils.HT_ContentsHelper.isValidHexColor;
 import static com.imgood.hyperdimensionaltech.utils.HT_ContentsHelper.wrapText;
@@ -39,6 +42,9 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
     private GuiTextField textFieldLine3;
     private GuiTextField textFieldLine4;
     private GuiTextField textFieldRGBColor;
+    private GuiTextField textFieldLinesYOffset;
+
+
     private GuiTextField textFieldImgUrl;
     private GuiTextField textFieldImgScaledX;
     private GuiTextField textFieldImgScaledY;
@@ -47,10 +53,21 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
     private GuiTextField textFieldLocation;
     private List<String> contents = new ArrayList<>();
 
+    private static final ResourceLocation button_texture = new ResourceLocation(MOD_ID,"textures/gui/button_HolographicDisplay.png");
+    private static final ResourceLocation button_hover_texture = new ResourceLocation(MOD_ID,"textures/gui/button_hover_HolographicDisplay.png");
+
     private int offsetX = 100;
     private int offsetY = 100;
     //private int interval = 30;
     private int textColor = 0x00FFFF;
+    private int textHoverColor = 0x0055FF;
+
+    private int buttonRowYOffset1 = 160;
+    private int buttonRowYOffset2 = 130;
+    private boolean buttonRow1RGB = false;
+    private boolean buttonRow2RGB = false;
+    private int buttonRow1Width = 50;
+    private int buttonRow2Width = 50;
 
     private boolean isInitialized = false;
 
@@ -68,6 +85,7 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
         this.contents.add(textFieldLine3.getText());
         this.contents.add(textFieldLine4.getText());
         this.contents.add(textFieldRGBColor.getText());
+        this.contents.add(textFieldLinesYOffset.getText());
         this.contents.add(textFieldImgUrl.getText());
         this.contents.add(textFieldImgScaledX.getText());
         this.contents.add(textFieldImgScaledY.getText());
@@ -89,6 +107,8 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
             this.contents.add(this.tileHolographicDisplay.getText(this.index, 2));
             this.contents.add(this.tileHolographicDisplay.getText(this.index, 3));
             this.contents.add(this.tileHolographicDisplay.getRGBColor(this.index));
+            this.contents.add(this.tileHolographicDisplay.getLinesYOffset(this.index) + "");
+
             this.contents.add(this.tileHolographicDisplay.getImgURL(this.index));
             this.contents.add(this.tileHolographicDisplay.getImgScaledX(this.index) + "");
             this.contents.add(this.tileHolographicDisplay.getImgScaledY(this.index) + "");
@@ -109,6 +129,7 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
         textFieldsLeft.add(this.textFieldLine3);
         textFieldsLeft.add(this.textFieldLine4);
         textFieldsLeft.add(this.textFieldRGBColor);
+        textFieldsLeft.add(this.textFieldLinesYOffset);
         autoTextField("Left",this.textFieldsLeft, 0, 20,this.offsetX+50, this.offsetY, 87, 20);
 
         this.textFieldsRight.clear();
@@ -131,6 +152,8 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
         this.textFieldLine4.setText(this.tileHolographicDisplay.getText(this.index,3));
         this.textFieldRGBColor.setMaxStringLength(6);
         this.textFieldRGBColor.setText(this.tileHolographicDisplay.getRGBColor(this.index));
+        this.textFieldLinesYOffset.setMaxStringLength(5);
+        this.textFieldLinesYOffset.setText(this.tileHolographicDisplay.getLinesYOffset(this.index)+"");
 
         this.textFieldImgUrl.setMaxStringLength(100);
         this.textFieldImgUrl.setText(this.tileHolographicDisplay.getImgURL(this.index));
@@ -146,51 +169,113 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
         this.textFieldLocation.setText(this.tileHolographicDisplay.getImgPath(this.index));
 
         //region 保存/取消按钮
-        this.buttonList.add(new GuiButton(0,
+        this.buttonList.add(new HT_Button(0,
             this.offsetX + 0,
-            this.offsetY + 110,
-            70,
+            this.offsetY + buttonRowYOffset1,
+            buttonRow1Width,
             20,
-            "Save"));
-        this.buttonList.add(new GuiButton(1,
+            "Save")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setLeftDecoration(button_hover_texture)
+            .setRightDecoration(button_hover_texture)
+            .setDecorationWidth(20)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+        this.buttonList.add(new HT_Button(1,
             this.offsetX + 70,
-            this.offsetY + 110,
-            70,
+            this.offsetY + buttonRowYOffset1,
+            buttonRow1Width,
             20,
-            "Cancel"));
+            "Cancel")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
 
-        this.buttonList.add(new GuiButton(2,
+        this.buttonList.add(new HT_Button(2,
             this.offsetX + 0,
-            this.offsetY + 130,
-            70,
+            this.offsetY + buttonRowYOffset2,
+            buttonRow2Width,
             20,
-            "Bold"));
-        this.buttonList.add(new GuiButton(3,
+            "§lBold")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow2RGB)
+            .setUseHoverEffect(true)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+        this.buttonList.add(new HT_Button(3,
             this.offsetX + 70,
-            this.offsetY + 130,
-            70,
+            this.offsetY + buttonRowYOffset2,
+            buttonRow2Width,
             20,
-            "Italic"));
-        this.buttonList.add(new GuiButton(4,
+            "§oItalic")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow2RGB)
+            .setUseHoverEffect(true)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+        this.buttonList.add(new HT_Button(4,
             this.offsetX + 140,
-            this.offsetY + 130,
-            70,
+            this.offsetY + buttonRowYOffset2,
+            buttonRow2Width,
             20,
-            "Underline"));
-        this.buttonList.add(new GuiButton(5,
+            "§nUnderline")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow2RGB)
+            .setUseHoverEffect(true)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+        this.buttonList.add(new HT_Button(5,
             this.offsetX + 210,
-            this.offsetY + 130,
-            70,
+            this.offsetY + buttonRowYOffset2,
+            buttonRow2Width,
             20,
-            "Strikethrough"));
-        this.buttonList.add(new GuiButton(6,
+            "§mStrike")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow2RGB)
+            .setUseHoverEffect(true)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+        this.buttonList.add(new HT_Button(6,
             this.offsetX + 280,
-            this.offsetY + 130,
-            70,
+            this.offsetY + buttonRowYOffset2,
+            buttonRow2Width,
             20,
-            "Reset"));
+            "RGB")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow2RGB)
+            .setUseHoverEffect(true)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
 
         //endregion
+
+        /*//custom展示下怎么用的
+        HT_Button customButton = new HT_Button(0, this.width / 2 - 100, this.height / 2 - 20, 20, 20, "RGB");
+
+        // 设置普通状态的材质
+        customButton.setTexture(new ResourceLocation(MOD_ID, "textures/gui/button_HolographicDisplay.png"));
+
+        // 设置鼠标悬停状态的材质（可选）
+        customButton.setHoverTexture(new ResourceLocation(MOD_ID,"textures/gui/button_HolographicDisplay.png"));
+
+        // 设置文字颜色
+        customButton.setTextColor(0xFF0000); // 红色文字
+
+        // 启用或禁用鼠标悬停效果
+        customButton.setUseHoverEffect(true);
+
+        this.buttonList.add(customButton);*/
 
     }
 
@@ -216,6 +301,7 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
                     case 2: this.textFieldLine3 = textField; break;
                     case 3: this.textFieldLine4 = textField; break;
                     case 4: this.textFieldRGBColor = textField; break;
+                    case 5: this.textFieldLinesYOffset = textField; break;
                 }
             } else if (row.equals("Right")) {
                 switch (i) {
@@ -295,6 +381,12 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
                     //this.tileHolographicDisplay.setImgScaledY(this.index, Double.parseDouble(this.textFieldImgScaledY.getText()));
                 } else {
                     this.textFieldImgScaledY.setText(String.valueOf(this.tileHolographicDisplay.getRGBColor(this.index)));
+                }
+                if (isValidDouble(this.textFieldLinesYOffset.getText())) {
+                    nbt.setDouble("LinesYOffset", Double.parseDouble(this.textFieldLinesYOffset.getText()));
+                    //this.tileHolographicDisplay.setImgScaledY(this.index, Double.parseDouble(this.textFieldImgScaledY.getText()));
+                } else {
+                    this.textFieldLinesYOffset.setText(String.valueOf(this.tileHolographicDisplay.getLinesYOffset(this.index)));
                 }
 //                this.tileHolographicDisplay.setText(0, this.textFieldLine1.getText());
 //                this.tileHolographicDisplay.setText(1, this.textFieldLine2.getText());

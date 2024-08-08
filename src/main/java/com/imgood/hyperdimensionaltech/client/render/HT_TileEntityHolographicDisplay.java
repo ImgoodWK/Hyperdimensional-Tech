@@ -21,6 +21,7 @@ import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +48,8 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
     private double feildSizeZ = 4;
     private int facing;
     private TileHolographicDisplay tileHolographicDisplay;
+    private static long lastUpdateTime = System.currentTimeMillis();
+    private static float hue = 0f;
 
     public HT_TileEntityHolographicDisplay() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileHolographicDisplay.class, this);
@@ -87,6 +90,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                 drawCenteredString(tile, textContents[2], x, textYOffset + 1.00 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
                 drawCenteredString(tile, textContents[1], x, textYOffset + 1.20 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
                 drawCenteredString(tile, textContents[0], x, textYOffset + 1.40 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                drawCenteredStringRGB(tile, textContents[0], x, textYOffset + 2 + y + linesYOffset, z);
                 if (!tileEntity.getImgURL(i).isEmpty()) {
                     /*renderImage(tile,
                         tileEntity.getImgURL(i),
@@ -520,6 +524,40 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glScalef(-scale, -scale, scale);
+        mc.fontRenderer.drawString(text, -(mc.fontRenderer.getStringWidth(text) / 2), 0, color);
+        GL11.glDisable(GL11.GL_BLEND);  // 禁用混合模式
+        GL11.glEnable(GL11.GL_LIGHTING); // 启用光照
+        GL11.glPopMatrix();
+
+        GL11.glPushMatrix();
+        this.getTextFacingBack(tile, x, y, z);
+        GL11.glTranslated(0.5, 0.0, 0.5);
+        GlStateManager.disableLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glScalef(-scale, -scale, scale);
+        mc.fontRenderer.drawString(text, -(mc.fontRenderer.getStringWidth(text) / 2), 0, color);
+        GL11.glDisable(GL11.GL_BLEND);  // 禁用混合模式
+        GL11.glEnable(GL11.GL_LIGHTING); // 启用光照
+        GL11.glPopMatrix();
+    }
+
+    public void drawCenteredStringRGB(TileEntity tile, String text, double x, double y, double z) {
+        Minecraft mc = Minecraft.getMinecraft();
+        GL11.glPushMatrix();
+        this.getTextFacing(tile, x, y, z);
+        GL11.glTranslated(0.5, 0.0, 0.5);
+        float scale = 0.016666668F * 1.3F;
+        GlStateManager.disableLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glScalef(-scale, -scale, scale);
+
+        // RGB变色逻辑
+        long time = System.currentTimeMillis() % 3000; // 循环时间3秒
+        float hue = time / 3000.0f;
+        int color = Color.HSBtoRGB(hue, 1.0f, 1.0f);
+
         mc.fontRenderer.drawString(text, -(mc.fontRenderer.getStringWidth(text) / 2), 0, color);
         GL11.glDisable(GL11.GL_BLEND);  // 禁用混合模式
         GL11.glEnable(GL11.GL_LIGHTING); // 启用光照
