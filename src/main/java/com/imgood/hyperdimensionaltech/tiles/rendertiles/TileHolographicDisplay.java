@@ -22,15 +22,6 @@ public class TileHolographicDisplay extends TileEntity {
     private boolean visableScreen = true;
     private boolean visableBody = true;
 
-    private static final String CACHE_DIR = "cache/holographic_images/";
-    private String currentImageHash;
-    private boolean isLoading = false;
-    private static boolean needsUpdate = false;
-    private static int updateIndex;
-    private static String updateImagePath;
-    private static double linesYOffset = 0.0;
-
-
     public TileHolographicDisplay() {
         this.displayDataMap = new HashMap<>();
         this.setDisplayData(0, null);
@@ -54,6 +45,16 @@ public class TileHolographicDisplay extends TileEntity {
         NBTTagCompound displayData = getDisplayData(index);
         displayData.setDouble("LinesYOffset", linesYOffset);
         setDisplayData(index, displayData);
+    }
+
+    public void isRGB (int index ,boolean isRGB) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setBoolean("isRGB", isRGB);
+        setDisplayData(index, displayData);
+    }
+
+    public boolean isRGB(int index) {
+        return getDisplayData(index).getBoolean("isRGB");
     }
 
     public int getDisplayDataSize() {
@@ -98,6 +99,7 @@ public class TileHolographicDisplay extends TileEntity {
         dataList.add("ImgStartX:" + displayData.getDouble("ImgStartX"));
         dataList.add("ImgStartY:" + displayData.getDouble("ImgStartY"));
         dataList.add("LinesYOffset:" + displayData.getDouble("LinesYOffset"));
+        dataList.add("RGB:" + (displayData.getBoolean("isRGB")? "Enabled" : "Disabled"));
         //dataList.add("ImgPath:" + displayData.getString("ImgPath"));
         return dataList;
     }
@@ -114,6 +116,7 @@ public class TileHolographicDisplay extends TileEntity {
         defaultData.setDouble("ImgStartX", 0);
         defaultData.setDouble("ImgStartY", 1);
         defaultData.setString("ImgPath", "");
+        defaultData.setBoolean("isRGB", false);
         for (int i = 1; i <= 4; i++) {
             defaultData.setString("Text" + i, "");
         }

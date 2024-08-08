@@ -1,16 +1,19 @@
 package com.imgood.hyperdimensionaltech.gui.guiscreen;
 
+import com.imgood.hyperdimensionaltech.gui.costom.HT_Button;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.imgood.hyperdimensionaltech.utils.Enums.Names.MOD_ID;
 import static com.imgood.hyperdimensionaltech.utils.HT_ContentsHelper.wrapText;
 
 public class GuiScreenHolographicDisplay_Main extends GuiScreen {
@@ -31,11 +34,19 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
     private int offsetX = 100;
     private int offsetY = 100;
     private int textColor = 0x00FFFF;
+    private int textHoverColor = 0x0055FF;
     private int displayDataSize;
-    private boolean isInitialized = false;
-    private boolean isLoading = false;
-    private int displayWidth, displayHeight;
-    private int textureID;
+
+    private static final ResourceLocation button_texture = new ResourceLocation(MOD_ID,"textures/gui/button_HolographicDisplay.png");
+    private static final ResourceLocation button_hover_texture = new ResourceLocation(MOD_ID,"textures/gui/button_hover_HolographicDisplay.png");
+
+
+    private int buttonRowYOffset1 = 110;
+    private int buttonRowYOffset2 = 150;
+    private boolean buttonRow1RGB = false;
+    private boolean buttonRow2RGB = false;
+    private int buttonRow1Width = 40;
+    private int buttonRow2Width = 40;
 
     public GuiScreenHolographicDisplay_Main(EntityPlayer player, World world, TileHolographicDisplay tileEntity) {
         this.player = player;
@@ -64,46 +75,109 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
         this.buttonList.clear();
 
         //region 方向选择按钮
-        this.buttonList.add(new GuiButton(100,
+        this.buttonList.add(new HT_Button(100,
             this.offsetX + 0,
-            this.offsetY + 130,
-            40,
+            buttonRowYOffset2,
+            buttonRow2Width,
             20,
-            "North"));
-        this.buttonList.add(new GuiButton(101,
-            this.offsetX + 40,
-            this.offsetY + 130,
-            40,
+            "North")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setLeftDecoration(button_hover_texture)
+            .setRightDecoration(button_hover_texture)
+            .setDecorationWidth(20)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+        this.buttonList.add(new HT_Button(101,
+            this.offsetX + 60,
+            buttonRowYOffset2,
+            buttonRow2Width,
             20,
-            "East"));
-        this.buttonList.add(new GuiButton(102,
-            this.offsetX + 80,
-            this.offsetY + 130,
-            40,
-            20,
-            "West"));
-        this.buttonList.add(new GuiButton(103,
+            "East")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setLeftDecoration(button_hover_texture)
+            .setRightDecoration(button_hover_texture)
+            .setDecorationWidth(20)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+        this.buttonList.add(new HT_Button(102,
             this.offsetX + 120,
-            this.offsetY + 130,
-            40,
+            buttonRowYOffset2,
+            buttonRow2Width,
             20,
-            "South"));
+            "West")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setLeftDecoration(button_hover_texture)
+            .setRightDecoration(button_hover_texture)
+            .setDecorationWidth(20)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+        this.buttonList.add(new HT_Button(103,
+            this.offsetX + 180,
+            buttonRowYOffset2,
+            buttonRow2Width,
+            20,
+            "South")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setLeftDecoration(button_hover_texture)
+            .setRightDecoration(button_hover_texture)
+            .setDecorationWidth(20)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
         //endregion
         // Add "New" button
-        this.buttonList.add(new GuiButton(105,
+        this.buttonList.add(new HT_Button(105,
             this.offsetX + 0,
-            this.offsetY + 110,
-            80, 20, "Add"));
+            buttonRowYOffset1,
+            buttonRow1Width, 20, "Add")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setLeftDecoration(button_hover_texture)
+            .setRightDecoration(button_hover_texture)
+            .setDecorationWidth(20)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
 
-        this.buttonList.add(new GuiButton(104,
-            this.offsetX + 80,
-            this.offsetY + 110,
-            40, 20, "Hide"));
-
-        this.buttonList.add(new GuiButton(106,
+        this.buttonList.add(new HT_Button(104,
             this.offsetX + 120,
-            this.offsetY + 110,
-            40, 20, "Hide"));
+            buttonRowYOffset1,
+            buttonRow1Width, 20, "Hide")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setLeftDecoration(button_hover_texture)
+            .setRightDecoration(button_hover_texture)
+            .setDecorationWidth(20)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+
+        this.buttonList.add(new HT_Button(106,
+            this.offsetX + 180,
+            buttonRowYOffset1,
+            buttonRow1Width,  20, "Hide")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setLeftDecoration(button_hover_texture)
+            .setRightDecoration(button_hover_texture)
+            .setDecorationWidth(20)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
 
         // Add buttons for existing data
         addButtonsForExistingData(this.displayDataSize,
@@ -267,7 +341,7 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, "§lHolographic Display" + (this.index + 1), this.offsetX + 192, this.offsetY - 20, this.textColor);
+        this.drawCenteredString(this.fontRendererObj, "§lHolographic Display", this.offsetX + 192, this.offsetY - 20, this.textColor);
 
         for (Object buttonObj : this.buttonList) {
             GuiButton button = (GuiButton) buttonObj;

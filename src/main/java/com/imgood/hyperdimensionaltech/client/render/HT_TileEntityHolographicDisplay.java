@@ -86,11 +86,18 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                 this.facing = tileEntity.facing;
                 double linesYOffset = tileEntity.getLinesYOffset(i);
                 String textContents[] = tileEntity.getContents(i);
-                drawCenteredString(tile, textContents[3], x, textYOffset + 0.80 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
-                drawCenteredString(tile, textContents[2], x, textYOffset + 1.00 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
-                drawCenteredString(tile, textContents[1], x, textYOffset + 1.20 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
-                drawCenteredString(tile, textContents[0], x, textYOffset + 1.40 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
-                drawCenteredStringRGB(tile, textContents[0], x, textYOffset + 2 + y + linesYOffset, z);
+                if (tileEntity.isRGB(i)) {
+                    drawCenteredStringRGB(tile, textContents[0], x, textYOffset + 1.40 + y + linesYOffset, z);
+                    drawCenteredStringRGB(tile, textContents[1], x, textYOffset + 1.20 + y + linesYOffset, z);
+                    drawCenteredStringRGB(tile, textContents[2], x, textYOffset + 1.00 + y + linesYOffset, z);
+                    drawCenteredStringRGB(tile, textContents[3], x, textYOffset + 0.80 + y + linesYOffset, z);
+
+                } else {
+                    drawCenteredString(tile, textContents[3], x, textYOffset + 0.80 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                    drawCenteredString(tile, textContents[2], x, textYOffset + 1.00 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                    drawCenteredString(tile, textContents[1], x, textYOffset + 1.20 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                    drawCenteredString(tile, textContents[0], x, textYOffset + 1.40 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
+                }
                 if (!tileEntity.getImgURL(i).isEmpty()) {
                     /*renderImage(tile,
                         tileEntity.getImgURL(i),
@@ -383,6 +390,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
     @SideOnly(Side.CLIENT)
     public void renderImageLocal(TileEntity tile, String filename, double x, double y, double z, double width, double height, int index) throws NoSuchAlgorithmException {
         ResourceLocation texture = HT_TextureManager.getOrLoadTexture(filename, tile, index);
+        //noinspection AliControlFlowStatementWithoutBraces
         if (texture == null) return;
 
         GL11.glPushMatrix();
@@ -407,6 +415,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
     @SideOnly(Side.CLIENT)
     public void renderImageLocalBack(TileEntity tile, String filename, double x, double y, double z, double width, double height, int index) throws NoSuchAlgorithmException {
         ResourceLocation texture = HT_TextureManager.getOrLoadTexture(filename, tile, index);
+        //noinspection AliControlFlowStatementWithoutBraces
         if (texture == null) return;
 
         GL11.glPushMatrix();
@@ -433,6 +442,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
 
     public void renderImage(TileEntity tile, String imageUrl, double x, double y, double z, double width, double height) {
         ResourceLocation texture = getImageFromURL(imageUrl);
+        //noinspection AliControlFlowStatementWithoutBraces
         if (texture == null) return;
 
         GL11.glPushMatrix();
@@ -459,6 +469,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
 
     public void renderImageBack(TileEntity tile, String imageUrl, double x, double y, double z, double width, double height) {
         ResourceLocation texture = getImageFromURL(imageUrl);
+        //noinspection AliControlFlowStatementWithoutBraces
         if (texture == null) return;
 
         GL11.glPushMatrix();

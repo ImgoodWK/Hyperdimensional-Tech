@@ -26,6 +26,7 @@ import static com.imgood.hyperdimensionaltech.utils.HT_ContentsHelper.isImageURL
  * @author: Imgood
  * @create: 2024-07-30 16:46
  **/
+@SuppressWarnings("ALL")
 public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
 
     private final TileHolographicDisplay tileHolographicDisplay;
@@ -259,24 +260,35 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
             .setTextHoverColor(textHoverColor));
 
         //endregion
+        getButtonByid(2).displayString = (textContains(getButtonByid(2), "§l") ? "§lBold" : "Bold");
+        getButtonByid(3).displayString = (textContains(getButtonByid(3), "§o") ? "§oItalic" : "Italic");
+        getButtonByid(4).displayString = (textContains(getButtonByid(4), "§n") ? "§nUnderline" : "Underline");
+        getButtonByid(5).displayString = (textContains(getButtonByid(5), "§m") ? "§mStrike" : "Strike");
 
-        /*//custom展示下怎么用的
-        HT_Button customButton = new HT_Button(0, this.width / 2 - 100, this.height / 2 - 20, 20, 20, "RGB");
 
-        // 设置普通状态的材质
-        customButton.setTexture(new ResourceLocation(MOD_ID, "textures/gui/button_HolographicDisplay.png"));
+    }
 
-        // 设置鼠标悬停状态的材质（可选）
-        customButton.setHoverTexture(new ResourceLocation(MOD_ID,"textures/gui/button_HolographicDisplay.png"));
+    private boolean textContains(GuiButton guiButton,String contains) {
+        return guiButton.displayString.contains(contains);
+    }
 
-        // 设置文字颜色
-        customButton.setTextColor(0xFF0000); // 红色文字
+    private void setButtonDisplayString (int id, String displayString) {
+        for (GuiButton button : this.buttonList) {
+            if (button.id == id) {
+                button.displayString = displayString;
+                //这里不return是考虑到button id不是唯一的
+            }
+        }
+    }
 
-        // 启用或禁用鼠标悬停效果
-        customButton.setUseHoverEffect(true);
-
-        this.buttonList.add(customButton);*/
-
+    private GuiButton getButtonByid (int id) {
+        for (GuiButton button : this.buttonList) {
+            if (button.id == id) {
+                return button;
+                //button id不是唯一的，但会返回第一个检查到的
+            }
+        }
+        return null;
     }
 
     @Override
@@ -405,10 +417,79 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
                 //this.mc.displayGuiScreen(null);
                 this.mc.displayGuiScreen(new GuiScreenHolographicDisplay_Main(this.player, this.world, this.tileHolographicDisplay));
             }
-            case 7 -> {
-//                this.tileHolographicDisplay.loadImageAsync(this.index, this.textFieldImgUrl.getText());
-//                this.currentHashCode = this.tileHolographicDisplay.getImgPath(this.index);
+            case 6 -> {
+                ((HT_Button)button).setUseRGBEffect(!((HT_Button) button).getUseRGBEffect());
+                this.tileHolographicDisplay.isRGB(this.index, !this.tileHolographicDisplay.isRGB(this.index));
              }
+
+             case 2 -> {
+                for(GuiButton button2 : this.buttonList) {
+                    if(button2.id == 2 && button2.displayString.contains("§l")) {
+                        this.textFieldLine1.setText("§l"+this.textFieldLine1.getText());
+                        this.textFieldLine2.setText("§l"+this.textFieldLine2.getText());
+                        this.textFieldLine3.setText("§l"+this.textFieldLine3.getText());
+                        this.textFieldLine4.setText("§l"+this.textFieldLine4.getText());
+                        button2.displayString = button2.displayString.replace("§l", "");
+                    } else if (button2.id == 2 && !button2.displayString.contains("§l")){
+                        this.textFieldLine1.setText(this.textFieldLine1.getText().replace("§l", ""));
+                        this.textFieldLine2.setText(this.textFieldLine2.getText().replace("§l", ""));
+                        this.textFieldLine3.setText(this.textFieldLine3.getText().replace("§l", ""));
+                        this.textFieldLine4.setText(this.textFieldLine4.getText().replace("§l", ""));
+                        button2.displayString = "§l" + button2.displayString;
+                    }
+                }
+            }
+            case 3 -> {
+                for(GuiButton button3 : this.buttonList) {
+                    if(button3.id == 3 && button3.displayString.contains("§o")) {
+                        this.textFieldLine1.setText("§o"+this.textFieldLine1.getText());
+                        this.textFieldLine2.setText("§o"+this.textFieldLine2.getText());
+                        this.textFieldLine3.setText("§o"+this.textFieldLine3.getText());
+                        this.textFieldLine4.setText("§o"+this.textFieldLine4.getText());
+                        button3.displayString = button3.displayString.replace("§o", "");
+                    } else if (button3.id == 3 && !button3.displayString.contains("§o")){
+                        this.textFieldLine1.setText(this.textFieldLine1.getText().replace("§o", ""));
+                        this.textFieldLine2.setText(this.textFieldLine2.getText().replace("§o", ""));
+                        this.textFieldLine3.setText(this.textFieldLine3.getText().replace("§o", ""));
+                        this.textFieldLine4.setText(this.textFieldLine4.getText().replace("§o", ""));
+                        button3.displayString = "§o" + button3.displayString;
+                    }
+                }
+            }
+            case 4 -> {
+                for(GuiButton button4 : this.buttonList) {
+                    if(button4.id == 4 && button4.displayString.contains("§n")) {
+                        this.textFieldLine1.setText("§n"+this.textFieldLine1.getText());
+                        this.textFieldLine2.setText("§n"+this.textFieldLine2.getText());
+                        this.textFieldLine3.setText("§n"+this.textFieldLine3.getText());
+                        this.textFieldLine4.setText("§n"+this.textFieldLine4.getText());
+                        button4.displayString = button4.displayString.replace("§n", "");
+                    } else if (button4.id == 4 && !button4.displayString.contains("§n")){
+                        this.textFieldLine1.setText(this.textFieldLine1.getText().replace("§n", ""));
+                        this.textFieldLine2.setText(this.textFieldLine2.getText().replace("§n", ""));
+                        this.textFieldLine3.setText(this.textFieldLine3.getText().replace("§n", ""));
+                        this.textFieldLine4.setText(this.textFieldLine4.getText().replace("§n", ""));
+                        button4.displayString = "§n" + button4.displayString;
+                    }
+                }
+            }
+            case 5 -> {
+                for(GuiButton button5 : this.buttonList) {
+                    if(button5.id == 5 && button5.displayString.contains("§m")) {
+                        this.textFieldLine1.setText("§m"+this.textFieldLine1.getText());
+                        this.textFieldLine2.setText("§m"+this.textFieldLine2.getText());
+                        this.textFieldLine3.setText("§m"+this.textFieldLine3.getText());
+                        this.textFieldLine4.setText("§m"+this.textFieldLine4.getText());
+                        button5.displayString = button5.displayString.replace("§m", "");
+                    } else if (button5.id == 5 && !button5.displayString.contains("§m")){
+                        this.textFieldLine1.setText(this.textFieldLine1.getText().replace("§m", ""));
+                        this.textFieldLine2.setText(this.textFieldLine2.getText().replace("§m", ""));
+                        this.textFieldLine3.setText(this.textFieldLine3.getText().replace("§m", ""));
+                        this.textFieldLine4.setText(this.textFieldLine4.getText().replace("§m", ""));
+                        button5.displayString = "§m" + button5.displayString;
+                    }
+                }
+            }
             default -> {
                 // 处理其他按钮的行为
             }
@@ -452,7 +533,7 @@ public class GuiScreenHolographicDisplay_Sub extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
 
-        String[] text = {"§lLine1", "§lLine2", "§lLine3", "§lLine4", "§lColor"};
+        String[] text = {"§lLine1", "§lLine2", "§lLine3", "§lLine4", "§lColor","YOffset"};
         autoText(text, 0, 22, this.offsetX, this.offsetY, this.textColor);
         String[] text2 = {"§lImgUrl", "§lWidth", "§lHeight", "§lStartX", "§lStartY", "§lLocation"};
         autoText(text2, 0, 22, this.offsetX+150, this.offsetY, this.textColor);

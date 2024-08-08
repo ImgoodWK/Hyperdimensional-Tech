@@ -16,6 +16,7 @@ public class HT_Button extends GuiButton {
 
     private int textColor;
     private int textColorHover;
+    private int disabledTextColor;
     private int decorationWidth = 16; //
 
     private boolean useHoverEffect;
@@ -27,6 +28,7 @@ public class HT_Button extends GuiButton {
         super(id, x, y, width, height, text);
         this.textColor = 0xFFFFFF; // 默认白色
         this.textColorHover = 0xFFFFFF;
+        disabledTextColor = 0xA0A0A0; // 不可用状态
         this.useHoverEffect = false;
         this.useRGBEffect = false;
         this.startTime = System.currentTimeMillis();
@@ -79,6 +81,14 @@ public class HT_Button extends GuiButton {
         return this;
     }
 
+    public HT_Button setDisabledTextColor(int disabledTextColor) {
+        this.disabledTextColor = disabledTextColor;
+        return this;
+    }
+
+    public boolean getUseRGBEffect() {
+        return this.useRGBEffect;
+    }
     private int getRGBColor() {
         long elapsed = System.currentTimeMillis() - startTime;
         float hue = (elapsed % 3000) / 3000f;
@@ -133,7 +143,8 @@ public class HT_Button extends GuiButton {
             // 绘制按钮文本
             int textColor = this.textColor;
             if (!this.enabled) {
-                textColor = 0xA0A0A0; // 不可用状态
+                this.setUseHoverEffect(false);
+                textColor = disabledTextColor; // 不可用状态
             } else if (isHovered) {
                 textColor = textColorHover; // 鼠标悬停状态
             } else if (this.useRGBEffect) {
