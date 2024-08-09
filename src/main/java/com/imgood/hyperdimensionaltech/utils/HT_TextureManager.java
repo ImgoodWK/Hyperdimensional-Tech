@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -63,7 +64,6 @@ public class HT_TextureManager {
         try {
             File file = new File(Minecraft.getMinecraft().mcDataDir, CACHE_DIR + filename + ".png");
             if (!file.exists()) {
-                System.out.println("TextureManagerLocal image file not found: " + file.getAbsolutePath());
                 loadImageAsync(tileHolographicDisplay, index, url, filename);
                 return null;
             }
@@ -100,7 +100,6 @@ public class HT_TextureManager {
                 String imageHash = calculateImageHash(imageUrl);
                 File cachedFile = new File(cacheDir, imageHash + ".png");
                 if (tile instanceof TileHolographicDisplay) {
-                    System.out.println("testmsg " + imageHash);
                     ((TileHolographicDisplay) tile).setImgPath(index, imageHash);
                 }
 
@@ -132,13 +131,19 @@ public class HT_TextureManager {
         return downloadingTextures.contains(filename);
     }
 
-    private static void downloadAndSaveImage(String imageUrl, File outputFile) throws IOException {
-        URL url = new URL(imageUrl);
+    private static void downloadAndSaveImage(String imageUrl, File outputFile) {
+        URL url = null;
+        try {
+            url = new URL(imageUrl);
+
         ReadableByteChannel rbc = Channels.newChannel(url.openStream());
         FileOutputStream fos = new FileOutputStream(outputFile);
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         fos.close();
         rbc.close();
+        } catch (IOException e) {
+            //throw new RuntimeException(e);
+        }
     }
 
     @SideOnly(Side.CLIENT)

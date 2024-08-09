@@ -21,6 +21,7 @@ public class TileHolographicDisplay extends TileEntity {
     private Map<Integer, NBTTagCompound> displayDataMap;
     private boolean visableScreen = true;
     private boolean visableBody = true;
+    private boolean visableBack = true;
 
     public TileHolographicDisplay() {
         this.displayDataMap = new HashMap<>();
@@ -45,6 +46,26 @@ public class TileHolographicDisplay extends TileEntity {
         NBTTagCompound displayData = getDisplayData(index);
         displayData.setDouble("LinesYOffset", linesYOffset);
         setDisplayData(index, displayData);
+    }
+
+    public boolean isVisableBack() {
+        return visableBack;
+    }
+
+    public void setVisableBack(boolean visableBack) {
+        this.visableBack = visableBack;
+        markDirty();
+        sendUpdatePacket();
+    }
+
+    public void setTextScaled(int index, double scaled) {
+        NBTTagCompound displayData = getDisplayData(index);
+        displayData.setDouble("TextScaled", scaled);
+        setDisplayData(index, displayData);
+    }
+
+    public double getTextScaled(int index) {
+        return getDisplayData(index).getDouble("TextScaled");
     }
 
     public void isRGB (int index ,boolean isRGB) {
@@ -83,6 +104,8 @@ public class TileHolographicDisplay extends TileEntity {
 
     public List<String> getDisplayDataToShow(int index) {
         NBTTagCompound displayData = displayDataMap.get(index);
+        String text = "";
+        String fontStyle = "Style";
         if (displayData == null) {
             List<String> emptyList = new ArrayList<>();
             emptyList.add("No Data");
@@ -90,8 +113,30 @@ public class TileHolographicDisplay extends TileEntity {
         }
         List<String> dataList = new ArrayList<>();
         for (int i = 1; i <= 4; i++) {
-            dataList.add("Text" + i + ":" + displayData.getString("Text" + i));
+            text = displayData.getString("Text" + i);
+            if (text.contains("§l")) {
+                fontStyle = "§l" + fontStyle;
+            }
+            if (text.contains("§o")) {
+                fontStyle = "§o" + fontStyle;
+            }
+            if (text.contains("§n")) {
+                fontStyle = "§n" + fontStyle;
+            }
+            if (text.contains("§m")) {
+                fontStyle = "§m" + fontStyle;
+            }
         }
+        dataList.add(fontStyle);
+        for (int i = 1; i <= 4; i++) {
+            text = displayData.getString("Text" + i);
+               text = text.replace("§l", "")
+                    .replace("§o", "")
+                    .replace("§n", "")
+                    .replace("§m", "");
+            dataList.add("Text" + i + ":" + text);
+        }
+        dataList.add("TextScaled:" + displayData.getDouble("TextScaled"));
         dataList.add("Color:" + displayData.getString("RGBColor"));
         dataList.add("ImgURL:" + displayData.getString("ImgURL"));
         dataList.add("Width:" + displayData.getDouble("ImgScaledX"));
@@ -117,6 +162,7 @@ public class TileHolographicDisplay extends TileEntity {
         defaultData.setDouble("ImgStartY", 1);
         defaultData.setString("ImgPath", "");
         defaultData.setBoolean("isRGB", false);
+        defaultData.setDouble("TextScaled", 1);
         for (int i = 1; i <= 4; i++) {
             defaultData.setString("Text" + i, "");
         }
@@ -281,6 +327,7 @@ public class TileHolographicDisplay extends TileEntity {
         nbt.setInteger("Facing", facing);
         nbt.setBoolean("visableBody", visableBody);
         nbt.setBoolean("visableScreen", visableScreen);
+        nbt.setBoolean("visableBack", visableBack);
     }
 
     @Override
@@ -303,6 +350,7 @@ public class TileHolographicDisplay extends TileEntity {
         this.facing = nbt.getInteger("Facing");
         this.visableBody = nbt.getBoolean("visableBody");
         this.visableScreen = nbt.getBoolean("visableScreen");
+        this.visableBack = nbt.getBoolean("visableBack");
     }
 
     @Override

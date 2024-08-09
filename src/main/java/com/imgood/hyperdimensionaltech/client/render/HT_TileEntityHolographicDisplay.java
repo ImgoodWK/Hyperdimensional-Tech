@@ -87,17 +87,34 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                 double linesYOffset = tileEntity.getLinesYOffset(i);
                 String textContents[] = tileEntity.getContents(i);
                 if (tileEntity.isRGB(i)) {
-                    drawCenteredStringRGB(tile, textContents[0], x, textYOffset + 1.40 + y + linesYOffset, z);
-                    drawCenteredStringRGB(tile, textContents[1], x, textYOffset + 1.20 + y + linesYOffset, z);
-                    drawCenteredStringRGB(tile, textContents[2], x, textYOffset + 1.00 + y + linesYOffset, z);
-                    drawCenteredStringRGB(tile, textContents[3], x, textYOffset + 0.80 + y + linesYOffset, z);
+                    if (tileEntity.isVisableBack()) {
+                        drawCenteredStringRGBBack(tileEntity,tileEntity.getContents(i),x,textYOffset + 1+y + linesYOffset,z,tileEntity.getTextScaled(i));
+                    }
+                        drawCenteredStringRGBFront(tileEntity,tileEntity.getContents(i),x,textYOffset + 1+y + linesYOffset,z,tileEntity.getTextScaled(i));
 
                 } else {
+                    if (tileEntity.isVisableBack()) {
+                        drawCenteredStringBack(tileEntity,
+                            tileEntity.getContents(i),
+                            x,
+                            textYOffset +1+ y + linesYOffset,
+                            z,
+                            Integer.parseInt(tileEntity.getRGBColor(i), 16),
+                            tileEntity.getTextScaled(i));
+                    }
+                    drawCenteredStringFront(tileEntity,
+                        tileEntity.getContents(i),
+                        x,
+                        textYOffset +1+ y + linesYOffset,
+                        z,
+                        Integer.parseInt(tileEntity.getRGBColor(i), 16),
+                        tileEntity.getTextScaled(i));
+                    /*
                     drawCenteredString(tile, textContents[3], x, textYOffset + 0.80 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
                     drawCenteredString(tile, textContents[2], x, textYOffset + 1.00 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
                     drawCenteredString(tile, textContents[1], x, textYOffset + 1.20 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
                     drawCenteredString(tile, textContents[0], x, textYOffset + 1.40 + y + linesYOffset, z, Integer.parseInt(tileEntity.getRGBColor(i), 16));
-                }
+                */}
                 if (!tileEntity.getImgURL(i).isEmpty()) {
                     /*renderImage(tile,
                         tileEntity.getImgURL(i),
@@ -114,6 +131,18 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                         tileEntity.getImgScaledX(i),
                         tileEntity.getImgScaledY(i));*/
                     try {
+                        if (tileEntity.isVisableBack()) {
+
+                            renderImageLocalBack(tile,
+                                tileEntity.getImgPath(i),
+                                x - translateOffset("x", tileEntity.getImgStartX(i)),
+                                y + tileEntity.getImgStartY(i),
+                                z - translateOffset("z", tileEntity.getImgStartX(i)),
+                                tileEntity.getImgScaledX(i),
+                                tileEntity.getImgScaledY(i),
+                                i);
+
+                        }
                         renderImageLocal(tile,
                             tileEntity.getImgPath(i),
                             x + translateOffset("x", tileEntity.getImgStartX(i)),
@@ -122,14 +151,7 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
                             tileEntity.getImgScaledX(i),
                             tileEntity.getImgScaledY(i),
                             i);
-                        renderImageLocalBack(tile,
-                            tileEntity.getImgPath(i),
-                            x - translateOffset("x", tileEntity.getImgStartX(i)),
-                            y + tileEntity.getImgStartY(i),
-                            z - translateOffset("z", tileEntity.getImgStartX(i)),
-                            tileEntity.getImgScaledX(i),
-                            tileEntity.getImgScaledY(i),
-                            i);
+
                     } catch (NoSuchAlgorithmException e) {
                         throw new RuntimeException(e);
                     }
@@ -582,6 +604,65 @@ public class HT_TileEntityHolographicDisplay extends TileEntitySpecialRenderer {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glScalef(-scale, -scale, scale);
         mc.fontRenderer.drawString(text, -(mc.fontRenderer.getStringWidth(text) / 2), 0, color);
+        GL11.glDisable(GL11.GL_BLEND);  // 禁用混合模式
+        GL11.glEnable(GL11.GL_LIGHTING); // 启用光照
+        GL11.glPopMatrix();
+    }
+
+    public void drawCenteredStringFront(TileEntity tile, String[] textLines, double x, double y, double z, int color, double scaleFactor) {
+        drawCenteredStringGeneric(tile, textLines, x, y, z, color, scaleFactor, true, false);
+    }
+
+    public void drawCenteredStringBack(TileEntity tile, String[] textLines, double x, double y, double z, int color, double scaleFactor) {
+        drawCenteredStringGeneric(tile, textLines, x, y, z, color, scaleFactor, false, false);
+    }
+
+    public void drawCenteredStringRGBFront(TileEntity tile, String[] textLines, double x, double y, double z, double scaleFactor) {
+        drawCenteredStringGeneric(tile, textLines, x, y, z, 0, scaleFactor, true, true);
+    }
+
+    public void drawCenteredStringRGBBack(TileEntity tile, String[] textLines, double x, double y, double z, double scaleFactor) {
+        drawCenteredStringGeneric(tile, textLines, x, y, z, 0, scaleFactor, false, true);
+    }
+
+    private void drawCenteredStringGeneric(TileEntity tile, String[] textLines, double x, double y, double z, int color, double scaleFactor, boolean isFront, boolean isRGB) {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        // 确保缩放因子不小于 0.1
+        scaleFactor = Math.max(0.1f, scaleFactor);
+
+        GL11.glPushMatrix();
+        if (isFront) {
+            this.getTextFacing(tile, x, y, z);
+        } else {
+            this.getTextFacingBack(tile, x, y, z);
+        }
+        GL11.glTranslated(0.5, 0.0, 0.5);
+        float baseScale = 0.016666668F * 1.3F;
+        double scale = baseScale * scaleFactor;
+        GlStateManager.disableLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glScalef((float) -scale, (float) -scale, (float) scale);
+
+        // 计算文本的总高度
+        int lineHeight = 10; // 每行高度，包括行间距
+        int totalHeight = textLines.length * lineHeight;
+        int yStart = -totalHeight / 2; // 从中心开始向上偏移
+
+        // 如果是RGB模式，在循环外计算颜色
+        if (isRGB) {
+            long time = System.currentTimeMillis() % 3000; // 循环时间3秒
+            float hue = time / 3000.0f;
+            color = Color.HSBtoRGB(hue, 1.0f, 1.0f);
+        }
+
+        for (int i = 0; i < textLines.length; i++) {
+            String line = textLines[i];
+            int lineWidth = mc.fontRenderer.getStringWidth(line);
+            mc.fontRenderer.drawString(line, -lineWidth / 2, yStart + i * lineHeight, color);
+        }
+
         GL11.glDisable(GL11.GL_BLEND);  // 禁用混合模式
         GL11.glEnable(GL11.GL_LIGHTING); // 启用光照
         GL11.glPopMatrix();

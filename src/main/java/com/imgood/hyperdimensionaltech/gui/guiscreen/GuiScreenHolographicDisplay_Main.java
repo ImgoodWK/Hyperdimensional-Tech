@@ -1,22 +1,24 @@
 package com.imgood.hyperdimensionaltech.gui.guiscreen;
 
-import com.imgood.hyperdimensionaltech.gui.costom.HT_Button;
+import com.imgood.hyperdimensionaltech.gui.costom.HT_GuiButton;
+import com.imgood.hyperdimensionaltech.gui.costom.HT_GuiScreen;
 import com.imgood.hyperdimensionaltech.tiles.rendertiles.TileHolographicDisplay;
+import com.imgood.hyperdimensionaltech.utils.HT_TextureManager;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.imgood.hyperdimensionaltech.utils.Enums.Names.MOD_ID;
 import static com.imgood.hyperdimensionaltech.utils.HT_ContentsHelper.wrapText;
 
-public class GuiScreenHolographicDisplay_Main extends GuiScreen {
+public class GuiScreenHolographicDisplay_Main extends HT_GuiScreen {
 
     private static final String IMAGE_PATH_PREFIX = "cache/holographic_images/";
     private final TileHolographicDisplay tileHolographicDisplay;
@@ -39,10 +41,11 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
 
     private static final ResourceLocation button_texture = new ResourceLocation(MOD_ID,"textures/gui/button_HolographicDisplay.png");
     private static final ResourceLocation button_hover_texture = new ResourceLocation(MOD_ID,"textures/gui/button_hover_HolographicDisplay.png");
+    private static final ResourceLocation button_texture_2020 = new ResourceLocation(MOD_ID,"textures/gui/button_HolographicDisplay_2020.png");
+    private static final ResourceLocation button_hover_texture_2020 = new ResourceLocation(MOD_ID,"textures/gui/button_hover_HolographicDisplay_2020.png");
 
-
-    private int buttonRowYOffset1 = 110;
-    private int buttonRowYOffset2 = 150;
+    private int buttonRowYOffset1 = 100;
+    private int buttonRowYOffset2 = 145;
     private boolean buttonRow1RGB = false;
     private boolean buttonRow2RGB = false;
     private int buttonRow1Width = 40;
@@ -73,11 +76,13 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
         this.offsetY = (this.height / 2) - 90;
         this.updateScreen();
         this.buttonList.clear();
-
+        this.setPosition(this.offsetX-20, this.offsetY-50);
+        this.setSize(420, 260);
+        this.setStretch(false);
         //region 方向选择按钮
-        this.buttonList.add(new HT_Button(100,
+        this.buttonList.add(new HT_GuiButton(100,
             this.offsetX + 0,
-            buttonRowYOffset2,
+            this.offsetY+buttonRowYOffset1,
             buttonRow2Width,
             20,
             "North")
@@ -90,9 +95,9 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
             .setDecorationWidth(20)
             .setTextColor(textColor)
             .setTextHoverColor(textHoverColor));
-        this.buttonList.add(new HT_Button(101,
+        this.buttonList.add(new HT_GuiButton(101,
             this.offsetX + 60,
-            buttonRowYOffset2,
+            this.offsetY+buttonRowYOffset1,
             buttonRow2Width,
             20,
             "East")
@@ -105,9 +110,9 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
             .setDecorationWidth(20)
             .setTextColor(textColor)
             .setTextHoverColor(textHoverColor));
-        this.buttonList.add(new HT_Button(102,
+        this.buttonList.add(new HT_GuiButton(102,
             this.offsetX + 120,
-            buttonRowYOffset2,
+            this.offsetY+buttonRowYOffset1,
             buttonRow2Width,
             20,
             "West")
@@ -120,9 +125,9 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
             .setDecorationWidth(20)
             .setTextColor(textColor)
             .setTextHoverColor(textHoverColor));
-        this.buttonList.add(new HT_Button(103,
+        this.buttonList.add(new HT_GuiButton(103,
             this.offsetX + 180,
-            buttonRowYOffset2,
+            this.offsetY+buttonRowYOffset1,
             buttonRow2Width,
             20,
             "South")
@@ -137,9 +142,9 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
             .setTextHoverColor(textHoverColor));
         //endregion
         // Add "New" button
-        this.buttonList.add(new HT_Button(105,
+        this.buttonList.add(new HT_GuiButton(105,
             this.offsetX + 0,
-            buttonRowYOffset1,
+            this.offsetY+buttonRowYOffset2,
             buttonRow1Width, 20, "Add")
             .setTexture(button_texture)
             .setHoverTexture(button_hover_texture)
@@ -151,9 +156,9 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
             .setTextColor(textColor)
             .setTextHoverColor(textHoverColor));
 
-        this.buttonList.add(new HT_Button(104,
-            this.offsetX + 120,
-            buttonRowYOffset1,
+        this.buttonList.add(new HT_GuiButton(104,
+            this.offsetX + 60,
+            this.offsetY+buttonRowYOffset2,
             buttonRow1Width, 20, "Hide")
             .setTexture(button_texture)
             .setHoverTexture(button_hover_texture)
@@ -165,10 +170,24 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
             .setTextColor(textColor)
             .setTextHoverColor(textHoverColor));
 
-        this.buttonList.add(new HT_Button(106,
-            this.offsetX + 180,
-            buttonRowYOffset1,
+        this.buttonList.add(new HT_GuiButton(106,
+            this.offsetX+120,
+            this.offsetY+buttonRowYOffset2,
             buttonRow1Width,  20, "Hide")
+            .setTexture(button_texture)
+            .setHoverTexture(button_hover_texture)
+            .setUseRGBEffect(buttonRow1RGB)
+            .setUseHoverEffect(true)
+            .setLeftDecoration(button_hover_texture)
+            .setRightDecoration(button_hover_texture)
+            .setDecorationWidth(20)
+            .setTextColor(textColor)
+            .setTextHoverColor(textHoverColor));
+
+        this.buttonList.add(new HT_GuiButton(107,
+            this.offsetX+180,
+            this.offsetY+buttonRowYOffset2,
+            buttonRow1Width,  20, "Single")
             .setTexture(button_texture)
             .setHoverTexture(button_hover_texture)
             .setUseRGBEffect(buttonRow1RGB)
@@ -181,8 +200,9 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
 
         // Add buttons for existing data
         addButtonsForExistingData(this.displayDataSize,
-            20, 20, 8,
-            this.offsetX, this.offsetY);
+            20, 20, 12,
+            this.offsetX+5, this.offsetY-10,
+            10, 10);
         refreshButtons();
     }
 
@@ -196,6 +216,7 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
                 facing.setInteger("Rotation", 2);
                 this.tileHolographicDisplay.setFacing(2);
                 this.currentFacing = "North";
+                initGui();
                 refreshButtons();
             }
             case 101 -> {
@@ -203,6 +224,7 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
                 facing.setInteger("Rotation", 3);
                 this.tileHolographicDisplay.setFacing(3);
                 this.currentFacing = "East";
+                initGui();
                 refreshButtons();
             }
             case 102 -> {
@@ -210,15 +232,17 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
                 facing.setInteger("Rotation", 1);
                 this.tileHolographicDisplay.setFacing(1);
                 this.currentFacing = "West";
+                initGui();
                 refreshButtons();
             }
             case 103 -> {
                 this.tileHolographicDisplay.setFacing(0);
                 this.currentFacing = "South";
+                initGui();
                 refreshButtons();
             }
             case 105 -> {
-                if (this.displayDataSize <= 31) {
+                if (this.displayDataSize <= 35) {
                     openSubMenu();
                 } else {
                     mc.displayGuiScreen(new GuiScreenMessage(this.player, this.world, GuiScreenMessage.MessageType.WARNING, "Maximum number of data reached.", this));
@@ -234,19 +258,33 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
                 this.tileHolographicDisplay.setVisableScreen(visableScreen);
                 refreshButtons();
             }
+            case 107 -> {
+                this.tileHolographicDisplay.setVisableBack(!this.tileHolographicDisplay.isVisableBack());
+                button.displayString = this.tileHolographicDisplay.isVisableBack() ? "Single" : "Both";
+                refreshButtons();
+            }
             default -> {
-                if (button.id <= 32) {
+                if (button.id <= 36) {
                     openSubMenu(button.id);
                 }
             }
         }
     }
 
-    public void addButtonsForExistingData(int displayDataSize, int buttonWidth, int buttonHeight, int maxButtonsPerRow, int offsetX, int offsetY) {
+    public void addButtonsForExistingData(int displayDataSize, int buttonWidth, int buttonHeight, int maxButtonsPerRow, int offsetX, int offsetY, int xSpacing, int ySpacing) {
         for (int i = 0; i < displayDataSize; i++) {
-            int x = offsetX + (i % maxButtonsPerRow) * buttonWidth;
-            int y = offsetY + (i / maxButtonsPerRow) * buttonHeight;
-            this.buttonList.add(new GuiButton(i, x, y, buttonWidth, buttonHeight, String.valueOf(i + 1)));
+            int x = offsetX + (i % maxButtonsPerRow) * (buttonWidth + xSpacing);
+            int y = offsetY + (i / maxButtonsPerRow) * (buttonHeight + ySpacing);
+            this.buttonList.add(new HT_GuiButton(i, x, y, buttonWidth, buttonHeight, String.valueOf(i + 1))
+                .setTexture(button_texture_2020)
+                .setHoverTexture(button_hover_texture_2020)
+                .setUseRGBEffect(buttonRow1RGB)
+                .setUseHoverEffect(true)
+                .setLeftDecoration(button_hover_texture)
+                .setRightDecoration(button_hover_texture)
+                .setDecorationWidth(20)
+                .setTextColor(textColor)
+                .setTextHoverColor(textHoverColor));
         }
     }
 
@@ -289,6 +327,9 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
                 }
                 case 106 -> {
                     guiButton.displayString = this.tileHolographicDisplay.isVisableScreen() ? "Hide" : "Show";
+                }
+                case 107 -> {
+                    guiButton.displayString = this.tileHolographicDisplay.isVisableBack() ? "Single" : "Both";
                 }
             }
         }
@@ -341,16 +382,35 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        this.drawCenteredString(this.fontRendererObj, "§lHolographic Display", this.offsetX + 192, this.offsetY - 20, this.textColor);
-
+        this.drawCenteredString(this.fontRendererObj, "§lHolographic Display", this.offsetX + 192, this.offsetY - 40, this.textColor);
+        this.drawCenteredString(this.fontRendererObj, "Facing", this.offsetX + 110, this.offsetY +85, this.textColor);
+        this.drawCenteredString(this.fontRendererObj, "Data", this.offsetX + 20, this.offsetY +130, this.textColor);
+        this.drawCenteredString(this.fontRendererObj, "Body", this.offsetX + 85, this.offsetY +130, this.textColor);
+        this.drawCenteredString(this.fontRendererObj, "Screen", this.offsetX + 135, this.offsetY +130, this.textColor);
+        this.drawCenteredString(this.fontRendererObj, "Back", this.offsetX + 200, this.offsetY +130, this.textColor);
         for (Object buttonObj : this.buttonList) {
             GuiButton button = (GuiButton) buttonObj;
             if (button.id < this.displayDataSize && isMouseOverButton(button, mouseX, mouseY)) {
                 List<String> tooltipData = this.tileHolographicDisplay.getDisplayDataToShow(button.id);
                 drawColoredHoveringText(tooltipData, mouseX, mouseY, button.id);
+                try {
+                    this.drawImage(HT_TextureManager.getOrLoadTexture(this.tileHolographicDisplay.getImgPath(button.id), this.tileHolographicDisplay , button.id),
+                        this.offsetX + 250,
+                        this.offsetY +95,
+                        80,
+                        80);
+                } catch (NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             }
         }
+
+        // 获取鼠标位置并显示在左下角
+        String mousePos = String.format("Mouse Position: %d, %d", mouseX, mouseY);
+        int x = 10; // X坐标，距离屏幕左边的距离
+        int y = this.height - 20; // Y坐标，距离屏幕底部的距离
+        this.fontRendererObj.drawString(mousePos, x, y,0x00ffff);
     }
 
 
@@ -433,7 +493,12 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
             } else {
                 buff = new String[]{line, ""};
             }
-
+            for (String text : buff) {
+                text.replace("§l", "");
+                text.replace("§o", "");
+                text.replace("§n", "");
+                text.replace("§m", "");
+            }
             if (line.contains("Color:") || line.contains("Text1:") || line.contains("Text2:") || line.contains("Text3:") || line.contains("Text4:")) {
                 this.fontRendererObj.drawStringWithShadow(buff[0] + ": ", tooltipX, currentY, Integer.parseInt("00ffff", 16));
                 if (!buff[1].isEmpty()) {
@@ -465,6 +530,8 @@ public class GuiScreenHolographicDisplay_Main extends GuiScreen {
                         }
                     }
                 }
+            } else if (line.contains("Style")) {
+                this.fontRendererObj.drawStringWithShadow(buff[0], tooltipX+32, currentY, Integer.parseInt("00ffff", 16));
             } else {
                 this.fontRendererObj.drawStringWithShadow(buff[0] + ": ", tooltipX, currentY, Integer.parseInt("00ffff", 16));
                 if (!buff[1].isEmpty()) {
