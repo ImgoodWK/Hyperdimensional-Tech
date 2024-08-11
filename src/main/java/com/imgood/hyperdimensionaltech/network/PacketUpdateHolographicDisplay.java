@@ -38,7 +38,11 @@ public class PacketUpdateHolographicDisplay implements IMessage {
         buf.writeInt(x);
         buf.writeInt(y);
         buf.writeInt(z);
-        ByteBufUtils.writeTag(buf, data);
+        if (data != null) {
+            ByteBufUtils.writeTag(buf, data);
+        } else {
+            ByteBufUtils.writeTag(buf, new NBTTagCompound());
+        }
     }
 
     public static class Handler implements IMessageHandler<PacketUpdateHolographicDisplay, IMessage> {
