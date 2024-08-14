@@ -34,7 +34,7 @@ public class HT_ItemRenderer implements IItemRenderer {
                     }
                 }
             }
-            case "tile.HolographicDisplay" -> {
+            case "tile.HolographicDisplay", "item.energyWeapon" -> {
                 return true;
             }
             default -> {
@@ -105,6 +105,7 @@ public class HT_ItemRenderer implements IItemRenderer {
                 case "tile.HolographicDisplay" -> {
                     new HT_TileEntityHolographicDisplay().renderInventory(1, 1, 1, 2, 0.5, 0, 90);
                 }
+
                 default -> {
 
                 }

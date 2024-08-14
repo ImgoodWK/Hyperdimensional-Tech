@@ -7,6 +7,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import static com.imgood.hyperdimensionaltech.utils.Enums.Names.MOD_ID;
+
 /**
  * @program: Hyperdimensional-Tech
  * @description:
@@ -14,7 +16,7 @@ import org.lwjgl.opengl.GL12;
  * @create: 2024-08-12 16:35
  **/
 public class RenderEnergyBlade extends Render {
-    private static final ResourceLocation texture = new ResourceLocation("yourmodid", "textures/entity/energy_blade.png");
+    private static final ResourceLocation texture = new ResourceLocation(MOD_ID, "textures/gui/ht_Sword_EnergyBar.png");
 
     public RenderEnergyBlade() {
         super();

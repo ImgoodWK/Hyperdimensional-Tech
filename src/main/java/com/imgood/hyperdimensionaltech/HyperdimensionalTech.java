@@ -5,6 +5,8 @@ import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityHolographicDis
 import com.imgood.hyperdimensionaltech.client.render.RenderEnergyBlade;
 import com.imgood.hyperdimensionaltech.client.render.RenderEnergyWeapon;
 import com.imgood.hyperdimensionaltech.entity.EntityEnergyBlade;
+import com.imgood.hyperdimensionaltech.geckolib.ClientListener;
+import com.imgood.hyperdimensionaltech.geckolib.CommonListener;
 import com.imgood.hyperdimensionaltech.gui.EnergyWeaponGUI;
 import com.imgood.hyperdimensionaltech.item.EnergyWeapon;
 import com.imgood.hyperdimensionaltech.loader.BlocksLoader;
@@ -32,11 +34,22 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemLead;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib3.handler.PlayerLoginHandler;
+import software.bernie.geckolib3.particles.BedrockLibrary;
+import software.bernie.geckolib3.resource.AnimationLibrary;
+import software.bernie.geckolib3.resource.ModelLibrary;
+
+import java.io.File;
 
 @Mod(
     modid = HyperdimensionalTech.MODID,
@@ -59,6 +72,11 @@ public class HyperdimensionalTech {
     public static HyperdimensionalTech instance;
     public static SimpleNetworkWrapper network;
 
+    private static CreativeTabs geckolibItemGroup;
+    public static BedrockLibrary particleLibraryInstance;
+    public static ModelLibrary modelLibraryInstance;
+    public static AnimationLibrary animationLibraryInstance;
+
     @Mod.EventHandler
     // preInit "Run before anything else. Read your config, create blocks, items, etc, and register them with the
     // GameRegistry." (Remove if not needed)
@@ -70,6 +88,19 @@ public class HyperdimensionalTech {
         TileEntityLoader.loadTileEntities();
         EntityLoader.loadEntities();
         ItemLoader.loadItems();
+
+        //NetworkHandler.init();
+            CommonListener.onRegisterBlocks();
+            CommonListener.onRegisterItems();
+            CommonListener.onRegisterEntities();
+        particleLibraryInstance = new BedrockLibrary(new File("./particle"));
+        particleLibraryInstance.reload();
+        modelLibraryInstance = new ModelLibrary(new File("./models"));
+        modelLibraryInstance.reload(false);
+        animationLibraryInstance = new AnimationLibrary(new File("./animations"));
+        animationLibraryInstance.reload(false);
+
+
         proxy.preInit(event);
     }
 
@@ -85,11 +116,10 @@ public class HyperdimensionalTech {
         network.registerMessage(EnergyUpdatePacket.Handler.class, EnergyUpdatePacket.class, 2, Side.SERVER);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             MinecraftForge.EVENT_BUS.register(new HT_TileEntityHolographicDisplay());
-            MinecraftForgeClient.registerItemRenderer(new EnergyWeapon(), new RenderEnergyWeapon());
+            MinecraftForgeClient.registerItemRenderer(ItemLoader.energyWeapon, new RenderEnergyWeapon());
             MinecraftForge.EVENT_BUS.register(new EnergyWeaponGUIHandler());
             RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBlade.class, new RenderEnergyBlade());
         }
-
         proxy.init(event);
 
     }
@@ -122,8 +152,34 @@ public class HyperdimensionalTech {
         @SubscribeEvent
         public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
             if (event.type == RenderGameOverlayEvent.ElementType.EXPERIENCE) {
-                gui.drawEnergyBar(event.resolution.getScaledWidth(), event.resolution.getScaledHeight());
+                gui.drawGui(event.resolution.getScaledWidth(), event.resolution.getScaledHeight());
             }
         }
     }
+
+    public static CreativeTabs getGeckolibItemGroup() {
+            geckolibItemGroup = new CreativeTabs(CreativeTabs.getNextID(), "geckolib_examples") {
+                @Override
+                public Item getTabIconItem() {
+                    return (ItemLoader.htSword);
+                }
+            };
+
+        return geckolibItemGroup;
+    }
+
+    public HyperdimensionalTech() {
+        MinecraftForge.EVENT_BUS.register(new CommonListener());
+        FMLCommonHandler.instance().bus().register(new PlayerLoginHandler());
+        MinecraftForge.EVENT_BUS.register(new PlayerLoginHandler());
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Mod.EventHandler
+    public void registerRenderers(FMLInitializationEvent event) {
+            ClientListener.registerReplacedRenderers(event);
+            ClientListener.registerRenderers(event);
+        GeckoLib.initialize();
+    }
+
 }

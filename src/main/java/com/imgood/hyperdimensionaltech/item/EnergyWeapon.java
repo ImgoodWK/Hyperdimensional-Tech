@@ -4,17 +4,25 @@ import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
 import com.imgood.hyperdimensionaltech.entity.EntityEnergyBlade;
 import com.imgood.hyperdimensionaltech.network.EnergyUpdatePacket;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraft.entity.Entity;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class EnergyWeapon extends Item {
+
+/**
+ * @author Imgood
+ */
+public class EnergyWeapon extends Item implements IAnimatable {
     public static final int MAX_ENERGY = 100;
     private int energy = 25;
+    private long lastRightClickTime = 0;
 
     public EnergyWeapon() {
         super();
@@ -31,60 +39,62 @@ public class EnergyWeapon extends Item {
         return this.energy;
     }
 
-    public void useEnergy(int amount) {
-        this.energy = Math.max(0, this.energy - amount);
+    public void setEnergy(int energy) {
+        this.energy = energy;
     }
 
+    public void useEnergy(int amount) {
+        this.energy -= amount;
+        System.out.println("Energy: " + amount);
+    }
 
     @Override
     public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn) {
-        if (energy <= MAX_ENERGY) {
-            System.out.println("testmsguseitem");
-            playerIn.setItemInUse(itemStackIn, this.getMaxItemUseDuration(itemStackIn));
-        }
-        if (energy <= MAX_ENERGY) {
-            // 释放剑气
-            System.out.println("testmsgstopuse");
+        // 获取当前系统时间
+        long currentTime = System.currentTimeMillis();
+
+        // 判断是否冷却时间已过（0.1秒）
+        if (currentTime - lastRightClickTime >= 1000) {
+            // 更新上次右键时间
+            lastRightClickTime = currentTime;
             Vec3 look = playerIn.getLookVec();
-            EntityEnergyBlade energyBlade = new EntityEnergyBlade(worldIn, playerIn, look.xCoord, look.yCoord, look.zCoord);
-            worldIn.spawnEntityInWorld(energyBlade);
+            // 确保只在服务器端进行处理
+            if (energy <= MAX_ENERGY && energy >= 25) {
+               // if (worldIn.isRemote) {
+                    playerIn.addVelocity(look.xCoord * 5.5, look.yCoord * 5.5, look.zCoord * 5.5);
+                    useEnergy(25);
+              //  }
+                EntityEnergyBlade energyBlade = new EntityEnergyBlade(worldIn, playerIn, look.xCoord * 5.9, look.yCoord * 5.9, look.zCoord * 5.9);
 
-            // 向前冲锋
-            playerIn.addVelocity(look.xCoord * 0.5, 0.2, look.zCoord * 0.5);
-
-            useEnergy(MAX_ENERGY);
+                worldIn.spawnEntityInWorld(energyBlade);
+            }
         }
+
         return itemStackIn;
     }
 
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityPlayer playerIn, int timeLeft) {
-        System.out.println("testmsgstopuse");
-        if (energy <= MAX_ENERGY) {
-            // 释放剑气
-            System.out.println("testmsgstopuse");
-            Vec3 look = playerIn.getLookVec();
-            EntityEnergyBlade energyBlade = new EntityEnergyBlade(worldIn, playerIn, look.xCoord, look.yCoord, look.zCoord);
-            worldIn.spawnEntityInWorld(energyBlade);
-
-            // 向前冲锋
-            playerIn.addVelocity(look.xCoord * 0.5, 0.2, look.zCoord * 0.5);
-
-            useEnergy(MAX_ENERGY);
-        }
-    }
-    public void setEnergy(int energy) {
-        this.energy = energy;
+        // 可以根据需要在这里添加逻辑
     }
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
         if (!world.isRemote && isSelected && entity instanceof EntityPlayer) {
-            addEnergy(1); // 每tick增加1点能量
-            if (world.getTotalWorldTime() % 20 == 0) { // 每秒同步一次
-                HyperdimensionalTech.network.sendTo(new EnergyUpdatePacket(energy), (EntityPlayerMP)entity);
-                System.out.println("testmsgsend"+energy);
+            addEnergy(1);
+            if (world.getTotalWorldTime() % 20 == 0) {
+                HyperdimensionalTech.network.sendTo(new EnergyUpdatePacket(energy), (EntityPlayerMP) entity);
             }
         }
+    }
+
+    @Override
+    public void registerControllers(AnimationData animationData) {
+
+    }
+
+    @Override
+    public AnimationFactory getFactory() {
+        return null;
     }
 }
