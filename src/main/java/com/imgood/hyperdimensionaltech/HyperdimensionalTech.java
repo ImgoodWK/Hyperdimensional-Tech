@@ -118,7 +118,7 @@ public class HyperdimensionalTech {
         network.registerMessage(EnergyBladeHitPacket.Handler.class, EnergyBladeHitPacket.class, 3, Side.SERVER);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             MinecraftForge.EVENT_BUS.register(new HT_TileEntityHolographicDisplay());
-            MinecraftForgeClient.registerItemRenderer(ItemLoader.energyWeapon, new RenderEnergyWeapon());
+            //MinecraftForgeClient.registerItemRenderer(ItemLoader.energyWeapon, new RenderEnergyWeapon());
             MinecraftForge.EVENT_BUS.register(new EnergyWeaponGUIHandler());
             RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBlade.class, new RenderEnergyBlade());
         }
@@ -163,7 +163,7 @@ public class HyperdimensionalTech {
             geckolibItemGroup = new CreativeTabs(CreativeTabs.getNextID(), "geckolib_examples") {
                 @Override
                 public Item getTabIconItem() {
-                    return (ItemLoader.htSword);
+                    return (ItemLoader.energyWeapon);
                 }
             };
 

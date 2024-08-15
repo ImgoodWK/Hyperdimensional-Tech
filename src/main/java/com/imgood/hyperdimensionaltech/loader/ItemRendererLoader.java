@@ -17,7 +17,7 @@ public class ItemRendererLoader {
         Block holoGraphicDisplay = GameRegistry.findBlock("hyperdimensionaltech", "tile.HolographicDisplay");
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(holoGraphicDisplay), new HT_ItemRenderer());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(holoController), new HT_ItemRenderer());
-        MinecraftForgeClient.registerItemRenderer(GameRegistry.findItem("hyperdimensionaltech", "item.energyWeapon"), new RenderEnergyWeapon());
-        MinecraftForgeClient.registerItemRenderer(GameRegistry.findItem("hyperdimensionaltech", "item.energyWeapon"), new HT_ItemRenderer());
+        //MinecraftForgeClient.registerItemRenderer(GameRegistry.findItem("hyperdimensionaltech", "item.energyWeapon"), new RenderEnergyWeapon());
+        //MinecraftForgeClient.registerItemRenderer(GameRegistry.findItem("hyperdimensionaltech", "item.energyWeapon"), new HT_ItemRenderer());
     }
 }

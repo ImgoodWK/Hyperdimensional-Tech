@@ -1,6 +1,8 @@
 package com.imgood.hyperdimensionaltech.geckolib;
 
 
+import com.imgood.hyperdimensionaltech.geckolib.client.renderer.EnergyWeaponRenderer;
+import com.imgood.hyperdimensionaltech.loader.ItemLoader;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
@@ -45,7 +47,7 @@ public class ClientListener {
         bindRender(BlockRegistry.BOTARIUM_BLOCK, new BotariumTileEntity(), new BotariumTileRenderer());
         bindRender(BlockRegistry.FERTILIZER_BLOCK, new FertilizerTileEntity(), new FertilizerTileRenderer());
         //bindRender(BlockRegistry.DIAGONAL_BLOCK, new DiagonalTileEntity(), new DiagonalTileRenderer());
-
+        MinecraftForgeClient.registerItemRenderer(ItemLoader.energyWeapon, new EnergyWeaponRenderer());
         MinecraftForgeClient.registerItemRenderer(ItemRegistry.JACK_IN_THE_BOX, new JackInTheBoxRenderer());
     }
 
