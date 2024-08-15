@@ -17,6 +17,7 @@ import com.imgood.hyperdimensionaltech.loader.RecipeLoader;
 import com.imgood.hyperdimensionaltech.loader.TileEntityLoader;
 import com.imgood.hyperdimensionaltech.loader.EntityLoader;
 import com.imgood.hyperdimensionaltech.nei.NEIHandler;
+import com.imgood.hyperdimensionaltech.network.EnergyBladeHitPacket;
 import com.imgood.hyperdimensionaltech.network.EnergyUpdatePacket;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHandlerHolographicDisplay;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
@@ -114,6 +115,7 @@ public class HyperdimensionalTech {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         network.registerMessage(PacketUpdateHandlerHolographicDisplay.class, PacketUpdateHolographicDisplay.class, 0, Side.SERVER);
         network.registerMessage(EnergyUpdatePacket.Handler.class, EnergyUpdatePacket.class, 2, Side.SERVER);
+        network.registerMessage(EnergyBladeHitPacket.Handler.class, EnergyBladeHitPacket.class, 3, Side.SERVER);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             MinecraftForge.EVENT_BUS.register(new HT_TileEntityHolographicDisplay());
             MinecraftForgeClient.registerItemRenderer(ItemLoader.energyWeapon, new RenderEnergyWeapon());

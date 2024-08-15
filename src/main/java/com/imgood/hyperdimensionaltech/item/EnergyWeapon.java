@@ -64,7 +64,7 @@ public class EnergyWeapon extends Item implements IAnimatable {
                     playerIn.addVelocity(look.xCoord * 5.5, look.yCoord * 5.5, look.zCoord * 5.5);
                     useEnergy(25);
               //  }
-                EntityEnergyBlade energyBlade = new EntityEnergyBlade(worldIn, playerIn, look.xCoord * 5.9, look.yCoord * 5.9, look.zCoord * 5.9);
+                EntityEnergyBlade energyBlade = new EntityEnergyBlade(worldIn, playerIn, look.xCoord * 5.5, look.yCoord * 5.5, look.zCoord * 5.5);
 
                 worldIn.spawnEntityInWorld(energyBlade);
             }

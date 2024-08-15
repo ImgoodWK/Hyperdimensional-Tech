@@ -1,7 +1,14 @@
 package com.imgood.hyperdimensionaltech.entity;
 
+import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
+import com.imgood.hyperdimensionaltech.network.EnergyBladeHitPacket;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import cpw.mods.fml.common.registry.IThrowableEntity;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
@@ -10,14 +17,14 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class EntityEnergyBlade extends Entity {
+public class EntityEnergyBlade extends Entity implements IThrowableEntity {
     private static final int MAX_LIFETIME = 40; // 2秒
     private int lifetime = 0;
-    private Entity shootingEntity;
+    private EntityLivingBase shootingEntity;
+
     public EntityEnergyBlade(World world) {
         super(world);
-        this.setSize(0.5F, 0.5F);
-
+        this.setSize(4F, 1F);
     }
 
     public EntityEnergyBlade(World world, EntityLivingBase shooter, double accelX, double accelY, double accelZ) {
@@ -28,7 +35,6 @@ public class EntityEnergyBlade extends Entity {
         this.motionY = accelY;
         this.motionZ = accelZ;
         this.shootingEntity = shooter;
-        // 计算并设置实体的旋转，使其与运动方向一致
         updateRotation();
     }
 
@@ -44,51 +50,45 @@ public class EntityEnergyBlade extends Entity {
             return;
         }
 
-        // 更新实体旋转
         updateRotation();
-
-        // 保存旧位置
-        double oldX = this.posX;
-        double oldY = this.posY;
-        double oldZ = this.posZ;
 
         this.moveEntity(this.motionX, this.motionY, this.motionZ);
 
-        // 计算移动向量
-        double deltaX = this.posX - oldX;
-        double deltaY = this.posY - oldY;
-        double deltaZ = this.posZ - oldZ;
+        if (this.worldObj.isRemote) {  // 在客户端处理碰撞检测并发送网络包
+            AxisAlignedBB collisionBox = this.boundingBox.expand(0.5, 0.5, 0.5);
 
-        // 创建一个沿移动方向的长方体碰撞箱
-        AxisAlignedBB collisionBox = this.boundingBox.copy();
-        collisionBox = collisionBox.expand(Math.abs(deltaX) + 1, Math.abs(deltaY) + 1, Math.abs(deltaZ) + 1);
-        float damage = 120f;
-
-        // 检测实体碰撞
-        List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, collisionBox);
-        for (Entity entity : list) {
-            if (entity instanceof EntityLivingBase livingEntity && entity != this.shootingEntity) {
-                float currentHealth = livingEntity.getHealth();
-                if ((currentHealth - damage) <= 0) {
-                    livingEntity.setHealth(0);
-                } else {
-                    livingEntity.setHealth(currentHealth - damage);
+            List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, collisionBox);
+            for (Entity entity : list) {
+                if (entity instanceof EntityLivingBase && entity != this.shootingEntity) {
+                    EntityLivingBase livingEntity = (EntityLivingBase) entity;
+                    sendDamagePacket(livingEntity);
                 }
-                livingEntity.setHealth(currentHealth - damage);
-                System.out.println("Entity health before: " + currentHealth + ", after: " + livingEntity.getHealth());
             }
         }
     }
 
+    private void sendDamagePacket(EntityLivingBase entity) {
+        float damage = 20.0F;  // 调整这个值来设置你想要的伤害量
+        EnergyBladeHitPacket packet = new EnergyBladeHitPacket(entity.getEntityId(), this.shootingEntity.getEntityId(), damage, true);
+        HyperdimensionalTech.network.sendToServer(packet);  // 发送到服务器
+    }
+
+    private void damageEntity(EntityLivingBase entity) {
+        if (this.worldObj.isRemote) {
+            float damage = 20.0F;  // 调整这个值来设置你想要的伤害量
+            EnergyBladeHitPacket packet = new EnergyBladeHitPacket(entity.getEntityId(), this.shootingEntity.getEntityId(), damage, true);
+            HyperdimensionalTech.network.sendToAll(packet);
+            System.out.println("EntityEnergyBlade damageEntity: " + entity.getEntityId());
+        }
+    }
+
+
+
     private void updateRotation() {
-        // 计算yaw（水平旋转）
         float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
         this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
-
-        // 计算pitch（垂直旋转）
         this.rotationPitch = (float)(Math.atan2(this.motionY, (double)f) * 180.0D / Math.PI);
 
-        // 确保旋转角度在正确范围内
         while (this.rotationPitch - this.prevRotationPitch < -180.0F) {
             this.prevRotationPitch -= 360.0F;
         }
@@ -111,4 +111,16 @@ public class EntityEnergyBlade extends Entity {
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound tagCompound) {}
+
+    @Override
+    public Entity getThrower() {
+        return this.shootingEntity;
+    }
+
+    @Override
+    public void setThrower(Entity entity) {
+        if (entity instanceof EntityLivingBase) {
+            this.shootingEntity = (EntityLivingBase)entity;
+        }
+    }
 }
