@@ -1,12 +1,10 @@
 package com.imgood.hyperdimensionaltech.gui;
 
-import com.imgood.hyperdimensionaltech.item.EnergyWeapon;
+import com.imgood.hyperdimensionaltech.item.DimensionalRifter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -19,7 +17,7 @@ import static com.imgood.hyperdimensionaltech.utils.Enums.Names.MOD_ID;
  * @author: Imgood
  * @create: 2024-08-12 16:27
  **/
-public class EnergyWeaponGUI extends Gui {
+public class DimensionalRifterGUI extends Gui {
     private static final ResourceLocation texture = new ResourceLocation(MOD_ID, "textures/gui/ht_Sword_EnergyBar.png");
     private static final ResourceLocation texture2 = new ResourceLocation(MOD_ID, "textures/gui/ht_Sword_EnergyBar_Curent.png");
     private static final int BAR_WIDTH = 60;
@@ -31,11 +29,11 @@ public class EnergyWeaponGUI extends Gui {
     public void drawGui(int screenWidth, int screenHeight) {
         ItemStack heldItem = mc.thePlayer.getHeldItem();
         if (heldItem == null || heldItem.stackSize <= 0) return;
-        if (!(heldItem.getItem() instanceof EnergyWeapon)) return;
+        if (!(heldItem.getItem() instanceof DimensionalRifter)) return;
 
-        EnergyWeapon weapon = (EnergyWeapon) heldItem.getItem();
+        DimensionalRifter weapon = (DimensionalRifter) heldItem.getItem();
         int energy = weapon.getEnergy();
-        float energyPercentage = (float)energy / EnergyWeapon.MAX_ENERGY;
+        float energyPercentage = (float)energy / DimensionalRifter.MAX_ENERGY;
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -57,22 +55,19 @@ public class EnergyWeaponGUI extends Gui {
 
         // 绘制文本
         FontRenderer fontRenderer = mc.fontRenderer;
-        String energyText = energy + "/" + EnergyWeapon.MAX_ENERGY;
+        String energyText = energy + "/" + DimensionalRifter.MAX_ENERGY;
         int textWidth = fontRenderer.getStringWidth(energyText);
         int textX = x + (BAR_WIDTH - textWidth) / 2;
         int textY = y - 10; // 将文本放在能量条上方
-
         // 绘制文本阴影以提高可读性
         fontRenderer.drawStringWithShadow(energyText, textX, textY, 0x00FFFF);
 
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_LIGHTING);
     }
 
     // 绘制缩放的纹理，加入起始纹理坐标和尺寸参数
     public void drawImage(ResourceLocation texture, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
         if (texture == null) return;
-
+        GL11.glPushMatrix();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(texture);
 
@@ -83,6 +78,7 @@ public class EnergyWeaponGUI extends Gui {
         tessellator.addVertexWithUV(x + width, y, 0, (float)(textureX + textureWidth * (float) width / BAR_WIDTH) / TEXTURE_WIDTH, (float)textureY / TEXTURE_HEIGHT);
         tessellator.addVertexWithUV(x, y, 0, (float)textureX / TEXTURE_WIDTH, (float)textureY / TEXTURE_HEIGHT);
         tessellator.draw();
+        GL11.glPopMatrix();
     }
 }
 

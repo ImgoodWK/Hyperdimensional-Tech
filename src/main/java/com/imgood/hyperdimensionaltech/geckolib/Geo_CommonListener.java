@@ -21,10 +21,10 @@ import software.bernie.example.item.PotatoArmorItem;
 import software.bernie.example.registry.BlockRegistry;
 import software.bernie.example.registry.ItemRegistry;
 
-public class CommonListener {
+public class Geo_CommonListener {
 
     public static void onRegisterBlocks() {
-        BlockRegistry.BOTARIUM_BLOCK = new BotariumBlock();
+       /* BlockRegistry.BOTARIUM_BLOCK = new BotariumBlock();
         BlockRegistry.FERTILIZER_BLOCK = new FertilizerBlock();
         BlockRegistry.DIAGONAL_BLOCK = new DiagonalBlock();
 
@@ -33,24 +33,24 @@ public class CommonListener {
         BlockRegistry.DIAGONAL_BLOCK.setCreativeTab(GeckoLibMod.getGeckolibItemGroup());
 
         registerBlock(BlockRegistry.BOTARIUM_BLOCK, "botariumblock");
-        registerBlock(BlockRegistry.FERTILIZER_BLOCK, "fertilizerblock");
+        registerBlock(BlockRegistry.FERTILIZER_BLOCK, "fertilizerblock");*/
         //registerBlock(BlockRegistry.DIAGONAL_BLOCK,"diagonalblock");
     }
 
     public static void onRegisterEntities() {
         int id = 0;
-        EntityRegistry.registerModEntity(BikeEntity.class, "bike", id++, GeckoLibMod.instance, 160, 2, false);
+        /*EntityRegistry.registerModEntity(BikeEntity.class, "bike", id++, GeckoLibMod.instance, 160, 2, false);
         EntityRegistry.registerModEntity(GeoExampleEntity.class, "example", id++, GeckoLibMod.instance, 160, 2, false);
         EntityRegistry.registerModEntity(GeoExampleEntityLayer.class, "examplelayer", id++, GeckoLibMod.instance, 160, 2, false);
         EntityRegistry.registerModEntity(GeoNpcEntity.class, "geonpc", id++, GeckoLibMod.instance, 160, 2, false);
         /* Tile entities */
-        GameRegistry.registerTileEntity(BotariumTileEntity.class, "botariumtile");
-        GameRegistry.registerTileEntity(FertilizerTileEntity.class, "fertilizertile");
-        //GameRegistry.registerTileEntity(DiagonalTileEntity.class, "diagonaltile");
+        /*GameRegistry.registerTileEntity(BotariumTileEntity.class, "botariumtile");
+        GameRegistry.registerTileEntity(FertilizerTileEntity.class, "fertilizertile");*/
+        //GameRegistry.registerTileEntity(DiagonalTileEntity.class, "diagonaltile");*/
     }
 
     public static void onRegisterItems() {
-        ItemRegistry.JACK_IN_THE_BOX = new JackInTheBoxItem();
+        /*ItemRegistry.JACK_IN_THE_BOX = new JackInTheBoxItem();
         ItemRegistry.JACK_IN_THE_BOX.setUnlocalizedName("jackintheboxitem");
         GameRegistry.registerItem(ItemRegistry.JACK_IN_THE_BOX, "jackintheboxitem");
 
@@ -61,7 +61,7 @@ public class CommonListener {
         ItemRegistry.POTATO_LEGGINGS = registerItem(
             new PotatoArmorItem(ItemArmor.ArmorMaterial.DIAMOND, 0, 2), "potato_leggings");
         ItemRegistry.POTATO_BOOTS = registerItem(
-            new PotatoArmorItem(ItemArmor.ArmorMaterial.DIAMOND, 0, 3), "potato_boots");
+            new PotatoArmorItem(ItemArmor.ArmorMaterial.DIAMOND, 0, 3), "potato_boots");*/
     }
 
     private static <T extends Item> T registerItem(T item, String name) {

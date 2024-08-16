@@ -1,33 +1,29 @@
 package com.imgood.hyperdimensionaltech.entity;
 
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import com.imgood.hyperdimensionaltech.network.EnergyBladeHitPacket;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import com.imgood.hyperdimensionaltech.network.HitPacket;
 import cpw.mods.fml.common.registry.IThrowableEntity;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-public class EntityEnergyBlade extends Entity implements IThrowableEntity {
-    private static final int MAX_LIFETIME = 40; // 2秒
+public class HT_EntityDimensionalRiftBlade extends Entity implements IThrowableEntity {
+    private static final int MAX_LIFETIME = 20; // 2秒
     private int lifetime = 0;
     private EntityLivingBase shootingEntity;
+    private int delayTicks = 0;
 
-    public EntityEnergyBlade(World world) {
+    public HT_EntityDimensionalRiftBlade(World world) {
         super(world);
         this.setSize(4F, 1F);
     }
 
-    public EntityEnergyBlade(World world, EntityLivingBase shooter, double accelX, double accelY, double accelZ) {
+    public HT_EntityDimensionalRiftBlade(World world, EntityLivingBase shooter, double accelX, double accelY, double accelZ) {
         super(world);
         this.setSize(4F, 1F);
         this.setLocationAndAngles(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
@@ -38,6 +34,30 @@ public class EntityEnergyBlade extends Entity implements IThrowableEntity {
         updateRotation();
     }
 
+    public HT_EntityDimensionalRiftBlade(World world, EntityLivingBase shooter, double accelX, double accelY, double accelZ, int lifetime) {
+        super(world);
+        this.setSize(4F, 1F);
+        this.setLocationAndAngles(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
+        this.motionX = accelX;
+        this.motionY = accelY;
+        this.motionZ = accelZ;
+        this.shootingEntity = shooter;
+        this.lifetime = lifetime;
+        updateRotation();
+    }
+
+    public HT_EntityDimensionalRiftBlade(World world, EntityLivingBase shooter, double accelX, double accelY, double accelZ, int lifetime, int delayTicks) {
+        super(world);
+        this.setSize(4F, 1F);
+        this.setLocationAndAngles(shooter.posX, shooter.posY + shooter.getEyeHeight(), shooter.posZ, shooter.rotationYaw, shooter.rotationPitch);
+        this.motionX = accelX;
+        this.motionY = accelY;
+        this.motionZ = accelZ;
+        this.shootingEntity = shooter;
+        this.lifetime = lifetime;
+        this.delayTicks = delayTicks;  // 记录延迟tick数
+        updateRotation();
+    }
     @Override
     protected void entityInit() {}
 
@@ -69,14 +89,14 @@ public class EntityEnergyBlade extends Entity implements IThrowableEntity {
 
     private void sendDamagePacket(EntityLivingBase entity) {
         float damage = 20.0F;  // 调整这个值来设置你想要的伤害量
-        EnergyBladeHitPacket packet = new EnergyBladeHitPacket(entity.getEntityId(), this.shootingEntity.getEntityId(), damage, true);
+        HitPacket packet = new HitPacket(entity.getEntityId(), this.shootingEntity.getEntityId(), damage, true);
         HyperdimensionalTech.network.sendToServer(packet);  // 发送到服务器
     }
 
     private void damageEntity(EntityLivingBase entity) {
         if (this.worldObj.isRemote) {
             float damage = 20.0F;  // 调整这个值来设置你想要的伤害量
-            EnergyBladeHitPacket packet = new EnergyBladeHitPacket(entity.getEntityId(), this.shootingEntity.getEntityId(), damage, true);
+            HitPacket packet = new HitPacket(entity.getEntityId(), this.shootingEntity.getEntityId(), damage, true);
             HyperdimensionalTech.network.sendToAll(packet);
             System.out.println("EntityEnergyBlade damageEntity: " + entity.getEntityId());
         }

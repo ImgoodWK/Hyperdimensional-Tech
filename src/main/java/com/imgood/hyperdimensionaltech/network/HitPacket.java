@@ -10,16 +10,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-public class EnergyBladeHitPacket implements IMessage {
+public class HitPacket implements IMessage {
     private int targetEntityId;
     private int shooterEntityId;
     private float damage;
     private boolean IsInstantKill;
 
     // 无参构造函数是必须的
-    public EnergyBladeHitPacket() {}
+    public HitPacket() {}
 
-    public EnergyBladeHitPacket(int targetEntityId, int shooterEntityId, float damage, boolean IsInstantKill) {
+    public HitPacket(int targetEntityId, int shooterEntityId, float damage, boolean IsInstantKill) {
         this.targetEntityId = targetEntityId;
         this.shooterEntityId = shooterEntityId;
         this.damage = damage;
@@ -42,9 +42,9 @@ public class EnergyBladeHitPacket implements IMessage {
         buf.writeBoolean(IsInstantKill);
     }
 
-    public static class Handler implements IMessageHandler<EnergyBladeHitPacket, IMessage> {
+    public static class Handler implements IMessageHandler<HitPacket, IMessage> {
         @Override
-        public IMessage onMessage(EnergyBladeHitPacket message, MessageContext ctx) {
+        public IMessage onMessage(HitPacket message, MessageContext ctx) {
             World world = ctx.getServerHandler().playerEntity.worldObj;
             Entity target = world.getEntityByID(message.targetEntityId);
             Entity shooter = world.getEntityByID(message.shooterEntityId);

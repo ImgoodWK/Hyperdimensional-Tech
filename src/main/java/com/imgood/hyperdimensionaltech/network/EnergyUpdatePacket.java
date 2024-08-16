@@ -1,6 +1,6 @@
 package com.imgood.hyperdimensionaltech.network;
 
-import com.imgood.hyperdimensionaltech.item.EnergyWeapon;
+import com.imgood.hyperdimensionaltech.item.DimensionalRifter;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -38,8 +38,8 @@ public class EnergyUpdatePacket implements IMessage {
         public IMessage onMessage(EnergyUpdatePacket message, MessageContext ctx) {
             EntityPlayer player = ctx.getServerHandler().playerEntity;
             ItemStack heldItem = player.getHeldItem();
-            if (heldItem != null && heldItem.getItem() instanceof EnergyWeapon) {
-                EnergyWeapon weapon = (EnergyWeapon) heldItem.getItem();
+            if (heldItem != null && heldItem.getItem() instanceof DimensionalRifter) {
+                DimensionalRifter weapon = (DimensionalRifter) heldItem.getItem();
                 weapon.setEnergy(message.energy);
                 System.out.println("testmsgmessage"+message.energy);
             }

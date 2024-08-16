@@ -2,13 +2,11 @@ package com.imgood.hyperdimensionaltech;
 
 
 import com.imgood.hyperdimensionaltech.client.render.HT_TileEntityHolographicDisplay;
-import com.imgood.hyperdimensionaltech.client.render.RenderEnergyBlade;
-import com.imgood.hyperdimensionaltech.client.render.RenderEnergyWeapon;
-import com.imgood.hyperdimensionaltech.entity.EntityEnergyBlade;
-import com.imgood.hyperdimensionaltech.geckolib.ClientListener;
-import com.imgood.hyperdimensionaltech.geckolib.CommonListener;
-import com.imgood.hyperdimensionaltech.gui.EnergyWeaponGUI;
-import com.imgood.hyperdimensionaltech.item.EnergyWeapon;
+import com.imgood.hyperdimensionaltech.client.render.HT_ItemRender_DimensionalRiftBlade;
+import com.imgood.hyperdimensionaltech.entity.HT_EntityDimensionalRiftBlade;
+import com.imgood.hyperdimensionaltech.geckolib.Geo_ClientListener;
+import com.imgood.hyperdimensionaltech.geckolib.Geo_CommonListener;
+import com.imgood.hyperdimensionaltech.gui.DimensionalRifterGUI;
 import com.imgood.hyperdimensionaltech.loader.BlocksLoader;
 import com.imgood.hyperdimensionaltech.loader.GuiLoader;
 import com.imgood.hyperdimensionaltech.loader.ItemLoader;
@@ -17,7 +15,7 @@ import com.imgood.hyperdimensionaltech.loader.RecipeLoader;
 import com.imgood.hyperdimensionaltech.loader.TileEntityLoader;
 import com.imgood.hyperdimensionaltech.loader.EntityLoader;
 import com.imgood.hyperdimensionaltech.nei.NEIHandler;
-import com.imgood.hyperdimensionaltech.network.EnergyBladeHitPacket;
+import com.imgood.hyperdimensionaltech.network.HitPacket;
 import com.imgood.hyperdimensionaltech.network.EnergyUpdatePacket;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHandlerHolographicDisplay;
 import com.imgood.hyperdimensionaltech.network.PacketUpdateHolographicDisplay;
@@ -38,13 +36,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemLead;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import software.bernie.geckolib3.GeckoLib;
+//import software.bernie.geckolib3.GeckoLib;
 import software.bernie.geckolib3.handler.PlayerLoginHandler;
 import software.bernie.geckolib3.particles.BedrockLibrary;
 import software.bernie.geckolib3.resource.AnimationLibrary;
@@ -91,9 +87,9 @@ public class HyperdimensionalTech {
         ItemLoader.loadItems();
 
         //NetworkHandler.init();
-            CommonListener.onRegisterBlocks();
-            CommonListener.onRegisterItems();
-            CommonListener.onRegisterEntities();
+            Geo_CommonListener.onRegisterBlocks();
+            Geo_CommonListener.onRegisterItems();
+            Geo_CommonListener.onRegisterEntities();
         particleLibraryInstance = new BedrockLibrary(new File("./particle"));
         particleLibraryInstance.reload();
         modelLibraryInstance = new ModelLibrary(new File("./models"));
@@ -115,12 +111,12 @@ public class HyperdimensionalTech {
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         network.registerMessage(PacketUpdateHandlerHolographicDisplay.class, PacketUpdateHolographicDisplay.class, 0, Side.SERVER);
         network.registerMessage(EnergyUpdatePacket.Handler.class, EnergyUpdatePacket.class, 2, Side.SERVER);
-        network.registerMessage(EnergyBladeHitPacket.Handler.class, EnergyBladeHitPacket.class, 3, Side.SERVER);
+        network.registerMessage(HitPacket.Handler.class, HitPacket.class, 3, Side.SERVER);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             MinecraftForge.EVENT_BUS.register(new HT_TileEntityHolographicDisplay());
             //MinecraftForgeClient.registerItemRenderer(ItemLoader.energyWeapon, new RenderEnergyWeapon());
-            MinecraftForge.EVENT_BUS.register(new EnergyWeaponGUIHandler());
-            RenderingRegistry.registerEntityRenderingHandler(EntityEnergyBlade.class, new RenderEnergyBlade());
+            MinecraftForge.EVENT_BUS.register(new WeaponGUIHandler());
+            RenderingRegistry.registerEntityRenderingHandler(HT_EntityDimensionalRiftBlade.class, new HT_ItemRender_DimensionalRiftBlade());
         }
         proxy.init(event);
 
@@ -148,8 +144,8 @@ public class HyperdimensionalTech {
         RecipeLoader.loadRecipes();
     }
 
-    public static class EnergyWeaponGUIHandler {
-        private EnergyWeaponGUI gui = new EnergyWeaponGUI();
+    public static class WeaponGUIHandler {
+        private DimensionalRifterGUI gui = new DimensionalRifterGUI();
 
         @SubscribeEvent
         public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
@@ -163,7 +159,7 @@ public class HyperdimensionalTech {
             geckolibItemGroup = new CreativeTabs(CreativeTabs.getNextID(), "geckolib_examples") {
                 @Override
                 public Item getTabIconItem() {
-                    return (ItemLoader.energyWeapon);
+                    return (ItemLoader.dimensionalRifter);
                 }
             };
 
@@ -171,7 +167,7 @@ public class HyperdimensionalTech {
     }
 
     public HyperdimensionalTech() {
-        MinecraftForge.EVENT_BUS.register(new CommonListener());
+        MinecraftForge.EVENT_BUS.register(new Geo_CommonListener());
         FMLCommonHandler.instance().bus().register(new PlayerLoginHandler());
         MinecraftForge.EVENT_BUS.register(new PlayerLoginHandler());
     }
@@ -179,9 +175,9 @@ public class HyperdimensionalTech {
     @SideOnly(Side.CLIENT)
     @Mod.EventHandler
     public void registerRenderers(FMLInitializationEvent event) {
-            ClientListener.registerReplacedRenderers(event);
-            ClientListener.registerRenderers(event);
-        GeckoLib.initialize();
+            Geo_ClientListener.registerReplacedRenderers(event);
+            Geo_ClientListener.registerRenderers(event);
+        //GeckoLib.initialize();
     }
 
 }

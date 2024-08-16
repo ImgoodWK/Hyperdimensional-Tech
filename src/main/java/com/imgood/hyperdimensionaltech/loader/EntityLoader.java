@@ -1,7 +1,7 @@
 package com.imgood.hyperdimensionaltech.loader;
 
 import com.imgood.hyperdimensionaltech.HyperdimensionalTech;
-import com.imgood.hyperdimensionaltech.entity.EntityEnergyBlade;
+import com.imgood.hyperdimensionaltech.entity.HT_EntityDimensionalRiftBlade;
 import cpw.mods.fml.common.registry.EntityRegistry;
 
 /**
@@ -14,6 +14,6 @@ public class EntityLoader {
     public static void loadEntities()
     {
         int entityID = EntityRegistry.findGlobalUniqueEntityId();
- EntityRegistry.registerModEntity(EntityEnergyBlade.class, "EnergyBlade", 1, HyperdimensionalTech.instance, 64, 10, true);
+ EntityRegistry.registerModEntity(HT_EntityDimensionalRiftBlade.class, "EnergyBlade", 1, HyperdimensionalTech.instance, 64, 10, true);
     }
 }
