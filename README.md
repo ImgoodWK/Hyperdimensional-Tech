@@ -33,6 +33,9 @@ HyperdimensionalTech 是一个以超维度科技为主题的模组。背景设�
 
 一部分机器特效预览：  
 https://github.com/ImgoodWK/Hyperdimensional-Tech/assets/62410956/f022336f-ba32-4ce1-b5a5-a15120b719c1  
+目前开发完成内容（中文介绍）：
+https://www.bilibili.com/video/BV1fRWQe8EPf/?buvid=XUCDBA0C1FE2597A7D9B95AAE64B45149FC3C&is_story_h5=false&mid=LE7JC%2FDhstu6NzviiaI8Mw%3D%3D&plat_id=147&share_from=ugc&share_medium=android&share_plat=android&share_session_id=9e34b73e-3066-409c-8fa8-630420e07334&share_source=QQ&share_tag=s_i&timestamp=1724657344&unique_k=q9ioyzT&up_id=10677152  
+
 
 计划中的开发内容：  
 1、奇点解压器：发电设备，用以解压超维度谐振演变器生产的奇点。  
